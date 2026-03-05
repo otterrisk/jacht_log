@@ -56,13 +56,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final List<Event> events = [];
+  final Trip trip = Trip(events: []);
+  var engineState = EngineState.off;
 
   void addEvent(EventType type) {
     setState(() {
-      events.add(Event(type: type, timestamp: DateTime.now()));
-      _counter++;
+      Event event = Event(type: type, timestamp: DateTime.now());
+      switch (type) {
+        case EventType.startEngine:
+          engineState = EngineState.on;
+          break;
+        case EventType.stopEngine:
+          engineState = EngineState.off;
+          break;
+      }
+      trip.events.add(event);
     });
   }
 
@@ -103,18 +111,33 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
-            const Text('You have pushed the button this many times:'),
+            const Text('Engine state:'),
             Text(
-              '$_counter',
+              engineState.label,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => addEvent(EventType.startEngine),
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "start",
+            onPressed: engineState == EngineState.off
+                ? () => addEvent(EventType.startEngine)
+                : null,
+            child: const Icon(Icons.play_arrow),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: "stop",
+            onPressed: engineState == EngineState.on
+                ? () => addEvent(EventType.stopEngine)
+                : null,
+            child: const Icon(Icons.stop),
+          ),
+        ],
       ),
     );
   }

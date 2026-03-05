@@ -1,3 +1,16 @@
+enum EngineState { on, off }
+
+extension EngineStateLabel on EngineState {
+  String get label {
+    switch (this) {
+      case EngineState.on:
+        return "On";
+      case EngineState.off:
+        return "Off";
+    }
+  }
+}
+
 enum EventType { startEngine, stopEngine }
 
 extension EventTypeLabel on EventType {
@@ -18,10 +31,19 @@ class Event {
 }
 
 class Trip {
-  final DateTime start;
-  final DateTime end;
   final List<Event> events;
-  Trip({required this.start, required this.end, required this.events});
+  Trip({required this.events});
+
+  TripStats stats() {
+    Duration motoringTime = Duration.zero;
+    for (int i = 0; i < events.length - 1; i++) {
+      if (events[i].type == EventType.startEngine &&
+          events[i + 1].type == EventType.stopEngine) {
+        motoringTime += events[i + 1].timestamp.difference(events[i].timestamp);
+      }
+    }
+    return TripStats(motoringTime: motoringTime);
+  }
 }
 
 class TripStats {
