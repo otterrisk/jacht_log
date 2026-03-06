@@ -1,11 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-enum Port { moor, leave }
-
-enum Sail { up, down }
-
-enum Engine { on, off }
-
 enum EventSource { port, engine, sail, anchor }
 
 enum EventType { start, stop }
@@ -19,11 +13,11 @@ class Event {
 
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
-  var parkingTime = Duration.zero;
-  var sailingTime = Duration.zero;
-  var motoringTime = Duration.zero;
+  final Map<EventSource, Duration> time = {};
 
-  Trip();
+  Trip() {
+    _update();
+  }
 
   void addEvent(EventSource source, EventType type) {
     events.add(Event(source: source, type: type, timestamp: DateTime.now()));
@@ -31,15 +25,15 @@ class Trip extends ChangeNotifier {
   }
 
   void _update() {
-    parkingTime = calculateDuration(EventSource.port);
-    sailingTime = calculateDuration(EventSource.sail);
-    motoringTime = calculateDuration(EventSource.engine);
+    for (final source in EventSource.values) {
+      time[source] = calculateDuration(source);
+    }
     notifyListeners();
   }
 
   Duration calculateDuration(EventSource source) {
     DateTime? startTime;
-    Duration total = Duration.zero;
+    var total = Duration.zero;
 
     for (final event in events) {
       if (event.source != source) continue;

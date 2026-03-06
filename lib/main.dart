@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Sailing time:'),
                   Text(
-                    trip.sailingTime.toString().split('.')[0],
+                    trip.time[EventSource.sail].toString().split('.')[0],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Motoring time:'),
                   Text(
-                    trip.motoringTime.toString().split('.')[0],
+                    trip.time[EventSource.engine].toString().split('.')[0],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
