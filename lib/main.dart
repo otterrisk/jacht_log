@@ -77,26 +77,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: Column(
             children: [
-              Row(
-                mainAxisAlignment: .center,
-                children: [
-                  Text(EventSource.sail.name),
-                  Switch(
-                    value: boat.isOn(EventSource.sail),
-                    onChanged: (_) => boat.toggle(EventSource.sail),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: .center,
-                children: [
-                  Text(EventSource.engine.name),
-                  Switch(
-                    value: boat.isOn(EventSource.engine),
-                    onChanged: (_) => boat.toggle(EventSource.engine),
-                  ),
-                ],
-              ),
+              for (final source in EventSource.values) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(source.name),
+                    Switch(
+                      value: boat.isOn(source),
+                      onChanged: (_) => boat.toggle(source),
+                    ),
+                  ],
+                ),
+              ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
