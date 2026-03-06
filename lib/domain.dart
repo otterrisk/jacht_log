@@ -11,23 +11,15 @@ extension EngineStateLabel on EngineState {
   }
 }
 
-enum EventType { startEngine, stopEngine }
+enum EventSource { engine, sail, anchor }
 
-extension EventTypeLabel on EventType {
-  String get label {
-    switch (this) {
-      case EventType.startEngine:
-        return "Start engine";
-      case EventType.stopEngine:
-        return "Stop engine";
-    }
-  }
-}
+enum EventType { start, stop }
 
 class Event {
+  final EventSource source;
   final EventType type;
   final DateTime timestamp;
-  Event({required this.type, required this.timestamp});
+  Event({required this.source, required this.type, required this.timestamp});
 }
 
 class Trip {
@@ -37,8 +29,8 @@ class Trip {
   TripStats stats() {
     Duration motoringTime = Duration.zero;
     for (int i = 0; i < events.length - 1; i++) {
-      if (events[i].type == EventType.startEngine &&
-          events[i + 1].type == EventType.stopEngine) {
+      if (events[i].type == EventType.start &&
+          events[i + 1].type == EventType.stop) {
         motoringTime += events[i + 1].timestamp.difference(events[i].timestamp);
       }
     }

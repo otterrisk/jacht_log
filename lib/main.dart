@@ -61,12 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addEvent(EventType type) {
     setState(() {
-      Event event = Event(type: type, timestamp: DateTime.now());
+      Event event = Event(
+        source: EventSource.engine,
+        type: type,
+        timestamp: DateTime.now(),
+      );
       switch (type) {
-        case EventType.startEngine:
+        case EventType.start:
           engineState = EngineState.on;
           break;
-        case EventType.stopEngine:
+        case EventType.stop:
           engineState = EngineState.off;
           break;
       }
@@ -135,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             heroTag: "start",
             onPressed: engineState == EngineState.off
-                ? () => addEvent(EventType.startEngine)
+                ? () => addEvent(EventType.start)
                 : null,
             child: const Icon(Icons.play_arrow),
           ),
@@ -143,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             heroTag: "stop",
             onPressed: engineState == EngineState.on
-                ? () => addEvent(EventType.stopEngine)
+                ? () => addEvent(EventType.stop)
                 : null,
             child: const Icon(Icons.stop),
           ),
