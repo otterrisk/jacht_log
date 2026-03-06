@@ -28,10 +28,8 @@ class Trip extends ChangeNotifier {
   final List<Event> events = [];
   Trip();
 
-  void addEvent(EventType type) {
-    events.add(
-      Event(source: EventSource.engine, type: type, timestamp: DateTime.now()),
-    );
+  void addEvent(EventSource source, EventType type) {
+    events.add(Event(source: source, type: type, timestamp: DateTime.now()));
     notifyListeners();
   }
 
@@ -67,9 +65,9 @@ class Boat extends ChangeNotifier {
 
   void toggleEngine() {
     if (engine == Engine.on) {
-      trip.addEvent(EventType.stop);
+      trip.addEvent(EventSource.engine, EventType.stop);
     } else {
-      trip.addEvent(EventType.start);
+      trip.addEvent(EventSource.engine, EventType.start);
     }
   }
 }
