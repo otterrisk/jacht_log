@@ -109,25 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-            ],
-          ),
-          floatingActionButton: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FloatingActionButton(
-                heroTag: "start",
-                onPressed: engineState(trip.events) == EngineState.off
-                    ? () => trip.addEvent(EventType.start)
-                    : null,
-                child: const Icon(Icons.play_arrow),
-              ),
-              const SizedBox(height: 10),
-              FloatingActionButton(
-                heroTag: "stop",
-                onPressed: engineState(trip.events) == EngineState.on
-                    ? () => trip.addEvent(EventType.stop)
-                    : null,
-                child: const Icon(Icons.stop),
+              Switch(
+                value: engineState(trip.events) == EngineState.on,
+                onChanged: (bool value) {
+                  if (value) {
+                    trip.addEvent(EventType.start);
+                  } else {
+                    trip.addEvent(EventType.stop);
+                  }
+                },
               ),
             ],
           ),
