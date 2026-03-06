@@ -100,9 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Number of Events:'),
+                  const Text('Sailing time:'),
                   Text(
-                    trip.events.length.toString(),
+                    trip.sailingTime.toString().split('.')[0],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Motoring time:'),
                   Text(
-                    trip.stats().motoringTime.toString().split('.')[0],
+                    trip.motoringTime.toString().split('.')[0],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

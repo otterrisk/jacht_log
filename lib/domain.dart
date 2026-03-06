@@ -4,17 +4,6 @@ enum Engine { on, off }
 
 enum Sail { up, down }
 
-extension EngineLabel on Engine {
-  String get label {
-    switch (this) {
-      case Engine.on:
-        return "On";
-      case Engine.off:
-        return "Off";
-    }
-  }
-}
-
 enum EventSource { engine, sail, anchor }
 
 enum EventType { start, stop }
@@ -28,22 +17,40 @@ class Event {
 
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
+  var sailingTime = Duration.zero;
+  var motoringTime = Duration.zero;
+
   Trip();
 
   void addEvent(EventSource source, EventType type) {
     events.add(Event(source: source, type: type, timestamp: DateTime.now()));
+    _update();
     notifyListeners();
   }
 
-  TripStats stats() {
-    Duration motoringTime = Duration.zero;
-    for (int i = 0; i < events.length - 1; i++) {
-      if (events[i].type == EventType.start &&
-          events[i + 1].type == EventType.stop) {
-        motoringTime += events[i + 1].timestamp.difference(events[i].timestamp);
+  void _update() {
+    sailingTime = calculateDuration(EventSource.sail);
+    motoringTime = calculateDuration(EventSource.engine);
+  }
+
+  Duration calculateDuration(EventSource source) {
+    DateTime? startTime;
+    Duration total = Duration.zero;
+
+    for (final event in events) {
+      if (event.source != source) continue;
+
+      if (event.type == EventType.start) {
+        startTime = event.timestamp;
+      }
+
+      if (event.type == EventType.stop && startTime != null) {
+        total += event.timestamp.difference(startTime);
+        startTime = null;
       }
     }
-    return TripStats(motoringTime: motoringTime);
+
+    return total;
   }
 }
 
@@ -95,9 +102,4 @@ class Boat extends ChangeNotifier {
       trip.addEvent(EventSource.engine, EventType.start);
     }
   }
-}
-
-class TripStats {
-  final Duration motoringTime;
-  TripStats({required this.motoringTime});
 }
