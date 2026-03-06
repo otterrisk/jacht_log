@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 
-enum Engine { on, off }
+enum Port { moor, leave }
 
 enum Sail { up, down }
 
-enum EventSource { engine, sail, anchor }
+enum Engine { on, off }
+
+enum EventSource { port, engine, sail, anchor }
 
 enum EventType { start, stop }
 
@@ -17,6 +19,7 @@ class Event {
 
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
+  var parkingTime = Duration.zero;
   var sailingTime = Duration.zero;
   var motoringTime = Duration.zero;
 
@@ -25,12 +28,13 @@ class Trip extends ChangeNotifier {
   void addEvent(EventSource source, EventType type) {
     events.add(Event(source: source, type: type, timestamp: DateTime.now()));
     _update();
-    notifyListeners();
   }
 
   void _update() {
+    parkingTime = calculateDuration(EventSource.port);
     sailingTime = calculateDuration(EventSource.sail);
     motoringTime = calculateDuration(EventSource.engine);
+    notifyListeners();
   }
 
   Duration calculateDuration(EventSource source) {
@@ -56,50 +60,30 @@ class Trip extends ChangeNotifier {
 
 class Boat extends ChangeNotifier {
   final Trip trip;
-  Sail sail = Sail.down;
-  Engine engine = Engine.off;
+  final Map<EventSource, bool> state = {};
 
   Boat(this.trip) {
     trip.addListener(_update);
+    _rebuild();
   }
 
   void _update() {
-    _updateSail();
-    _updateEngine();
+    final event = trip.events.last;
+    state[event.source] = event.type == EventType.start;
     notifyListeners();
   }
 
-  void _updateSail() {
-    for (final event in trip.events.reversed) {
-      if (event.source == EventSource.sail) {
-        sail = event.type == EventType.start ? Sail.up : Sail.down;
-      }
-      break;
+  void _rebuild() {
+    for (final event in trip.events) {
+      state[event.source] = event.type == EventType.start;
     }
   }
 
-  void _updateEngine() {
-    for (final event in trip.events.reversed) {
-      if (event.source == EventSource.engine) {
-        engine = event.type == EventType.start ? Engine.on : Engine.off;
-      }
-      break;
-    }
-  }
-
-  void toggleSail() {
-    if (sail == Sail.up) {
-      trip.addEvent(EventSource.sail, EventType.stop);
+  void toggle(EventSource source) {
+    if (state[source] == true) {
+      trip.addEvent(source, EventType.stop);
     } else {
-      trip.addEvent(EventSource.sail, EventType.start);
-    }
-  }
-
-  void toggleEngine() {
-    if (engine == Engine.on) {
-      trip.addEvent(EventSource.engine, EventType.stop);
-    } else {
-      trip.addEvent(EventSource.engine, EventType.start);
+      trip.addEvent(source, EventType.start);
     }
   }
 }

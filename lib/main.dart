@@ -82,8 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Sail:'),
                   Switch(
-                    value: boat.sail == Sail.up,
-                    onChanged: (_) => boat.toggleSail(),
+                    value: boat.state[EventSource.sail] ?? false,
+                    onChanged: (_) => boat.toggle(EventSource.sail),
                   ),
                 ],
               ),
@@ -92,8 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Engine:'),
                   Switch(
-                    value: boat.engine == Engine.on,
-                    onChanged: (_) => boat.toggleEngine(),
+                    value: boat.state[EventSource.engine] ?? false,
+                    onChanged: (_) => boat.toggle(EventSource.engine),
                   ),
                 ],
               ),
