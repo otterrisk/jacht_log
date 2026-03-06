@@ -56,13 +56,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Trip trip = Trip();
+  final trip = Trip();
+  late final state = BoatState(trip);
 
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
     return ListenableBuilder(
-      listenable: trip,
+      listenable: state,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
@@ -82,10 +83,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 // action in the IDE, or press "p" in the console), to see the
                 // wireframe for each widget.
                 children: [
-                  const Text('Engine state:'),
-                  Text(
-                    engineState(trip.events).label,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  const Text('Engine:'),
+                  Switch(
+                    value: state.engine == EngineState.on,
+                    onChanged: (bool value) {
+                      if (value) {
+                        trip.addEvent(EventType.start);
+                      } else {
+                        trip.addEvent(EventType.stop);
+                      }
+                    },
                   ),
                 ],
               ),
@@ -108,16 +115,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
-              ),
-              Switch(
-                value: engineState(trip.events) == EngineState.on,
-                onChanged: (bool value) {
-                  if (value) {
-                    trip.addEvent(EventType.start);
-                  } else {
-                    trip.addEvent(EventType.stop);
-                  }
-                },
               ),
             ],
           ),

@@ -24,15 +24,6 @@ class Event {
   Event({required this.source, required this.type, required this.timestamp});
 }
 
-EngineState engineState(List<Event> events) {
-  for (final event in events.reversed) {
-    if (event.source == EventSource.engine) {
-      return event.type == EventType.start ? EngineState.on : EngineState.off;
-    }
-  }
-  return EngineState.off;
-}
-
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
   Trip();
@@ -53,6 +44,28 @@ class Trip extends ChangeNotifier {
       }
     }
     return TripStats(motoringTime: motoringTime);
+  }
+}
+
+class BoatState extends ChangeNotifier {
+  final Trip trip;
+  EngineState engine = EngineState.off;
+
+  BoatState(this.trip) {
+    trip.addListener(_update);
+    _update();
+  }
+
+  void _update() {
+    for (final event in trip.events.reversed) {
+      if (event.source == EventSource.engine) {
+        engine = event.type == EventType.start
+            ? EngineState.on
+            : EngineState.off;
+      }
+      break;
+    }
+    notifyListeners();
   }
 }
 
