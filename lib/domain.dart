@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum EngineState { on, off }
 
 extension EngineStateLabel on EngineState {
@@ -31,9 +33,16 @@ EngineState engineState(List<Event> events) {
   return EngineState.off;
 }
 
-class Trip {
+class Trip extends ChangeNotifier {
   final List<Event> events = [];
   Trip();
+
+  void addEvent(EventType type) {
+    events.add(
+      Event(source: EventSource.engine, type: type, timestamp: DateTime.now()),
+    );
+    notifyListeners();
+  }
 
   TripStats stats() {
     Duration motoringTime = Duration.zero;

@@ -58,92 +58,81 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Trip trip = Trip();
 
-  void addEvent(EventType type) {
-    setState(() {
-      Event event = Event(
-        source: EventSource.engine,
-        type: type,
-        timestamp: DateTime.now(),
-      );
-      trip.events.add(event);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: .center,
-            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-            // action in the IDE, or press "p" in the console), to see the
-            // wireframe for each widget.
+    // This method is rerun every time setState is called
+    return ListenableBuilder(
+      listenable: trip,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            // TRY THIS: Try changing the color here to a specific color (to
+            // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+            // change color while the other colors stay the same.
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Text(widget.title),
+          ),
+          body: Column(
             children: [
-              const Text('Engine state:'),
-              Text(
-                engineState(trip.events).label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: .center,
+                // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+                // action in the IDE, or press "p" in the console), to see the
+                // wireframe for each widget.
+                children: [
+                  const Text('Engine state:'),
+                  Text(
+                    engineState(trip.events).label,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Number of Events:'),
+                  Text(
+                    trip.events.length.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Motoring time:'),
+                  Text(
+                    trip.stats().motoringTime.toString().split('.')[0],
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          floatingActionButton: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Number of Events:'),
-              Text(
-                trip.events.length.toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              FloatingActionButton(
+                heroTag: "start",
+                onPressed: engineState(trip.events) == EngineState.off
+                    ? () => trip.addEvent(EventType.start)
+                    : null,
+                child: const Icon(Icons.play_arrow),
+              ),
+              const SizedBox(height: 10),
+              FloatingActionButton(
+                heroTag: "stop",
+                onPressed: engineState(trip.events) == EngineState.on
+                    ? () => trip.addEvent(EventType.stop)
+                    : null,
+                child: const Icon(Icons.stop),
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Motoring time:'),
-              Text(
-                trip.stats().motoringTime.toString().split('.')[0],
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "start",
-            onPressed: engineState(trip.events) == EngineState.off
-                ? () => addEvent(EventType.start)
-                : null,
-            child: const Icon(Icons.play_arrow),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            heroTag: "stop",
-            onPressed: engineState(trip.events) == EngineState.on
-                ? () => addEvent(EventType.stop)
-                : null,
-            child: const Icon(Icons.stop),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
