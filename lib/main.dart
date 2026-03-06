@@ -57,13 +57,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final trip = Trip();
-  late final state = BoatState(trip);
+  late final boat = Boat(trip);
 
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
     return ListenableBuilder(
-      listenable: state,
+      listenable: boat,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
@@ -85,14 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Engine:'),
                   Switch(
-                    value: state.engine == EngineState.on,
-                    onChanged: (bool value) {
-                      if (value) {
-                        trip.addEvent(EventType.start);
-                      } else {
-                        trip.addEvent(EventType.stop);
-                      }
-                    },
+                    value: boat.engine == Engine.on,
+                    onChanged: (_) => boat.toggleEngine(),
                   ),
                 ],
               ),

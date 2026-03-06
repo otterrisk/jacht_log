@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-enum EngineState { on, off }
+enum Engine { on, off }
 
-extension EngineStateLabel on EngineState {
+extension EngineLabel on Engine {
   String get label {
     switch (this) {
-      case EngineState.on:
+      case Engine.on:
         return "On";
-      case EngineState.off:
+      case Engine.off:
         return "Off";
     }
   }
@@ -47,25 +47,30 @@ class Trip extends ChangeNotifier {
   }
 }
 
-class BoatState extends ChangeNotifier {
+class Boat extends ChangeNotifier {
   final Trip trip;
-  EngineState engine = EngineState.off;
+  Engine engine = Engine.off;
 
-  BoatState(this.trip) {
+  Boat(this.trip) {
     trip.addListener(_update);
-    _update();
   }
 
   void _update() {
     for (final event in trip.events.reversed) {
       if (event.source == EventSource.engine) {
-        engine = event.type == EventType.start
-            ? EngineState.on
-            : EngineState.off;
+        engine = event.type == EventType.start ? Engine.on : Engine.off;
       }
       break;
     }
     notifyListeners();
+  }
+
+  void toggleEngine() {
+    if (engine == Engine.on) {
+      trip.addEvent(EventType.stop);
+    } else {
+      trip.addEvent(EventType.start);
+    }
   }
 }
 
