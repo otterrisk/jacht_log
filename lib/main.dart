@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: .center,
                 children: [
-                  const Text('Sail:'),
+                  Text(EventSource.sail.name),
                   Switch(
                     value: boat.isOn(EventSource.sail),
                     onChanged: (_) => boat.toggle(EventSource.sail),
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: .center,
                 children: [
-                  const Text('Engine:'),
+                  Text(EventSource.engine.name),
                   Switch(
                     value: boat.isOn(EventSource.engine),
                     onChanged: (_) => boat.toggle(EventSource.engine),
