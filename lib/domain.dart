@@ -79,6 +79,8 @@ class Boat extends ChangeNotifier {
     }
   }
 
+  bool isOn(EventSource source) => state[source] == true;
+
   void toggle(EventSource source) {
     if (state[source] == true) {
       trip.addEvent(source, EventType.stop);
