@@ -79,9 +79,16 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Row(
                 mainAxisAlignment: .center,
-                // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-                // action in the IDE, or press "p" in the console), to see the
-                // wireframe for each widget.
+                children: [
+                  const Text('Sail:'),
+                  Switch(
+                    value: boat.sail == Sail.up,
+                    onChanged: (_) => boat.toggleSail(),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: .center,
                 children: [
                   const Text('Engine:'),
                   Switch(

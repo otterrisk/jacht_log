@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 enum Engine { on, off }
 
+enum Sail { up, down }
+
 extension EngineLabel on Engine {
   String get label {
     switch (this) {
@@ -47,6 +49,7 @@ class Trip extends ChangeNotifier {
 
 class Boat extends ChangeNotifier {
   final Trip trip;
+  Sail sail = Sail.down;
   Engine engine = Engine.off;
 
   Boat(this.trip) {
@@ -54,13 +57,35 @@ class Boat extends ChangeNotifier {
   }
 
   void _update() {
+    _updateSail();
+    _updateEngine();
+    notifyListeners();
+  }
+
+  void _updateSail() {
+    for (final event in trip.events.reversed) {
+      if (event.source == EventSource.sail) {
+        sail = event.type == EventType.start ? Sail.up : Sail.down;
+      }
+      break;
+    }
+  }
+
+  void _updateEngine() {
     for (final event in trip.events.reversed) {
       if (event.source == EventSource.engine) {
         engine = event.type == EventType.start ? Engine.on : Engine.off;
       }
       break;
     }
-    notifyListeners();
+  }
+
+  void toggleSail() {
+    if (sail == Sail.up) {
+      trip.addEvent(EventSource.sail, EventType.stop);
+    } else {
+      trip.addEvent(EventSource.sail, EventType.start);
+    }
   }
 
   void toggleEngine() {
