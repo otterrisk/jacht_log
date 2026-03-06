@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(source.name),
+                    Text(source.label),
                     Switch(
                       value: boat.isOn(source),
                       onChanged: (_) => boat.toggle(source),
