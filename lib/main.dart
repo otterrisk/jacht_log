@@ -56,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Trip trip = Trip(events: []);
+  final Trip trip = Trip();
 
   void addEvent(EventType type) {
     setState(() {

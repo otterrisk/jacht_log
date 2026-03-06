@@ -32,8 +32,8 @@ EngineState engineState(List<Event> events) {
 }
 
 class Trip {
-  final List<Event> events;
-  Trip({required this.events});
+  final List<Event> events = [];
+  Trip();
 
   TripStats stats() {
     Duration motoringTime = Duration.zero;
