@@ -22,6 +22,15 @@ class Event {
   Event({required this.source, required this.type, required this.timestamp});
 }
 
+EngineState engineState(List<Event> events) {
+  for (final event in events.reversed) {
+    if (event.source == EventSource.engine) {
+      return event.type == EventType.start ? EngineState.on : EngineState.off;
+    }
+  }
+  return EngineState.off;
+}
+
 class Trip {
   final List<Event> events;
   Trip({required this.events});

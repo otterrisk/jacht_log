@@ -57,7 +57,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Trip trip = Trip(events: []);
-  var engineState = EngineState.off;
 
   void addEvent(EventType type) {
     setState(() {
@@ -66,14 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
         type: type,
         timestamp: DateTime.now(),
       );
-      switch (type) {
-        case EventType.start:
-          engineState = EngineState.on;
-          break;
-        case EventType.stop:
-          engineState = EngineState.off;
-          break;
-      }
       trip.events.add(event);
     });
   }
@@ -106,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               const Text('Engine state:'),
               Text(
-                engineState.label,
+                engineState(trip.events).label,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
@@ -138,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             heroTag: "start",
-            onPressed: engineState == EngineState.off
+            onPressed: engineState(trip.events) == EngineState.off
                 ? () => addEvent(EventType.start)
                 : null,
             child: const Icon(Icons.play_arrow),
@@ -146,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(height: 10),
           FloatingActionButton(
             heroTag: "stop",
-            onPressed: engineState == EngineState.on
+            onPressed: engineState(trip.events) == EngineState.on
                 ? () => addEvent(EventType.stop)
                 : null,
             child: const Icon(Icons.stop),
