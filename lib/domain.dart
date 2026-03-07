@@ -23,7 +23,9 @@ class Event {
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
 
-  Trip();
+  Trip() {
+    addEvent(EventSource.port, EventType.start);
+  }
 
   void addEvent(EventSource source, EventType type) {
     events.add(Event(source: source, type: type, timestamp: DateTime.now()));
@@ -32,9 +34,9 @@ class Trip extends ChangeNotifier {
 }
 
 enum Mode {
-  parking("Parking"),
   sailing("Sailing"),
-  motoring("Motoring");
+  motoring("Motoring"),
+  parking("Parking");
 
   final String label;
 
