@@ -71,18 +71,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: Column(
             children: [
-              for (final source in EventSource.values) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(source.label),
-                    Switch(
-                      value: boat.isOn(source),
-                      onChanged: (_) => boat.toggle(source),
-                    ),
-                  ],
+              Card(
+                elevation: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    childAspectRatio: 3,
+                    children: [
+                      SwitchListTile(
+                        title: Text(EventSource.port.label),
+                        value: boat.isOn(EventSource.port),
+                        onChanged: (_) => boat.toggle(EventSource.port),
+                      ),
+                      SwitchListTile(
+                        title: Text(EventSource.engine.label),
+                        value: boat.isOn(EventSource.engine),
+                        onChanged: (_) => boat.toggle(EventSource.engine),
+                      ),
+                      SwitchListTile(
+                        title: Text(EventSource.anchor.label),
+                        value: boat.isOn(EventSource.anchor),
+                        onChanged: (_) => boat.toggle(EventSource.anchor),
+                      ),
+                      SwitchListTile(
+                        title: Text(EventSource.sail.label),
+                        value: boat.isOn(EventSource.sail),
+                        onChanged: (_) => boat.toggle(EventSource.sail),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
