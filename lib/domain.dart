@@ -51,7 +51,6 @@ class Boat extends ChangeNotifier {
 
   Boat() {
     trip.addListener(_update);
-    _rebuild();
   }
 
   void _update() {
@@ -70,12 +69,6 @@ class Boat extends ChangeNotifier {
 
   void updateState(final Event event) {
     state[event.source] = event.type == EventType.start;
-  }
-
-  void _rebuild() {
-    for (final event in trip.events) {
-      updateState(event);
-    }
   }
 
   bool isOn(EventSource source) => state[source] == true;
