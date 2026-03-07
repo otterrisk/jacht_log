@@ -61,6 +61,8 @@ class Trip extends ChangeNotifier {
   }
 }
 
+enum TripMode { parking, sailing, motoring }
+
 class Boat extends ChangeNotifier {
   final Trip trip;
   final Map<EventSource, bool> state = {};
@@ -90,5 +92,21 @@ class Boat extends ChangeNotifier {
     } else {
       trip.addEvent(source, EventType.start);
     }
+  }
+
+  TripMode? get tripMode {
+    if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
+      return TripMode.parking;
+    }
+
+    if (isOn(EventSource.sail)) {
+      return TripMode.sailing;
+    }
+
+    if (isOn(EventSource.engine)) {
+      return TripMode.motoring;
+    }
+
+    return null;
   }
 }
