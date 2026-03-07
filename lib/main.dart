@@ -94,31 +94,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Text('Trip mode:'),
                   Text(
-                    boat.tripMode.toString(),
+                    boat.mode.toString(),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Sailing time:'),
-                  Text(
-                    trip.time[EventSource.sail].toString().split('.')[0],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Motoring time:'),
-                  Text(
-                    trip.time[EventSource.engine].toString().split('.')[0],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+              for (final mode in Mode.values) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('${mode.label} time:'),
+                    Text(
+                      boat.time[mode].toString().split('.')[0],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         );

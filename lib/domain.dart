@@ -22,58 +22,35 @@ class Event {
 
 class Trip extends ChangeNotifier {
   final List<Event> events = [];
-  final Map<EventSource, Duration> time = {};
 
-  Trip() {
-    _update();
-  }
+  Trip();
 
   void addEvent(EventSource source, EventType type) {
     events.add(Event(source: source, type: type, timestamp: DateTime.now()));
-    _update();
-  }
-
-  void _update() {
-    for (final source in EventSource.values) {
-      time[source] = calculateDuration(source);
-    }
     notifyListeners();
-  }
-
-  Duration calculateDuration(EventSource source) {
-    DateTime? startTime;
-    var total = Duration.zero;
-
-    for (final event in events) {
-      if (event.source != source) continue;
-
-      if (event.type == EventType.start) {
-        startTime = event.timestamp;
-      }
-
-      if (event.type == EventType.stop && startTime != null) {
-        total += event.timestamp.difference(startTime);
-        startTime = null;
-      }
-    }
-
-    return total;
   }
 }
 
-enum TripMode { parking, sailing, motoring }
+enum Mode {
+  parking("Parking"),
+  sailing("Sailing"),
+  motoring("Motoring");
 
-class ModeChange {
-  final DateTime time;
-  final TripMode mode;
+  final String label;
 
-  ModeChange(this.time, this.mode);
+  const Mode(this.label);
 }
 
 class Boat extends ChangeNotifier {
   final Trip trip;
   final Map<EventSource, bool> state = {};
-  final List<ModeChange> changes = [];
+  final Map<Mode, Duration> time = {
+    Mode.parking: Duration.zero,
+    Mode.sailing: Duration.zero,
+    Mode.motoring: Duration.zero,
+  };
+  DateTime? lastTime;
+  Mode? lastMode;
 
   Boat(this.trip) {
     trip.addListener(_update);
@@ -82,13 +59,19 @@ class Boat extends ChangeNotifier {
 
   void _update() {
     final event = trip.events.last;
-    final oldMode = tripMode;
+    updateTime(event);
     updateState(event);
-    final newMode = tripMode;
-    if (oldMode != newMode) {
-      changes.add(ModeChange(event.timestamp, newMode));
-    }
     notifyListeners();
+  }
+
+  void updateTime(Event event) {
+    final currentMode = mode;
+    if (lastTime != null) {
+      time[currentMode] =
+          time[currentMode]! + event.timestamp.difference(lastTime!);
+    }
+    lastTime = event.timestamp;
+    lastMode = currentMode;
   }
 
   void updateState(final Event event) {
@@ -97,7 +80,7 @@ class Boat extends ChangeNotifier {
 
   void _rebuild() {
     for (final event in trip.events) {
-      state[event.source] = event.type == EventType.start;
+      updateState(event);
     }
   }
 
@@ -111,19 +94,19 @@ class Boat extends ChangeNotifier {
     }
   }
 
-  TripMode get tripMode {
+  Mode get mode {
     if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
-      return TripMode.parking;
+      return Mode.parking;
     }
 
     if (isOn(EventSource.sail)) {
-      return TripMode.sailing;
+      return Mode.sailing;
     }
 
     if (isOn(EventSource.engine)) {
-      return TripMode.motoring;
+      return Mode.motoring;
     }
 
-    return TripMode.sailing; // TODO consider adding TripMode.afloat
+    return Mode.sailing; // TODO consider adding TripMode.afloat
   }
 }
