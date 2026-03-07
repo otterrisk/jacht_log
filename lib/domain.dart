@@ -63,9 +63,17 @@ class Trip extends ChangeNotifier {
 
 enum TripMode { parking, sailing, motoring }
 
+class ModeChange {
+  final DateTime time;
+  final TripMode mode;
+
+  ModeChange(this.time, this.mode);
+}
+
 class Boat extends ChangeNotifier {
   final Trip trip;
   final Map<EventSource, bool> state = {};
+  final List<ModeChange> changes = [];
 
   Boat(this.trip) {
     trip.addListener(_update);
@@ -74,8 +82,17 @@ class Boat extends ChangeNotifier {
 
   void _update() {
     final event = trip.events.last;
-    state[event.source] = event.type == EventType.start;
+    final oldMode = tripMode;
+    updateState(event);
+    final newMode = tripMode;
+    if (oldMode != newMode) {
+      changes.add(ModeChange(event.timestamp, newMode));
+    }
     notifyListeners();
+  }
+
+  void updateState(final Event event) {
+    state[event.source] = event.type == EventType.start;
   }
 
   void _rebuild() {
@@ -94,7 +111,7 @@ class Boat extends ChangeNotifier {
     }
   }
 
-  TripMode? get tripMode {
+  TripMode get tripMode {
     if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
       return TripMode.parking;
     }
@@ -107,6 +124,6 @@ class Boat extends ChangeNotifier {
       return TripMode.motoring;
     }
 
-    return null;
+    return TripMode.sailing; // TODO consider adding TripMode.afloat
   }
 }

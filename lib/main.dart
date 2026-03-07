@@ -92,6 +92,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Text('Trip mode:'),
+                  Text(
+                    boat.tripMode.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   const Text('Sailing time:'),
                   Text(
                     trip.time[EventSource.sail].toString().split('.')[0],
