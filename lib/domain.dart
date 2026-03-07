@@ -42,7 +42,7 @@ enum Mode {
 }
 
 class Boat extends ChangeNotifier {
-  final Trip trip;
+  final trip = Trip();
   final Map<EventSource, bool> state = {};
   final Map<Mode, Duration> time = {
     Mode.parking: Duration.zero,
@@ -52,7 +52,7 @@ class Boat extends ChangeNotifier {
   DateTime? lastTime;
   Mode? lastMode;
 
-  Boat(this.trip) {
+  Boat() {
     trip.addListener(_update);
     _rebuild();
   }

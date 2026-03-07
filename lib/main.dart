@@ -56,8 +56,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final trip = Trip();
-  late final boat = Boat(trip);
+  final boat = Boat();
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
-            // TRY THIS: Try changing the color here to a specific color (to
-            // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-            // change color while the other colors stay the same.
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
             title: Text(widget.title),
           ),
           body: Column(
@@ -92,9 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Trip mode:'),
+                  const Text('Current mode:'),
                   Text(
-                    boat.mode.toString(),
+                    boat.mode.label,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
