@@ -46,7 +46,7 @@ enum Mode {
 class Boat extends ChangeNotifier {
   final trip = Trip();
   final Map<EventSource, bool> state = {};
-  final time = {for (final m in Mode.values) m: Duration.zero};
+  final List<Duration> time = List.filled(Mode.values.length, Duration.zero);
   DateTime? lastTime;
 
   Boat() {
@@ -62,10 +62,8 @@ class Boat extends ChangeNotifier {
   }
 
   void updateTime(Event event) {
-    final currentMode = mode;
     if (lastTime != null) {
-      time[currentMode] =
-          time[currentMode]! + event.timestamp.difference(lastTime!);
+      time[mode.index] += event.timestamp.difference(lastTime!);
     }
     lastTime = event.timestamp;
   }

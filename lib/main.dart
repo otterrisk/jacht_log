@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     Text('${mode.label} time:'),
                     Text(
-                      boat.time[mode].toString().split('.')[0],
+                      boat.time[mode.index].toString().split('.')[0],
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
