@@ -60,6 +60,33 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final boat = Boat();
 
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    boat.trip.addListener(_onTripChanged);
+  }
+
+  @override
+  void dispose() {
+    boat.trip.removeListener(_onTripChanged);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onTripChanged() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
@@ -119,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Expanded(
                 child: ListView.builder(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   itemCount: boat.trip.events.length,
                   itemBuilder: (context, index) {
