@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello/event.dart';
 import 'package:hello/event_presentation.dart';
 
-import 'domain.dart';
+import 'boat.dart';
 
 void main() {
   runApp(const MyApp());
