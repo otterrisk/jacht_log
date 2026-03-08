@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello/event.dart';
+import 'package:hello/event_presentation.dart';
 
 import 'domain.dart';
 
@@ -116,6 +117,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  itemCount: boat.trip.events.length,
+                  itemBuilder: (context, index) {
+                    final event = boat.trip.events[index];
+                    final background = index.isEven
+                        ? Theme.of(context).colorScheme.surfaceContainerHighest
+                        : Colors.transparent;
+
+                    return eventRow(event, background);
+                  },
+                ),
+              ),
               Card(
                 elevation: 1,
                 child: Padding(
@@ -172,5 +187,48 @@ class _MyHomePageState extends State<MyHomePage> {
     final minutes = d.inMinutes % 60;
     final seconds = d.inSeconds % 60;
     return "${hours}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s";
+  }
+
+  Widget eventRow(Event event, Color background) {
+    return Container(
+      color: background,
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      child: Row(
+        children: [
+          Icon(_iconForSource(event.source), size: 20),
+          const SizedBox(width: 8),
+
+          Text(event.description),
+
+          const Spacer(),
+
+          Text(
+            _formatTimestamp(event.timestamp),
+            style: const TextStyle(
+              color: Colors.grey,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatTimestamp(DateTime t) {
+    return "${t.hour.toString().padLeft(2, '0')}:"
+        "${t.minute.toString().padLeft(2, '0')}";
+  }
+
+  IconData _iconForSource(EventSource source) {
+    switch (source) {
+      case EventSource.engine:
+        return Icons.settings;
+      case EventSource.sail:
+        return Icons.sailing;
+      case EventSource.port:
+        return Icons.directions_boat;
+      case EventSource.anchor:
+        return Icons.anchor;
+    }
   }
 }

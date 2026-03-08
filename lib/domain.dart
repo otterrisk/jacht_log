@@ -4,7 +4,7 @@ import 'package:hello/event.dart';
 enum Mode {
   sailing("Sailing"),
   motoring("Motoring"),
-  parking("Parking");
+  parking("Stop");
 
   final String label;
 
@@ -19,6 +19,7 @@ class Boat extends ChangeNotifier {
 
   Boat() {
     trip.addListener(_update);
+    _update();
   }
 
   void _update() {
