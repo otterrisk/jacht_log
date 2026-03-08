@@ -115,22 +115,61 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-              for (final mode in Mode.values) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('${mode.label} time:'),
-                    Text(
-                      boat.time[mode.index].toString().split('.')[0],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+              Card(
+                elevation: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(2),
+                      1: FlexColumnWidth(1),
+                    },
+                    children: [
+                      for (final mode in Mode.values) ...[
+                        _timeRow('${mode.label} time', boat.time[mode.index]),
+                      ],
+                      const TableRow(children: [Divider(), Divider()]),
+                      _timeRow(
+                        "Total",
+                        boat.time.fold(Duration.zero, (sum, d) => sum + d),
+                        bold: true,
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ],
           ),
         );
       },
     );
+  }
+
+  TableRow _timeRow(String label, Duration time, {bool bold = false}) {
+    final style = bold ? const TextStyle(fontWeight: FontWeight.bold) : null;
+
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(label, style: style),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(
+            _formatDuration(time),
+            textAlign: TextAlign.right,
+            style: style,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDuration(Duration d) {
+    final hours = d.inHours;
+    final minutes = d.inMinutes % 60;
+    final seconds = d.inSeconds % 60;
+    return "${hours}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s";
   }
 }
