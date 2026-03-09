@@ -1,4 +1,4 @@
-import 'package:hello/event.dart';
+import 'package:jacht_log/event.dart';
 
 extension EventSourceLabel on EventSource {
   String get label {

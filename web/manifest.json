@@ -1,6 +1,6 @@
 {
-    "name": "hello",
-    "short_name": "hello",
+    "name": "Jacht Log",
+    "short_name": "Jacht Log",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,4 +1,4 @@
-import 'package:hello/boat.dart';
+import 'package:jacht_log/boat.dart';
 
 extension ModeLabel on Mode {
   String get label {

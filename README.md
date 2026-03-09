@@ -1,6 +1,6 @@
-# hello
+# Jacht Log
 
-A new Flutter project.
+Your pocket yachtman's log book.
 
 ## Getting Started
 

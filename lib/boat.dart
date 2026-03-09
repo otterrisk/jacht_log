@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:hello/event.dart';
+import 'package:jacht_log/event.dart';
 
 enum Mode { sailing, motoring, stopped }
 

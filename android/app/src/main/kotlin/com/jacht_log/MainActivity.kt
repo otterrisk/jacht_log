@@ -1,4 +1,4 @@
-package com.example.hello
+package com.jacht_log
 
 import io.flutter.embedding.android.FlutterActivity
 
