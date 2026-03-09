@@ -42,19 +42,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final boat = Boat();
+  final Trip trip = Trip();
+  late final boat = Boat(trip);
 
   final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    boat.trip.addListener(_onTripChanged);
+    trip.addListener(_onTripChanged);
   }
 
   @override
   void dispose() {
-    boat.trip.removeListener(_onTripChanged);
+    trip.removeListener(_onTripChanged);
     _scrollController.dispose();
     super.dispose();
   }
@@ -132,9 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: boat.trip.events.length,
+                  itemCount: trip.events.length,
                   itemBuilder: (context, index) {
-                    final event = boat.trip.events[index];
+                    final event = trip.events[index];
                     final background = index.isEven
                         ? Theme.of(context).colorScheme.surfaceContainerHighest
                         : Colors.transparent;

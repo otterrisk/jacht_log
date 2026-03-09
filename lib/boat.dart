@@ -4,12 +4,12 @@ import 'package:jacht_log/event.dart';
 enum Mode { sailing, motoring, stopped }
 
 class Boat extends ChangeNotifier {
-  final trip = Trip();
+  final Trip trip;
   final Map<EventSource, bool> state = {};
   final List<Duration> time = List.filled(Mode.values.length, Duration.zero);
   DateTime? lastTime;
 
-  Boat() {
+  Boat(this.trip) {
     trip.addListener(_update);
     _update();
   }
