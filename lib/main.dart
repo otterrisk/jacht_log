@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:hello/boat.dart';
+import 'package:hello/boat_presentation.dart';
 import 'package:hello/event.dart';
 import 'package:hello/event_presentation.dart';
-
-import 'boat.dart';
-import 'boat_presentation.dart';
 
 void main() {
   runApp(const MyApp());
