@@ -42,14 +42,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Trip trip = Trip();
-  late final boat = Boat(trip);
+  Trip? _trip;
+  Boat? _boat;
+
+  Trip get trip => _trip!;
+  Boat get boat => _boat!;
 
   final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    _trip = Trip();
+    _boat = Boat(trip);
     trip.addListener(_onTripChanged);
   }
 
