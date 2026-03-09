@@ -42,6 +42,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TripStorage storage = TripStorage();
+
   Trip? _trip;
   Boat? _boat;
 
@@ -53,9 +55,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _trip = Trip();
-    _boat = Boat(trip);
-    trip.addListener(_onTripChanged);
+    _loadTrip();
+  }
+
+  Future<void> _loadTrip() async {
+    final loadedTrip = await storage.load();
+
+    final newBoat = Boat(loadedTrip);
+
+    loadedTrip.addListener(_saveTrip);
+    loadedTrip.addListener(_onTripChanged);
+
+    setState(() {
+      _trip = loadedTrip;
+      _boat = newBoat;
+    });
+  }
+
+  void _saveTrip() {
+    storage.save(trip);
   }
 
   @override
@@ -80,6 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
+    if (_trip == null || _boat == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return ListenableBuilder(
       listenable: boat,
       builder: (context, child) {
