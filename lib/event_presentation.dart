@@ -1,5 +1,20 @@
 import 'package:hello/event.dart';
 
+extension EventSourceLabel on EventSource {
+  String get label {
+    switch (this) {
+      case EventSource.sail:
+        return "Sail";
+      case EventSource.engine:
+        return "Engine";
+      case EventSource.port:
+        return "Port";
+      case EventSource.anchor:
+        return "Anchor";
+    }
+  }
+}
+
 const Map<(EventSource, EventType), String> eventDescriptions = {
   (EventSource.sail, EventType.start): "Sail hoisted",
   (EventSource.sail, EventType.stop): "Sail lowered",

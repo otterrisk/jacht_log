@@ -3,6 +3,7 @@ import 'package:hello/event.dart';
 import 'package:hello/event_presentation.dart';
 
 import 'boat.dart';
+import 'boat_presentation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -170,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     children: [
                       for (final mode in Mode.values) ...[
-                        _timeRow('${mode.label} time', boat.time[mode.index]),
+                        _timeRow(mode.timeText, boat.time[mode.index]),
                       ],
                       const TableRow(children: [Divider(), Divider()]),
                       _timeRow(

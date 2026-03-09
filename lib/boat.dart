@@ -1,15 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hello/event.dart';
 
-enum Mode {
-  sailing("Sailing"),
-  motoring("Motoring"),
-  parking("Stop");
-
-  final String label;
-
-  const Mode(this.label);
-}
+enum Mode { sailing, motoring, stopped }
 
 class Boat extends ChangeNotifier {
   final trip = Trip();
@@ -42,17 +34,9 @@ class Boat extends ChangeNotifier {
 
   bool isOn(EventSource source) => state[source] == true;
 
-  void toggle(EventSource source) {
-    if (state[source] == true) {
-      trip.addEvent(source, EventType.stop);
-    } else {
-      trip.addEvent(source, EventType.start);
-    }
-  }
-
   Mode get mode {
     if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
-      return Mode.parking;
+      return Mode.stopped;
     }
 
     if (isOn(EventSource.sail)) {
@@ -64,5 +48,13 @@ class Boat extends ChangeNotifier {
     }
 
     return Mode.sailing; // TODO consider adding TripMode.afloat
+  }
+
+  void toggle(EventSource source) {
+    if (state[source] == true) {
+      trip.addEvent(source, EventType.stop);
+    } else {
+      trip.addEvent(source, EventType.start);
+    }
   }
 }

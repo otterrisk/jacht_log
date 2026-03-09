@@ -1,15 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum EventSource {
-  port("Port"),
-  engine("Engine"),
-  sail("Sail"),
-  anchor("Anchor");
-
-  final String label;
-
-  const EventSource(this.label);
-}
+enum EventSource { port, engine, sail, anchor }
 
 enum EventType { start, stop }
 
