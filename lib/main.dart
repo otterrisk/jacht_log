@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: Row(
         children: [
-          Icon(_iconForSource(event.source), size: 20),
+          Icon(event.source.icon, size: 20),
           const SizedBox(width: 8),
 
           Text(event.description),
@@ -241,19 +241,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String _formatTimestamp(DateTime t) {
     return "${t.hour.toString().padLeft(2, '0')}:"
         "${t.minute.toString().padLeft(2, '0')}";
-  }
-
-  IconData _iconForSource(EventSource source) {
-    switch (source) {
-      case EventSource.engine:
-        return Icons.settings;
-      case EventSource.sail:
-        return Icons.sailing;
-      case EventSource.port:
-        return Icons.directions_boat;
-      case EventSource.anchor:
-        return Icons.anchor;
-    }
   }
 }
 

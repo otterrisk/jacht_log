@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:jacht_log/event.dart';
 
 extension EventSourceLabel on EventSource {
@@ -11,6 +12,21 @@ extension EventSourceLabel on EventSource {
         return "Engine";
       case EventSource.sail:
         return "Sail";
+    }
+  }
+}
+
+extension EventSourceIcon on EventSource {
+  IconData get icon {
+    switch (this) {
+      case EventSource.engine:
+        return Icons.settings;
+      case EventSource.sail:
+        return Icons.sailing;
+      case EventSource.port:
+        return Icons.directions_boat;
+      case EventSource.anchor:
+        return Icons.anchor;
     }
   }
 }
