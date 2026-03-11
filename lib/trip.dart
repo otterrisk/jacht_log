@@ -16,7 +16,6 @@ class Trip extends ChangeNotifier {
   void start() {
     endTime = null;
     events.clear();
-    addEvent(EventSource.port, EventType.start);
     notifyListeners();
   }
 
