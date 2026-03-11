@@ -152,22 +152,30 @@ class _MyHomePageState extends State<MyHomePage> {
                       SwitchListTile(
                         title: Text(EventSource.port.label),
                         value: boat.isOn(EventSource.port),
-                        onChanged: (_) => boat.toggle(EventSource.port),
+                        onChanged: trip.active
+                            ? (_) => boat.toggle(EventSource.port)
+                            : null,
                       ),
                       SwitchListTile(
                         title: Text(EventSource.engine.label),
                         value: boat.isOn(EventSource.engine),
-                        onChanged: (_) => boat.toggle(EventSource.engine),
+                        onChanged: trip.active
+                            ? (_) => boat.toggle(EventSource.engine)
+                            : null,
                       ),
                       SwitchListTile(
                         title: Text(EventSource.anchor.label),
                         value: boat.isOn(EventSource.anchor),
-                        onChanged: (_) => boat.toggle(EventSource.anchor),
+                        onChanged: trip.active
+                            ? (_) => boat.toggle(EventSource.anchor)
+                            : null,
                       ),
                       SwitchListTile(
                         title: Text(EventSource.sail.label),
                         value: boat.isOn(EventSource.sail),
-                        onChanged: (_) => boat.toggle(EventSource.sail),
+                        onChanged: trip.active
+                            ? (_) => boat.toggle(EventSource.sail)
+                            : null,
                       ),
                     ],
                   ),
