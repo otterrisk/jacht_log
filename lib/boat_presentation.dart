@@ -4,15 +4,15 @@ extension ModeLabel on Mode {
   String get label {
     switch (this) {
       case Mode.sailing:
-        return "Sailing";
+        return "Under way, sailing";
       case Mode.motoring:
-        return "Motoring";
+        return "Under way, motoring";
       case Mode.stopped:
-        return "Stopped";
+        return "At rest";
       case Mode.idle:
         return "Idle";
       case Mode.afloat:
-        return "Afloat";
+        return "Under way, afloat";
     }
   }
 }

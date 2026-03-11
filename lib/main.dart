@@ -140,16 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
           body: Column(
             children: [
               BoatControls(boat: boat, trip: trip),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Current mode:'),
-                  Text(
-                    boat.mode.label,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
@@ -277,39 +267,54 @@ class BoatControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      child: GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        childAspectRatio: 3,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SwitchListTile(
-            title: Text(EventSource.port.label),
-            value: boat.isOn(EventSource.port),
-            onChanged: trip.active
-                ? (_) => boat.toggle(EventSource.port)
-                : null,
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            childAspectRatio: 3,
+            children: [
+              SwitchListTile(
+                title: Text(EventSource.port.label),
+                value: boat.isOn(EventSource.port),
+                onChanged: trip.active
+                    ? (_) => boat.toggle(EventSource.port)
+                    : null,
+              ),
+              SwitchListTile(
+                title: Text(EventSource.engine.label),
+                value: boat.isOn(EventSource.engine),
+                onChanged: trip.active
+                    ? (_) => boat.toggle(EventSource.engine)
+                    : null,
+              ),
+              SwitchListTile(
+                title: Text(EventSource.anchor.label),
+                value: boat.isOn(EventSource.anchor),
+                onChanged: trip.active
+                    ? (_) => boat.toggle(EventSource.anchor)
+                    : null,
+              ),
+              SwitchListTile(
+                title: Text(EventSource.sail.label),
+                value: boat.isOn(EventSource.sail),
+                onChanged: trip.active
+                    ? (_) => boat.toggle(EventSource.sail)
+                    : null,
+              ),
+            ],
           ),
-          SwitchListTile(
-            title: Text(EventSource.engine.label),
-            value: boat.isOn(EventSource.engine),
-            onChanged: trip.active
-                ? (_) => boat.toggle(EventSource.engine)
-                : null,
-          ),
-          SwitchListTile(
-            title: Text(EventSource.anchor.label),
-            value: boat.isOn(EventSource.anchor),
-            onChanged: trip.active
-                ? (_) => boat.toggle(EventSource.anchor)
-                : null,
-          ),
-          SwitchListTile(
-            title: Text(EventSource.sail.label),
-            value: boat.isOn(EventSource.sail),
-            onChanged: trip.active
-                ? (_) => boat.toggle(EventSource.sail)
-                : null,
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 12, 8),
+              child: Text(
+                boat.mode.label,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
           ),
         ],
       ),
