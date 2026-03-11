@@ -9,6 +9,10 @@ extension ModeLabel on Mode {
         return "Motoring";
       case Mode.stopped:
         return "Stopped";
+      case Mode.idle:
+        return "Idle";
+      case Mode.afloat:
+        return "Afloat";
     }
   }
 }
@@ -22,6 +26,10 @@ extension ModeTimeText on Mode {
         return "Motoring time";
       case Mode.stopped:
         return "Stop time";
+      case Mode.idle:
+        return "Idle time";
+      case Mode.afloat:
+        return "Afloat time";
     }
   }
 }

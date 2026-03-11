@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/event.dart';
 
-enum Mode { sailing, motoring, stopped }
+enum Mode { idle, stopped, sailing, motoring, afloat }
 
 class Boat extends ChangeNotifier {
   final Trip trip;
-  final Map<EventSource, bool> state = {};
+  final Map<EventSource, bool> state = {
+    for (final source in EventSource.values) source: false,
+  };
   final List<Duration> time = List.filled(Mode.values.length, Duration.zero);
   DateTime? lastTime;
 
@@ -15,6 +17,9 @@ class Boat extends ChangeNotifier {
   }
 
   void _update() {
+    if (trip.events.isEmpty) {
+      return;
+    }
     final event = trip.events.last;
     updateTime(event);
     updateState(event);
@@ -35,6 +40,10 @@ class Boat extends ChangeNotifier {
   bool isOn(EventSource source) => state[source] == true;
 
   Mode get mode {
+    if (!trip.active) {
+      return Mode.idle;
+    }
+
     if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
       return Mode.stopped;
     }
@@ -48,6 +57,18 @@ class Boat extends ChangeNotifier {
     }
 
     return Mode.sailing; // TODO consider adding TripMode.afloat
+  }
+
+  void start() {
+    state[EventSource.port] = true;
+    trip.start();
+    notifyListeners();
+  }
+
+  void stop() {
+    state[EventSource.port] = false;
+    trip.stop();
+    notifyListeners();
   }
 
   void toggle(EventSource source) {

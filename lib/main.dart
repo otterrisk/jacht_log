@@ -55,20 +55,32 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadTrip();
+    createTrip();
+    //_loadTrip();
+  }
+
+  void createTrip() {
+    final trip = Trip();
+    final boat = Boat(trip);
+
+    trip.addListener(_saveTrip);
+    trip.addListener(_onTripChanged);
+    setState(() {
+      _trip = trip;
+      _boat = boat;
+    });
   }
 
   Future<void> _loadTrip() async {
-    final loadedTrip = await storage.load();
+    final trip = await storage.load();
+    final boat = Boat(trip);
 
-    final newBoat = Boat(loadedTrip);
-
-    loadedTrip.addListener(_saveTrip);
-    loadedTrip.addListener(_onTripChanged);
+    trip.addListener(_saveTrip);
+    trip.addListener(_onTripChanged);
 
     setState(() {
-      _trip = loadedTrip;
-      _boat = newBoat;
+      _trip = trip;
+      _boat = boat;
     });
   }
 
@@ -109,6 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
+            actions: [
+              ElevatedButton(
+                onPressed: trip.active ? boat.stop : boat.start,
+                child: Text(trip.active ? "Finish trip" : "Start trip"),
+              ),
+            ],
           ),
           body: Column(
             children: [

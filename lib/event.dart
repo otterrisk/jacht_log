@@ -30,10 +30,20 @@ class Event {
 }
 
 class Trip extends ChangeNotifier {
+  bool active = false;
   final List<Event> events = [];
 
-  Trip() {
-    addEvent(EventSource.port, EventType.start);
+  Trip();
+
+  void start() {
+    active = true;
+    events.clear();
+    notifyListeners();
+  }
+
+  void stop() {
+    active = false;
+    notifyListeners();
   }
 
   void addEvent(EventSource source, EventType type) {
