@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/event.dart';
+import 'package:jacht_log/trip.dart';
 
 enum Mode { idle, stopped, sailing, motoring, afloat }
 
@@ -57,18 +58,6 @@ class Boat extends ChangeNotifier {
     }
 
     return Mode.sailing; // TODO consider adding TripMode.afloat
-  }
-
-  void start() {
-    state[EventSource.port] = true;
-    trip.start();
-    notifyListeners();
-  }
-
-  void stop() {
-    state[EventSource.port] = false;
-    trip.stop();
-    notifyListeners();
   }
 
   void toggle(EventSource source) {
