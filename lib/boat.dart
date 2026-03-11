@@ -8,6 +8,7 @@ class Boat extends ChangeNotifier {
   final Trip trip;
   final Map<EventSource, bool> state = {
     for (final source in EventSource.values) source: false,
+    EventSource.port: true,
   };
   final List<Duration> time = List.filled(Mode.values.length, Duration.zero);
   DateTime? lastTime;
@@ -19,11 +20,30 @@ class Boat extends ChangeNotifier {
 
   void _update() {
     if (trip.events.isEmpty) {
+      resetTime();
+      resetState();
       return;
     }
     final event = trip.events.last;
     updateTime(event);
     updateState(event);
+    notifyListeners();
+  }
+
+  void resetTime() {
+    time.fillRange(0, time.length, Duration.zero);
+    lastTime = null;
+    notifyListeners();
+  }
+
+  void resetState() {
+    for (final source in EventSource.values) {
+      if (source == EventSource.port) {
+        state[source] = true;
+      } else {
+        state[source] = false;
+      }
+    }
     notifyListeners();
   }
 
@@ -57,7 +77,7 @@ class Boat extends ChangeNotifier {
       return Mode.motoring;
     }
 
-    return Mode.sailing; // TODO consider adding TripMode.afloat
+    return Mode.afloat;
   }
 
   void toggle(EventSource source) {
