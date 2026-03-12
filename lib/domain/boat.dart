@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:jacht_log/event.dart';
-import 'package:jacht_log/trip.dart';
-
-enum Mode { idle, stopped, sailing, motoring, afloat }
+import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/domain/mode.dart';
+import 'package:jacht_log/domain/trip.dart';
 
 class Boat extends ChangeNotifier {
   final Trip trip;

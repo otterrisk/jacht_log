@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/event.dart';
+import 'package:jacht_log/domain/event.dart';
 
 extension EventSourceLabel on EventSource {
   String get label {

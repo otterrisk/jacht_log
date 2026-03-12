@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
-import 'package:jacht_log/trip.dart';
+import 'package:intl/intl.dart';
+import 'package:jacht_log/domain/trip.dart';
 
 class TripBar extends StatefulWidget {
   final Trip trip;

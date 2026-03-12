@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:jacht_log/event.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:jacht_log/domain/event.dart';
 
 class Trip extends ChangeNotifier {
   DateTime startTime = DateTime.now();
@@ -41,32 +38,5 @@ class Trip extends ChangeNotifier {
     }
 
     return trip;
-  }
-}
-
-class TripStorage {
-  Future<File> _getFile() async {
-    final dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/trip.json');
-  }
-
-  Future<void> save(Trip trip) async {
-    final file = await _getFile();
-    await file.writeAsString(jsonEncode(trip.toJson()));
-  }
-
-  Future<Trip> load() async {
-    try {
-      final file = await _getFile();
-
-      if (!await file.exists()) {
-        return Trip();
-      }
-
-      final json = jsonDecode(await file.readAsString());
-      return Trip.fromJson(json);
-    } catch (e) {
-      return Trip();
-    }
   }
 }
