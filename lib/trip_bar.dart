@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:jacht_log/trip.dart';
@@ -38,7 +39,7 @@ class _TripBarState extends State<TripBar> {
     _timer?.cancel();
 
     if (widget.trip.active) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
         setState(() {});
       });
     }
@@ -66,14 +67,29 @@ class _TripBarState extends State<TripBar> {
     final start = _fmt(trip.startTime);
 
     final end = trip.active
-        ? _fmt(DateTime.now())
+        ? _fmt(DateTime.now(), blink: true)
         : (trip.endTime != null ? _fmt(trip.endTime!) : "--:--");
 
     return "$start → $end";
   }
 
-  String _fmt(DateTime t) {
-    final m = t.minute.toString().padLeft(2, '0');
-    return "${t.hour}:$m";
+  String _fmt(DateTime t, {bool blink = false}) {
+    final now = DateTime.now();
+
+    final ms = now.millisecond;
+    final sep = (blink && ms > 500) ? " " : ":";
+
+    String time =
+        "${t.hour.toString().padLeft(2, '0')}$sep${t.minute.toString().padLeft(2, '0')}";
+
+    if (t.year != now.year) {
+      return "${DateFormat("dd.MM.yyyy").format(t)} $time";
+    }
+
+    if (t.day != now.day || t.month != now.month) {
+      return "${DateFormat("dd.MM").format(t)} $time";
+    }
+
+    return time;
   }
 }
