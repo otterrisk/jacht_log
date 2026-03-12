@@ -5,6 +5,7 @@ import 'package:jacht_log/boat_presentation.dart';
 import 'package:jacht_log/event.dart';
 import 'package:jacht_log/event_presentation.dart';
 import 'package:jacht_log/trip.dart';
+import 'package:jacht_log/trip_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -122,23 +123,11 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
-            actions: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    "${_formatTimestamp(trip.startTime)} - ${trip.endTime == null ? "-" : _formatTimestamp(trip.endTime!)}",
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: trip.active ? trip.stop : trip.start,
-                child: Text(trip.active ? "Finish trip" : "Start trip"),
-              ),
-            ],
+            actions: [],
           ),
           body: Column(
             children: [
+              TripBar(trip: trip),
               BoatControls(boat: boat, trip: trip),
               Expanded(
                 child: ListView.builder(
