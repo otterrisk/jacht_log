@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/boat.dart';
 import 'package:jacht_log/domain/event.dart';
-import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/event.dart';
 import 'package:jacht_log/presentation/mode.dart';
 
 class BoatControls extends StatelessWidget {
-  const BoatControls({super.key, required this.boat, required this.trip});
+  const BoatControls({super.key, required this.boat, required this.active});
 
   final Boat boat;
-  final Trip trip;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +26,26 @@ class BoatControls extends StatelessWidget {
               SwitchListTile(
                 title: Text(EventSource.port.label),
                 value: boat.isOn(EventSource.port),
-                onChanged: trip.active
-                    ? (_) => boat.toggle(EventSource.port)
-                    : null,
+                onChanged: active ? (_) => boat.toggle(EventSource.port) : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.engine.label),
                 value: boat.isOn(EventSource.engine),
-                onChanged: trip.active
+                onChanged: active
                     ? (_) => boat.toggle(EventSource.engine)
                     : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.anchor.label),
                 value: boat.isOn(EventSource.anchor),
-                onChanged: trip.active
+                onChanged: active
                     ? (_) => boat.toggle(EventSource.anchor)
                     : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.sail.label),
                 value: boat.isOn(EventSource.sail),
-                onChanged: trip.active
-                    ? (_) => boat.toggle(EventSource.sail)
-                    : null,
+                onChanged: active ? (_) => boat.toggle(EventSource.sail) : null,
               ),
             ],
           ),

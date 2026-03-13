@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Column(
             children: [
               TripBar(trip: trip),
-              BoatControls(boat: boat, trip: trip),
+              BoatControls(boat: boat, active: trip.active),
               EventList(trip: trip, scrollController: _scrollController),
               TimeTable(boat: boat),
             ],
