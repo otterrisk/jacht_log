@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:jacht_log/domain/boat.dart';
+import 'package:jacht_log/domain/mode.dart';
+import 'package:jacht_log/presentation/mode.dart';
+
+class TimeTable extends StatelessWidget {
+  const TimeTable({super.key, required this.boat});
+
+  final Boat boat;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 1,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Table(
+          columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
+          children: [
+            for (final mode in Mode.values) ...[
+              _timeRow(mode.timeText, boat.time[mode.index]),
+            ],
+            const TableRow(children: [Divider(), Divider()]),
+            _timeRow(
+              "Total",
+              boat.time.fold(Duration.zero, (sum, d) => sum + d),
+              bold: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  TableRow _timeRow(String label, Duration time, {bool bold = false}) {
+    final style = bold ? const TextStyle(fontWeight: FontWeight.bold) : null;
+
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(label, style: style),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(
+            _formatDuration(time),
+            textAlign: TextAlign.right,
+            style: style,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDuration(Duration d) {
+    final hours = d.inHours;
+    final minutes = d.inMinutes % 60;
+    final seconds = d.inSeconds % 60;
+    return "${hours}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s";
+  }
+}

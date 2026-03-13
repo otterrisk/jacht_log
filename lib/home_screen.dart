@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/boat.dart';
-import 'package:jacht_log/domain/event.dart';
-import 'package:jacht_log/domain/mode.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/presentation/event.dart';
-import 'package:jacht_log/presentation/mode.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
+import 'package:jacht_log/widgets/event_list.dart';
+import 'package:jacht_log/widgets/time_table.dart';
 import 'package:jacht_log/widgets/trip_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -113,106 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               TripBar(trip: trip),
               BoatControls(boat: boat, trip: trip),
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: trip.events.length,
-                  itemBuilder: (context, index) {
-                    final event = trip.events[index];
-                    final background = index.isEven
-                        ? Theme.of(context).colorScheme.surfaceContainerHighest
-                        : Colors.transparent;
-
-                    return eventRow(event, background);
-                  },
-                ),
-              ),
-              Card(
-                elevation: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(2),
-                      1: FlexColumnWidth(1),
-                    },
-                    children: [
-                      for (final mode in Mode.values) ...[
-                        _timeRow(mode.timeText, boat.time[mode.index]),
-                      ],
-                      const TableRow(children: [Divider(), Divider()]),
-                      _timeRow(
-                        "Total",
-                        boat.time.fold(Duration.zero, (sum, d) => sum + d),
-                        bold: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              EventList(trip: trip, scrollController: _scrollController),
+              TimeTable(boat: boat),
             ],
           ),
         );
       },
     );
-  }
-
-  TableRow _timeRow(String label, Duration time, {bool bold = false}) {
-    final style = bold ? const TextStyle(fontWeight: FontWeight.bold) : null;
-
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Text(label, style: style),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Text(
-            _formatDuration(time),
-            textAlign: TextAlign.right,
-            style: style,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _formatDuration(Duration d) {
-    final hours = d.inHours;
-    final minutes = d.inMinutes % 60;
-    final seconds = d.inSeconds % 60;
-    return "${hours}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s";
-  }
-
-  Widget eventRow(Event event, Color background) {
-    return Container(
-      color: background,
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      child: Row(
-        children: [
-          Icon(event.source.icon, size: 20),
-          const SizedBox(width: 8),
-
-          Text(event.description),
-
-          const Spacer(),
-
-          Text(
-            _formatTimestamp(event.timestamp),
-            style: const TextStyle(
-              color: Colors.grey,
-              fontFeatures: [FontFeature.tabularFigures()],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatTimestamp(DateTime t) {
-    return "${t.hour.toString().padLeft(2, '0')}:"
-        "${t.minute.toString().padLeft(2, '0')}";
   }
 }
