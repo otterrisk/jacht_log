@@ -1,1 +1,3 @@
-enum Mode { idle, stopped, sailing, motoring, afloat }
+enum BoatMode { stopped, sailing, motoring, afloat }
+
+enum TimeCounter { sailing, motoring, stopped }

@@ -9,7 +9,10 @@ class Boat extends ChangeNotifier {
     for (final source in EventSource.values) source: false,
     EventSource.port: true,
   };
-  final List<Duration> time = List.filled(Mode.values.length, Duration.zero);
+  final List<Duration> time = List.filled(
+    TimeCounter.values.length,
+    Duration.zero,
+  );
   DateTime? lastTime;
 
   Boat(this.trip) {
@@ -48,7 +51,7 @@ class Boat extends ChangeNotifier {
 
   void updateTime(Event event) {
     if (lastTime != null) {
-      time[mode.index] += event.timestamp.difference(lastTime!);
+      time[counter(mode).index] += event.timestamp.difference(lastTime!);
     }
     lastTime = event.timestamp;
   }
@@ -59,24 +62,34 @@ class Boat extends ChangeNotifier {
 
   bool isOn(EventSource source) => state[source] == true;
 
-  Mode get mode {
-    if (!trip.active) {
-      return Mode.idle;
-    }
-
+  BoatMode get mode {
     if (isOn(EventSource.port) || isOn(EventSource.anchor)) {
-      return Mode.stopped;
+      return BoatMode.stopped;
     }
 
     if (isOn(EventSource.sail)) {
-      return Mode.sailing;
+      return BoatMode.sailing;
     }
 
     if (isOn(EventSource.engine)) {
-      return Mode.motoring;
+      return BoatMode.motoring;
     }
 
-    return Mode.afloat;
+    return BoatMode.afloat;
+  }
+
+  TimeCounter counter(BoatMode mode) {
+    switch (mode) {
+      case BoatMode.stopped:
+        return TimeCounter.stopped;
+
+      case BoatMode.sailing:
+      case BoatMode.afloat:
+        return TimeCounter.sailing;
+
+      case BoatMode.motoring:
+        return TimeCounter.motoring;
+    }
   }
 
   void toggle(EventSource source) {

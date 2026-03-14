@@ -1,35 +1,29 @@
 import 'package:jacht_log/domain/mode.dart';
 
-extension ModeLabel on Mode {
+extension BoatModeLabel on BoatMode {
   String get label {
     switch (this) {
-      case Mode.sailing:
+      case BoatMode.sailing:
         return "Under way, sailing";
-      case Mode.motoring:
+      case BoatMode.motoring:
         return "Under way, motoring";
-      case Mode.stopped:
+      case BoatMode.stopped:
         return "At rest";
-      case Mode.idle:
-        return "Idle";
-      case Mode.afloat:
+      case BoatMode.afloat:
         return "Under way, afloat";
     }
   }
 }
 
-extension ModeTimeText on Mode {
-  String get timeText {
+extension TimeCounterText on TimeCounter {
+  String get text {
     switch (this) {
-      case Mode.sailing:
+      case TimeCounter.sailing:
         return "Sailing time";
-      case Mode.motoring:
+      case TimeCounter.motoring:
         return "Motoring time";
-      case Mode.stopped:
+      case TimeCounter.stopped:
         return "Stop time";
-      case Mode.idle:
-        return "Idle time";
-      case Mode.afloat:
-        return "Afloat time";
     }
   }
 }

@@ -17,8 +17,8 @@ class TimeTable extends StatelessWidget {
         child: Table(
           columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
           children: [
-            for (final mode in Mode.values) ...[
-              _timeRow(mode.timeText, boat.time[mode.index]),
+            for (final counter in TimeCounter.values) ...[
+              _timeRow(counter.text, boat.time[counter.index]),
             ],
             const TableRow(children: [Divider(), Divider()]),
             _timeRow(
