@@ -11,7 +11,7 @@ class TripController extends ChangeNotifier {
   final ScrollController scrollController;
 
   TripController(this.storage, this.scrollController) {
-    createTrip();
+    _loadTrip();
   }
 
   void createTrip() {
@@ -20,6 +20,7 @@ class TripController extends ChangeNotifier {
 
     trip?.addListener(_saveTrip);
     trip?.addListener(_onTripChanged);
+    notifyListeners();
   }
 
   Future<void> _loadTrip() async {
@@ -28,6 +29,7 @@ class TripController extends ChangeNotifier {
 
     trip?.addListener(_saveTrip);
     trip?.addListener(_onTripChanged);
+    notifyListeners();
   }
 
   @override

@@ -48,7 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
-            actions: [],
+            actions: [
+              ElevatedButton(
+                onPressed: controller.createTrip,
+                child: Text("New trip"),
+              ),
+            ],
           ),
           body: Column(
             children: [

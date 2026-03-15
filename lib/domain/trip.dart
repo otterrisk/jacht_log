@@ -7,9 +7,11 @@ class TripStarted extends TripChange {}
 
 class TripStopped extends TripChange {}
 
-class TripEventAdded extends TripChange {
+class TripReset extends TripChange {}
+
+class EventAdded extends TripChange {
   final Event event;
-  TripEventAdded(this.event);
+  EventAdded(this.event);
 }
 
 class Trip extends ChangeNotifier {
@@ -20,19 +22,17 @@ class Trip extends ChangeNotifier {
 
   TripChange? get change => _change;
 
+  bool get active => endTime == null;
+
+  Trip();
+
   void _emit(TripChange change) {
     _change = change;
     notifyListeners();
   }
 
-  Trip();
-
-  bool get active => endTime == null;
-
   void start() {
-    startTime = DateTime.now();
     endTime = null;
-    events.clear();
     _emit(TripStarted());
   }
 
@@ -41,10 +41,17 @@ class Trip extends ChangeNotifier {
     _emit(TripStopped());
   }
 
+  void reset() {
+    startTime = DateTime.now();
+    endTime = null;
+    events.clear();
+    _emit(TripReset());
+  }
+
   void addEvent(EventSource source, EventType type) {
     final event = Event(source: source, type: type, timestamp: DateTime.now());
     events.add(event);
-    _emit(TripEventAdded(event));
+    _emit(EventAdded(event));
   }
 
   Map<String, dynamic> toJson() => {
