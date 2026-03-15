@@ -18,15 +18,15 @@ class Boat extends ChangeNotifier {
   void _onTripChange() {
     switch (trip.change) {
       case TripStarted():
-        state.reset();
         timer.reset(trip.startTime);
+        state.reset();
         break;
       case TripStopped():
         timer.update(state.mode, trip.endTime!);
         break;
       case TripEventAdded(:final event):
-        state.update(event);
         timer.update(state.mode, event.timestamp);
+        state.update(event);
         break;
       default:
         break;
