@@ -25,26 +25,26 @@ class BoatControls extends StatelessWidget {
             children: [
               SwitchListTile(
                 title: Text(EventSource.port.label),
-                value: boat.isOn(EventSource.port),
+                value: boat.state.isOn(EventSource.port),
                 onChanged: active ? (_) => boat.toggle(EventSource.port) : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.engine.label),
-                value: boat.isOn(EventSource.engine),
+                value: boat.state.isOn(EventSource.engine),
                 onChanged: active
                     ? (_) => boat.toggle(EventSource.engine)
                     : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.anchor.label),
-                value: boat.isOn(EventSource.anchor),
+                value: boat.state.isOn(EventSource.anchor),
                 onChanged: active
                     ? (_) => boat.toggle(EventSource.anchor)
                     : null,
               ),
               SwitchListTile(
                 title: Text(EventSource.sail.label),
-                value: boat.isOn(EventSource.sail),
+                value: boat.state.isOn(EventSource.sail),
                 onChanged: active ? (_) => boat.toggle(EventSource.sail) : null,
               ),
             ],
