@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/domain/boat.dart';
-import 'package:jacht_log/domain/mode.dart';
-import 'package:jacht_log/presentation/mode.dart';
+import 'package:jacht_log/domain/timer.dart';
+import 'package:jacht_log/presentation/timer.dart';
 
 class TimeTable extends StatelessWidget {
-  const TimeTable({super.key, required this.boat});
+  const TimeTable({super.key, required this.timer});
 
-  final Boat boat;
+  final Timer timer;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +17,12 @@ class TimeTable extends StatelessWidget {
           columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
           children: [
             for (final counter in TimeCounter.values) ...[
-              _timeRow(counter.text, boat.time[counter.index]),
+              _timeRow(counter.text, timer.time[counter.index]),
             ],
             const TableRow(children: [Divider(), Divider()]),
             _timeRow(
               "Total",
-              boat.time.fold(Duration.zero, (sum, d) => sum + d),
+              timer.time.fold(Duration.zero, (sum, d) => sum + d),
               bold: true,
             ),
           ],

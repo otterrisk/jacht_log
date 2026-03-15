@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
               TripBar(trip: trip),
               BoatControls(boat: boat, active: trip.active),
               EventList(trip: trip, scrollController: _scrollController),
-              TimeTable(boat: boat),
+              TimeTable(timer: boat.timer),
             ],
           ),
         );

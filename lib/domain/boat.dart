@@ -1,21 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/mode.dart';
+import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/domain/trip.dart';
 
 class Boat extends ChangeNotifier {
   final Trip trip;
+  late Timer timer;
   final Map<EventSource, bool> state = {
     for (final source in EventSource.values) source: false,
     EventSource.port: true,
   };
-  final List<Duration> time = List.filled(
-    TimeCounter.values.length,
-    Duration.zero,
-  );
-  DateTime? lastTime;
 
   Boat(this.trip) {
+    timer = Timer(trip.startTime);
     trip.addListener(_update);
     _update();
   }
@@ -33,8 +31,7 @@ class Boat extends ChangeNotifier {
   }
 
   void resetTime() {
-    time.fillRange(0, time.length, Duration.zero);
-    lastTime = null;
+    timer.reset();
     notifyListeners();
   }
 
@@ -50,10 +47,7 @@ class Boat extends ChangeNotifier {
   }
 
   void updateTime(Event event) {
-    if (lastTime != null) {
-      time[counter(mode).index] += event.timestamp.difference(lastTime!);
-    }
-    lastTime = event.timestamp;
+    timer.update(mode, event.timestamp);
   }
 
   void updateState(final Event event) {
@@ -76,20 +70,6 @@ class Boat extends ChangeNotifier {
     }
 
     return BoatMode.afloat;
-  }
-
-  TimeCounter counter(BoatMode mode) {
-    switch (mode) {
-      case BoatMode.stopped:
-        return TimeCounter.stopped;
-
-      case BoatMode.sailing:
-      case BoatMode.afloat:
-        return TimeCounter.sailing;
-
-      case BoatMode.motoring:
-        return TimeCounter.motoring;
-    }
   }
 
   void toggle(EventSource source) {
