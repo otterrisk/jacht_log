@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/boat.dart';
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/presentation/boat.dart';
 import 'package:jacht_log/presentation/event.dart';
-import 'package:jacht_log/presentation/mode.dart';
 
 class BoatControls extends StatelessWidget {
   const BoatControls({super.key, required this.boat, required this.active});
