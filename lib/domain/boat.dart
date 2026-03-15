@@ -14,24 +14,25 @@ class Boat extends ChangeNotifier {
 
   Boat(this.trip) {
     timer = Timer(trip.startTime);
-    trip.addListener(_update);
-    _update();
+    trip.addListener(_onTripChange);
   }
 
-  void _update() {
-    if (trip.events.isEmpty) {
-      resetTime();
-      resetState();
-      return;
+  void _onTripChange() {
+    switch (trip.change) {
+      case TripStarted():
+        timer.reset(trip.startTime);
+        resetState();
+        break;
+      case TripStopped():
+        timer.update(mode, trip.endTime!);
+        break;
+      case TripEventAdded(:final event):
+        timer.update(mode, event.timestamp);
+        updateState(event);
+        break;
+      default:
+        break;
     }
-    final event = trip.events.last;
-    updateTime(event);
-    updateState(event);
-    notifyListeners();
-  }
-
-  void resetTime() {
-    timer.reset();
     notifyListeners();
   }
 
@@ -43,11 +44,6 @@ class Boat extends ChangeNotifier {
         state[source] = false;
       }
     }
-    notifyListeners();
-  }
-
-  void updateTime(Event event) {
-    timer.update(mode, event.timestamp);
   }
 
   void updateState(final Event event) {

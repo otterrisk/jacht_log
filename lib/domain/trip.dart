@@ -1,29 +1,50 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/event.dart';
 
+sealed class TripChange {}
+
+class TripStarted extends TripChange {}
+
+class TripStopped extends TripChange {}
+
+class TripEventAdded extends TripChange {
+  final Event event;
+  TripEventAdded(this.event);
+}
+
 class Trip extends ChangeNotifier {
   DateTime startTime = DateTime.now();
   DateTime? endTime;
   final List<Event> events = [];
+  TripChange? _change;
+
+  TripChange? get change => _change;
+
+  void _emit(TripChange change) {
+    _change = change;
+    notifyListeners();
+  }
 
   Trip();
 
   bool get active => endTime == null;
 
   void start() {
+    startTime = DateTime.now();
     endTime = null;
     events.clear();
-    notifyListeners();
+    _emit(TripStarted());
   }
 
   void stop() {
     endTime = DateTime.now();
-    notifyListeners();
+    _emit(TripStopped());
   }
 
   void addEvent(EventSource source, EventType type) {
-    events.add(Event(source: source, type: type, timestamp: DateTime.now()));
-    notifyListeners();
+    final event = Event(source: source, type: type, timestamp: DateTime.now());
+    events.add(event);
+    _emit(TripEventAdded(event));
   }
 
   Map<String, dynamic> toJson() => {

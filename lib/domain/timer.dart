@@ -16,8 +16,9 @@ class Timer {
     last = timestamp;
   }
 
-  void reset() {
+  void reset(DateTime timestamp) {
     time.fillRange(0, time.length, Duration.zero);
+    last = timestamp;
   }
 
   TimeCounter counter(BoatMode mode) {
