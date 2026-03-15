@@ -4,12 +4,10 @@ import 'package:jacht_log/domain/state.dart';
 import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/domain/trip.dart';
 
-enum BoatMode { stopped, sailing, motoring, afloat }
-
 class Boat extends ChangeNotifier {
+  final Trip trip;
   late State state;
   late Timer timer;
-  final Trip trip;
 
   Boat(this.trip) {
     state = State();
@@ -24,32 +22,16 @@ class Boat extends ChangeNotifier {
         timer.reset(trip.startTime);
         break;
       case TripStopped():
-        timer.update(mode, trip.endTime!);
+        timer.update(state.mode, trip.endTime!);
         break;
       case TripEventAdded(:final event):
         state.update(event);
-        timer.update(mode, event.timestamp);
+        timer.update(state.mode, event.timestamp);
         break;
       default:
         break;
     }
     notifyListeners();
-  }
-
-  BoatMode get mode {
-    if (state.isOn(EventSource.port) || state.isOn(EventSource.anchor)) {
-      return BoatMode.stopped;
-    }
-
-    if (state.isOn(EventSource.sail)) {
-      return BoatMode.sailing;
-    }
-
-    if (state.isOn(EventSource.engine)) {
-      return BoatMode.motoring;
-    }
-
-    return BoatMode.afloat;
   }
 
   void toggle(EventSource source) {
