@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/event.dart';
@@ -26,13 +27,13 @@ class EventList extends StatelessWidget {
               ? Theme.of(context).colorScheme.surfaceContainerHighest
               : Colors.transparent;
 
-          return eventRow(event, background);
+          return eventRow(context, event, background);
         },
       ),
     );
   }
 
-  Widget eventRow(Event event, Color background) {
+  Widget eventRow(BuildContext context, Event event, Color background) {
     return Container(
       color: background,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -46,7 +47,7 @@ class EventList extends StatelessWidget {
           const Spacer(),
 
           Text(
-            _formatTimestamp(event.timestamp),
+            _formatTimestamp(context, event.timestamp),
             style: const TextStyle(
               color: Colors.grey,
               fontFeatures: [FontFeature.tabularFigures()],
@@ -57,8 +58,8 @@ class EventList extends StatelessWidget {
     );
   }
 
-  String _formatTimestamp(DateTime t) {
-    return "${t.hour.toString().padLeft(2, '0')}:"
-        "${t.minute.toString().padLeft(2, '0')}";
+  String _formatTimestamp(BuildContext context, DateTime t) {
+    final locale = Localizations.localeOf(context).toString();
+    return DateFormat('EEE, HH:mm', locale).format(t);
   }
 }
