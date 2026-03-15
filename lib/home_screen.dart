@@ -49,10 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
             actions: [
-              ElevatedButton(
-                onPressed: controller.createTrip,
-                child: Text("New trip"),
-              ),
+              ElevatedButton(onPressed: trip.reset, child: Text("New trip")),
             ],
           ),
           body: Column(
