@@ -1,0 +1,6 @@
+{
+  "eventSourcePort": "Port",
+  "eventSourceAnchor": "Anchor",
+  "eventSourceEngine": "Engine",
+  "eventSourceSail": "Sail"
+}

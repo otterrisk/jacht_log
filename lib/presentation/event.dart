@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/l10n/app_localizations.dart';
 
 extension EventSourceLabel on EventSource {
-  String get label {
-    switch (this) {
-      case EventSource.port:
-        return "Port";
-      case EventSource.anchor:
-        return "Anchor";
-      case EventSource.engine:
-        return "Engine";
-      case EventSource.sail:
-        return "Sail";
-    }
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return switch (this) {
+      EventSource.port => l10n.eventSourcePort,
+      EventSource.anchor => l10n.eventSourceAnchor,
+      EventSource.engine => l10n.eventSourceEngine,
+      EventSource.sail => l10n.eventSourceSail,
+    };
   }
 }
 

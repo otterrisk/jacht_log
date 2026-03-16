@@ -1,0 +1,6 @@
+{
+  "eventSourcePort": "Hafen",
+  "eventSourceAnchor": "Anker",
+  "eventSourceEngine": "Motor",
+  "eventSourceSail": "Segel"
+}

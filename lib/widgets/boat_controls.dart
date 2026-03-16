@@ -24,26 +24,26 @@ class BoatControls extends StatelessWidget {
             childAspectRatio: 3,
             children: [
               SwitchListTile(
-                title: Text(EventSource.port.label),
+                title: Text(EventSource.port.label(context)),
                 value: boat.state.isOn(EventSource.port),
                 onChanged: active ? (_) => boat.toggle(EventSource.port) : null,
               ),
               SwitchListTile(
-                title: Text(EventSource.engine.label),
+                title: Text(EventSource.engine.label(context)),
                 value: boat.state.isOn(EventSource.engine),
                 onChanged: active
                     ? (_) => boat.toggle(EventSource.engine)
                     : null,
               ),
               SwitchListTile(
-                title: Text(EventSource.anchor.label),
+                title: Text(EventSource.anchor.label(context)),
                 value: boat.state.isOn(EventSource.anchor),
                 onChanged: active
                     ? (_) => boat.toggle(EventSource.anchor)
                     : null,
               ),
               SwitchListTile(
-                title: Text(EventSource.sail.label),
+                title: Text(EventSource.sail.label(context)),
                 value: boat.state.isOn(EventSource.sail),
                 onChanged: active ? (_) => boat.toggle(EventSource.sail) : null,
               ),
