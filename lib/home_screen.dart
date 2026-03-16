@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/controllers/trip_controller.dart';
+import 'package:jacht_log/controllers/boat_controller.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
 import 'package:jacht_log/widgets/event_list.dart';
@@ -16,13 +16,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final TripController controller;
+  late final BoatController controller;
   final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    controller = TripController(TripStorage(), _scrollController);
+    controller = BoatController(TripStorage(), _scrollController);
     controller.addListener(() => setState(() {}));
   }
 

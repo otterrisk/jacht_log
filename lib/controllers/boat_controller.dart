@@ -3,13 +3,13 @@ import 'package:jacht_log/domain/boat.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 
-class TripController extends ChangeNotifier {
+class BoatController extends ChangeNotifier {
   Boat? boat;
 
   final TripStorage storage;
   final ScrollController scrollController;
 
-  TripController(this.storage, this.scrollController) {
+  BoatController(this.storage, this.scrollController) {
     _loadTrip();
   }
 
