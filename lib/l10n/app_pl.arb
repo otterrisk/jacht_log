@@ -1,6 +1,13 @@
 {
+  "@@locale": "pl",
+
   "eventSourcePort": "Port",
   "eventSourceAnchor": "Kotwica",
   "eventSourceEngine": "Silnik",
-  "eventSourceSail": "Żagle"
+  "eventSourceSail": "Żagle",
+
+  "boatModeStopped": "Na postoju",
+  "boatModeSailing": "W drodze, pod żaglami",
+  "boatModeMotoring": "W drodze, na silniku",
+  "boatModeDrifting": "W drodze, dryfowanie"
 }

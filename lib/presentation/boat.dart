@@ -1,16 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/state.dart';
+import 'package:jacht_log/l10n/app_localizations.dart';
 
 extension BoatModeLabel on BoatMode {
-  String get label {
-    switch (this) {
-      case BoatMode.sailing:
-        return "Under way, sailing";
-      case BoatMode.motoring:
-        return "Under way, motoring";
-      case BoatMode.stopped:
-        return "At rest";
-      case BoatMode.afloat:
-        return "Under way, afloat";
-    }
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return switch (this) {
+      BoatMode.stopped => l10n.boatModeStopped,
+      BoatMode.sailing => l10n.boatModeSailing,
+      BoatMode.motoring => l10n.boatModeMotoring,
+      BoatMode.drifting => l10n.boatModeDrifting,
+    };
   }
 }

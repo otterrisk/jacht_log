@@ -1,7 +1,7 @@
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 
-enum BoatMode { stopped, sailing, motoring, afloat }
+enum BoatMode { stopped, sailing, motoring, drifting }
 
 class State {
   final Map<EventSource, bool> _state = {
@@ -36,7 +36,7 @@ class State {
       return BoatMode.motoring;
     }
 
-    return BoatMode.afloat;
+    return BoatMode.drifting;
   }
 
   void update(final Event event) {

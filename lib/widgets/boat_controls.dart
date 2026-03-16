@@ -54,7 +54,7 @@ class BoatControls extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 12, 8),
               child: Text(
-                boat.state.mode.label,
+                boat.state.mode.label(context),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

@@ -1,6 +1,13 @@
 {
+  "@@locale": "de",
+
   "eventSourcePort": "Hafen",
   "eventSourceAnchor": "Anker",
   "eventSourceEngine": "Motor",
-  "eventSourceSail": "Segel"
+  "eventSourceSail": "Segel",
+
+  "boatModeStopped": "Im Stillstand",
+  "boatModeSailing": "Unterwegs, unter Segeln",
+  "boatModeMotoring": "Unterwegs, unter Motor",
+  "boatModeDrifting": "Unterwegs, treibend"
 }

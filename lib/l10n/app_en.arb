@@ -1,6 +1,13 @@
 {
+  "@@locale": "en",
+
   "eventSourcePort": "Port",
   "eventSourceAnchor": "Anchor",
   "eventSourceEngine": "Engine",
-  "eventSourceSail": "Sail"
+  "eventSourceSail": "Sail",
+
+  "boatModeStopped": "At rest",
+  "boatModeSailing": "Underway, sailing",
+  "boatModeMotoring": "Underway, motoring",
+  "boatModeDrifting": "Underway, drifting"
 }

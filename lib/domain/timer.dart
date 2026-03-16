@@ -36,7 +36,7 @@ class Timer {
         return TimeCounter.stopped;
 
       case BoatMode.sailing:
-      case BoatMode.afloat:
+      case BoatMode.drifting:
         return TimeCounter.sailing;
 
       case BoatMode.motoring:
