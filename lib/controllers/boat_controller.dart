@@ -14,41 +14,53 @@ class BoatController extends ChangeNotifier {
   }
 
   void createTrip() {
+    _detachTrip();
     final trip = Trip();
-    trip.addListener(_saveTrip);
-    trip.addListener(_onTripChanged);
+    _attachTrip(trip);
     boat = Boat(trip);
     notifyListeners();
   }
 
   Future<void> _loadTrip() async {
     final trip = await storage.load();
-    trip.addListener(_saveTrip);
-    trip.addListener(_onTripChanged);
+    _attachTrip(trip);
     boat = Boat(trip);
     notifyListeners();
   }
 
+  void _attachTrip(Trip trip) {
+    trip
+      ..addListener(_saveTrip)
+      ..addListener(_onTripChanged);
+  }
+
+  void _detachTrip() {
+    if (boat != null) {
+      boat!.trip
+        ..removeListener(_saveTrip)
+        ..removeListener(_onTripChanged);
+    }
+  }
+
   @override
   void dispose() {
-    boat?.trip.removeListener(_onTripChanged);
-    boat?.trip.removeListener(_saveTrip);
+    _detachTrip();
     super.dispose();
   }
 
-  void _saveTrip() {
-    storage.save(boat!.trip);
+  Future<void> _saveTrip() async {
+    await storage.save(boat!.trip);
   }
 
   void _onTripChanged() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOut,
-        );
-      }
+      if (!scrollController.hasClients) return;
+
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
     });
   }
 }
