@@ -4,7 +4,6 @@ import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 
 class TripController extends ChangeNotifier {
-  Trip? trip;
   Boat? boat;
 
   final TripStorage storage;
@@ -15,32 +14,30 @@ class TripController extends ChangeNotifier {
   }
 
   void createTrip() {
-    trip = Trip();
-    boat = Boat(trip!);
-
-    trip?.addListener(_saveTrip);
-    trip?.addListener(_onTripChanged);
+    final trip = Trip();
+    trip.addListener(_saveTrip);
+    trip.addListener(_onTripChanged);
+    boat = Boat(trip);
     notifyListeners();
   }
 
   Future<void> _loadTrip() async {
-    trip = await storage.load();
-    boat = Boat(trip!);
-
-    trip?.addListener(_saveTrip);
-    trip?.addListener(_onTripChanged);
+    final trip = await storage.load();
+    trip.addListener(_saveTrip);
+    trip.addListener(_onTripChanged);
+    boat = Boat(trip);
     notifyListeners();
   }
 
   @override
   void dispose() {
-    trip?.removeListener(_onTripChanged);
-    trip?.removeListener(_saveTrip);
+    boat?.trip.removeListener(_onTripChanged);
+    boat?.trip.removeListener(_saveTrip);
     super.dispose();
   }
 
   void _saveTrip() {
-    storage.save(trip!);
+    storage.save(boat!.trip);
   }
 
   void _onTripChanged() {

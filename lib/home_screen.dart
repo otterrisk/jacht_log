@@ -34,29 +34,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final trip = controller.trip;
     final boat = controller.boat;
 
-    if (trip == null || boat == null) {
+    if (boat == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
     return ListenableBuilder(
-      listenable: trip,
+      listenable: boat.trip,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
             actions: [
-              ElevatedButton(onPressed: trip.reset, child: Text("New trip")),
+              ElevatedButton(
+                onPressed: boat.trip.reset,
+                child: Text("New trip"),
+              ),
             ],
           ),
           body: Column(
             children: [
-              TripBar(trip: trip),
-              BoatControls(boat: boat, active: trip.active),
-              EventList(trip: trip, scrollController: _scrollController),
+              TripBar(trip: boat.trip),
+              BoatControls(boat: boat, active: boat.trip.active),
+              EventList(trip: boat.trip, scrollController: _scrollController),
               TimeTable(timer: boat.timer),
             ],
           ),
