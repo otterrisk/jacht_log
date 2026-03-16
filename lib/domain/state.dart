@@ -1,4 +1,5 @@
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/domain/trip.dart';
 
 enum BoatMode { stopped, sailing, motoring, afloat }
 
@@ -7,6 +8,18 @@ class State {
     for (final source in EventSource.values) source: false,
     EventSource.port: true,
   };
+
+  State({final Trip? trip}) {
+    if (trip != null) {
+      replay(trip);
+    }
+  }
+
+  void replay(final Trip trip) {
+    for (final e in trip.events) {
+      update(e);
+    }
+  }
 
   bool isOn(EventSource source) => _state[source] == true;
 

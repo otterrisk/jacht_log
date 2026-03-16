@@ -10,8 +10,8 @@ class Boat extends ChangeNotifier {
   late Timer timer;
 
   Boat(this.trip) {
-    state = State();
-    timer = Timer(trip.startTime);
+    state = State(trip: trip);
+    timer = Timer(trip: trip);
     trip.addListener(_onTripChange);
   }
 
