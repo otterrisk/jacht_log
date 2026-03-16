@@ -5,11 +5,9 @@ import 'package:jacht_log/services/trip_storage.dart';
 
 class BoatController extends ChangeNotifier {
   Boat? boat;
-
   final TripStorage storage;
-  final ScrollController scrollController;
 
-  BoatController(this.storage, this.scrollController) {
+  BoatController(this.storage) {
     _loadTrip();
   }
 
@@ -53,14 +51,6 @@ class BoatController extends ChangeNotifier {
   }
 
   void _onTripChanged() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!scrollController.hasClients) return;
-
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
-    });
+    notifyListeners();
   }
 }

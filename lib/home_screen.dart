@@ -18,16 +18,42 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final BoatController controller;
   final _scrollController = ScrollController();
+  late VoidCallback _listener;
+  int _lastEventCount = 0;
 
   @override
   void initState() {
     super.initState();
-    controller = BoatController(TripStorage(), _scrollController);
-    controller.addListener(() => setState(() {}));
+
+    controller = BoatController(TripStorage());
+
+    _listener = () {
+      final eventCount = controller.boat?.trip.events.length ?? 0;
+
+      setState(() {});
+
+      if (eventCount != _lastEventCount) {
+        _lastEventCount = eventCount;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_scrollController.hasClients) return;
+
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOut,
+          );
+        });
+      }
+    };
+
+    controller.addListener(_listener);
   }
 
   @override
   void dispose() {
+    controller.removeListener(_listener);
+    controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -41,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return ListenableBuilder(
-      listenable: boat.trip,
+      listenable: boat,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
