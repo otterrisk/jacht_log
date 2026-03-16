@@ -15,6 +15,12 @@ class Boat extends ChangeNotifier {
     trip.addListener(_onTripChange);
   }
 
+  @override
+  void dispose() {
+    trip.removeListener(_onTripChange);
+    super.dispose();
+  }
+
   void _onTripChange() {
     switch (trip.change) {
       case TripStarted():
