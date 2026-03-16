@@ -9,5 +9,9 @@
   "boatModeStopped": "Im Stillstand",
   "boatModeSailing": "Unterwegs, unter Segeln",
   "boatModeMotoring": "Unterwegs, unter Motor",
-  "boatModeDrifting": "Unterwegs, treibend"
+  "boatModeDrifting": "Unterwegs, treibend",
+
+  "timeCounterSailing": "Segelzeit",
+  "timeCounterMotoring": "Motorzeit",
+  "timeCounterStopped": "Stillstandszeit"
 }

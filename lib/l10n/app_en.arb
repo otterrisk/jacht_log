@@ -9,5 +9,9 @@
   "boatModeStopped": "At rest",
   "boatModeSailing": "Underway, sailing",
   "boatModeMotoring": "Underway, motoring",
-  "boatModeDrifting": "Underway, drifting"
+  "boatModeDrifting": "Underway, drifting",
+
+  "timeCounterSailing": "Sailing time",
+  "timeCounterMotoring": "Motoring time",
+  "timeCounterStopped": "Stop time"
 }

@@ -17,7 +17,7 @@ class TimeTable extends StatelessWidget {
           columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
           children: [
             for (final counter in TimeCounter.values) ...[
-              _timeRow(counter.text, timer.time[counter.index]),
+              _timeRow(counter.text(context), timer.time[counter.index]),
             ],
             const TableRow(children: [Divider(), Divider()]),
             _timeRow(

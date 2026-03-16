@@ -9,5 +9,9 @@
   "boatModeStopped": "Na postoju",
   "boatModeSailing": "W drodze, pod żaglami",
   "boatModeMotoring": "W drodze, na silniku",
-  "boatModeDrifting": "W drodze, dryfowanie"
+  "boatModeDrifting": "W drodze, dryfowanie",
+
+  "timeCounterSailing": "Czas pod żaglami",
+  "timeCounterMotoring": "Czas na silniku",
+  "timeCounterStopped": "Czas postoju"
 }
