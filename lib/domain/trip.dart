@@ -7,8 +7,6 @@ class TripStarted extends TripChange {}
 
 class TripStopped extends TripChange {}
 
-class TripReset extends TripChange {}
-
 class EventAdded extends TripChange {
   final Event event;
   EventAdded(this.event);
@@ -40,13 +38,6 @@ class Trip extends ChangeNotifier {
   void stop() {
     endTime = DateTime.now();
     _emit(TripStopped());
-  }
-
-  void reset() {
-    startTime = DateTime.now();
-    endTime = null;
-    events.clear();
-    _emit(TripReset());
   }
 
   void addEvent(EventSource source, EventType type) {

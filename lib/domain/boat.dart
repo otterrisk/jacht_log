@@ -29,10 +29,6 @@ class Boat extends ChangeNotifier {
       case TripStopped():
         timer.update(state.mode, trip.endTime!);
         break;
-      case TripReset():
-        timer.reset(trip.startTime);
-        state.reset();
-        break;
       case EventAdded(:final event):
         timer.update(state.mode, event.timestamp);
         state.update(event);

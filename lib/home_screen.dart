@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text(widget.title),
             actions: [
               ElevatedButton(
-                onPressed: boat.trip.reset,
+                onPressed: controller.createTrip,
                 child: Text("New trip"),
               ),
             ],

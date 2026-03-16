@@ -30,11 +30,6 @@ class Timer {
     last = timestamp;
   }
 
-  void reset(DateTime timestamp) {
-    time.fillRange(0, time.length, Duration.zero);
-    last = timestamp;
-  }
-
   TimeCounter counter(BoatMode mode) {
     switch (mode) {
       case BoatMode.stopped:
