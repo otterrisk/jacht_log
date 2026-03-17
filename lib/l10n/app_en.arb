@@ -13,5 +13,17 @@
 
   "timeCounterSailing": "Sailing time",
   "timeCounterMotoring": "Motoring time",
-  "timeCounterStopped": "Stop time"
+  "timeCounterStopped": "Stop time",
+
+  "eventSourcePortEventTypeStart": "Moored",
+  "eventSourcePortEventTypeStop": "Cast off",
+
+  "eventSourceAnchorEventTypeStart": "Anchor casted",
+  "eventSourceAnchorEventTypeStop": "Anchor weighed",
+
+  "eventSourceEngineEventTypeStart": "Engine started",
+  "eventSourceEngineEventTypeStop": "Engine stopped",
+
+  "eventSourceSailEventTypeStart": "Sail hoisted",
+  "eventSourceSailEventTypeStop": "Sail lowered"
 }

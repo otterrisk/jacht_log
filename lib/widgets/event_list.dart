@@ -42,7 +42,7 @@ class EventList extends StatelessWidget {
           Icon(event.source.icon, size: 20),
           const SizedBox(width: 8),
 
-          Text(event.description),
+          Text(event.description(context)),
 
           const Spacer(),
 

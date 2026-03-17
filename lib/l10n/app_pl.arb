@@ -13,5 +13,17 @@
 
   "timeCounterSailing": "Czas pod żaglami",
   "timeCounterMotoring": "Czas na silniku",
-  "timeCounterStopped": "Czas postoju"
+  "timeCounterStopped": "Czas postoju",
+
+  "eventSourcePortEventTypeStart": "Zacumowanie",
+  "eventSourcePortEventTypeStop": "Odcumowanie",
+
+  "eventSourceAnchorEventTypeStart": "Zakotwiczenie",
+  "eventSourceAnchorEventTypeStop": "Zejście z kotwicy",
+
+  "eventSourceEngineEventTypeStart": "Uruchomienie silnika",
+  "eventSourceEngineEventTypeStop": "Odstawienie silnika",
+
+  "eventSourceSailEventTypeStart": "Postawienie żagli",
+  "eventSourceSailEventTypeStop": "Zrzucenie żagli"
 }

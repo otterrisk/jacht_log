@@ -17,33 +17,38 @@ extension EventSourceLabel on EventSource {
 
 extension EventSourceIcon on EventSource {
   IconData get icon {
-    switch (this) {
-      case EventSource.engine:
-        return Icons.settings;
-      case EventSource.sail:
-        return Icons.sailing;
-      case EventSource.port:
-        return Icons.directions_boat;
-      case EventSource.anchor:
-        return Icons.anchor;
-    }
+    return switch (this) {
+      EventSource.engine => Icons.settings,
+      EventSource.sail => Icons.sailing,
+      EventSource.port => Icons.directions_boat,
+      EventSource.anchor => Icons.anchor,
+    };
   }
 }
 
-const Map<(EventSource, EventType), String> eventDescriptions = {
-  (EventSource.port, EventType.start): "Moored",
-  (EventSource.port, EventType.stop): "Cast off",
-
-  (EventSource.anchor, EventType.start): "Anchor casted",
-  (EventSource.anchor, EventType.stop): "Anchor weighed",
-
-  (EventSource.engine, EventType.start): "Engine started",
-  (EventSource.engine, EventType.stop): "Engine stopped",
-
-  (EventSource.sail, EventType.start): "Sail hoisted",
-  (EventSource.sail, EventType.stop): "Sail lowered",
-};
-
 extension EventDescription on Event {
-  String get description => eventDescriptions[(source, type)]!;
+  String description(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final map = {
+      EventSource.port: {
+        EventType.start: l10n.eventSourcePortEventTypeStart,
+        EventType.stop: l10n.eventSourcePortEventTypeStop,
+      },
+      EventSource.anchor: {
+        EventType.start: l10n.eventSourceAnchorEventTypeStart,
+        EventType.stop: l10n.eventSourceAnchorEventTypeStop,
+      },
+      EventSource.engine: {
+        EventType.start: l10n.eventSourceEngineEventTypeStart,
+        EventType.stop: l10n.eventSourceEngineEventTypeStop,
+      },
+      EventSource.sail: {
+        EventType.start: l10n.eventSourceSailEventTypeStart,
+        EventType.stop: l10n.eventSourceSailEventTypeStop,
+      },
+    };
+
+    return map[source]![type]!;
+  }
 }

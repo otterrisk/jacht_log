@@ -13,5 +13,17 @@
 
   "timeCounterSailing": "Segelzeit",
   "timeCounterMotoring": "Motorzeit",
-  "timeCounterStopped": "Stillstandszeit"
+  "timeCounterStopped": "Stillstandszeit",
+
+  "eventSourcePortEventTypeStart": "Moored",
+  "eventSourcePortEventTypeStop": "Cast off",
+
+  "eventSourceAnchorEventTypeStart": "Anchor casted",
+  "eventSourceAnchorEventTypeStop": "Anchor weighed",
+
+  "eventSourceEngineEventTypeStart": "Engine started",
+  "eventSourceEngineEventTypeStop": "Engine stopped",
+
+  "eventSourceSailEventTypeStart": "Sail hoisted",
+  "eventSourceSailEventTypeStop": "Sail lowered"
 }
