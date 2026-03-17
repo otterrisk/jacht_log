@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/controllers/boat_controller.dart';
+import 'package:jacht_log/l10n/l10n.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
 import 'package:jacht_log/widgets/event_list.dart';
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               ElevatedButton(
                 onPressed: controller.createTrip,
-                child: Text("New trip"),
+                child: Text(context.l10n.newTripButton),
               ),
             ],
           ),

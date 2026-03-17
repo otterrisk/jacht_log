@@ -15,6 +15,11 @@
   "timeCounterMotoring": "Motoring time",
   "timeCounterStopped": "Stop time",
 
+  "timeTableTotal": "Total time",
+  "@timeTableTotal": {
+    "description": "Label for the total time"
+  },
+
   "eventSourcePortEventTypeStart": "Moored",
   "eventSourcePortEventTypeStop": "Cast off",
 
@@ -25,5 +30,10 @@
   "eventSourceEngineEventTypeStop": "Engine stopped",
 
   "eventSourceSailEventTypeStart": "Sail hoisted",
-  "eventSourceSailEventTypeStop": "Sail lowered"
+  "eventSourceSailEventTypeStop": "Sail lowered",
+
+  "newTripButton": "New trip",
+  "@newTripButton": {
+    "description": "Button label to create a new trip"
+  }
 }

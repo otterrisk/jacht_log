@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/timer.dart';
+import 'package:jacht_log/l10n/l10n.dart';
 import 'package:jacht_log/presentation/timer.dart';
 
 class TimeTable extends StatelessWidget {
@@ -21,7 +22,7 @@ class TimeTable extends StatelessWidget {
             ],
             const TableRow(children: [Divider(), Divider()]),
             _timeRow(
-              "Total",
+              context.l10n.timeTableTotal,
               timer.time.fold(Duration.zero, (sum, d) => sum + d),
               bold: true,
             ),
