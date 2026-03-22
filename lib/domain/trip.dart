@@ -13,6 +13,11 @@ class EventAdded extends TripChange {
   EventAdded(this.event);
 }
 
+class EventUpdated extends TripChange {
+  final Event event;
+  EventUpdated(this.event);
+}
+
 class Trip extends ChangeNotifier {
   final String id;
   DateTime startTime;
@@ -70,6 +75,16 @@ class Trip extends ChangeNotifier {
     events.add(event);
     _sortEvents();
     _emit(EventAdded(event));
+  }
+
+  void updateEvent(final Event event) {
+    final index = events.indexWhere((e) => e.id == event.id);
+
+    if (index != -1) {
+      events[index] = event;
+      _sortEvents();
+      _emit(EventUpdated(event));
+    }
   }
 
   void _sortEvents() {

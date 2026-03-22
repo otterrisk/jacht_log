@@ -20,8 +20,8 @@ Event newEvent({
 
 void main() {
   group('Trip', () {
-    group('creation', () {
-      test('adding event to trip', () {
+    group('Event management', () {
+      test('adding event', () {
         final trip = Trip();
         final event = newEvent();
 
@@ -30,10 +30,11 @@ void main() {
         expect(trip.events.length, 1);
         expect(trip.events.first, equals(event));
       });
+
       test('sorting events by timestamp after adding', () {
         final trip = Trip();
-        final newer = newEvent(id: '1', timestamp: DateTime(2025, 1, 1));
         final older = newEvent(id: '2', timestamp: DateTime(2024, 1, 1));
+        final newer = newEvent(id: '1', timestamp: DateTime(2025, 1, 1));
 
         trip.addEvent(newer);
         trip.addEvent(older);
@@ -41,11 +42,68 @@ void main() {
         expect(trip.events.first, equals(older));
         expect(trip.events.last, equals(newer));
       });
+
+      test('updating event timestamp', () {
+        final trip = Trip();
+        final original = newEvent(timestamp: DateTime(2024, 1, 1));
+        trip.addEvent(original);
+        final newTime = DateTime(2025, 1, 1);
+        final updated = original.copyWith(timestamp: newTime);
+
+        trip.updateEvent(updated);
+
+        expect(trip.events.first.timestamp, equals(newTime));
+      });
+
+      test('updating does not duplicate event', () {
+        final trip = Trip();
+        final event = newEvent();
+        trip.addEvent(event);
+
+        final updated = event.copyWith(timestamp: DateTime(2025));
+        trip.updateEvent(updated);
+
+        expect(trip.events.length, 1);
+      });
+
+      test('updating event conserves event id', () {
+        final trip = Trip();
+        final event = newEvent();
+        trip.addEvent(event);
+
+        final updated = event.copyWith(timestamp: DateTime(2025));
+        trip.updateEvent(updated);
+
+        expect(trip.events.first.id, equals(event.id));
+      });
+
+      test('sorting events after timestamp update', () {
+        final trip = Trip();
+        final older = newEvent(timestamp: DateTime(2024, 1, 1));
+        final newer = newEvent(timestamp: DateTime(2025, 1, 1));
+        trip.addEvent(older);
+        trip.addEvent(newer);
+
+        final updated = newer.copyWith(timestamp: DateTime(2023, 1, 1));
+        trip.updateEvent(updated);
+
+        expect(trip.events.first.id, equals(newer.id));
+      });
+
+      test('updating does nothing if event not found', () {
+        final trip = Trip();
+
+        final event = newEvent();
+        trip.updateEvent(event);
+
+        expect(trip.events, isEmpty);
+      });
     });
+
     group('serialization', () {
       test('Trip serialization/deserialization conserves all fields', () {
         final original = Trip();
-        final event = Event(source: EventSource.port, type: EventType.start);
+        final event = newEvent();
         original.addEvent(event);
 
         final restored = Trip.fromJson(original.toJson());
@@ -54,7 +112,7 @@ void main() {
         expect(restored.startTime, original.startTime);
         expect(restored.endTime, original.endTime);
         expect(restored.events.length, 1);
-        //        expect(restored.events.first, equals(event));
+        expect(restored.events.first, equals(event));
       });
     });
   });
