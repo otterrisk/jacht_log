@@ -77,6 +77,19 @@ void main() {
         expect(trip.events.first.id, equals(event.id));
       });
 
+      test('removeEvent removes correct event', () {
+        final trip = Trip();
+        final e1 = newEvent(id: '1');
+        final e2 = newEvent(id: '2');
+        trip.addEvent(e1);
+        trip.addEvent(e2);
+
+        trip.removeEvent(e1);
+
+        expect(trip.events.length, 1);
+        expect(trip.events.first, equals(e2));
+      });
+
       test('sorting events after timestamp update', () {
         final trip = Trip();
         final older = newEvent(timestamp: DateTime(2024, 1, 1));

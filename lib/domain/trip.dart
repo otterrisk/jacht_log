@@ -18,6 +18,11 @@ class EventUpdated extends TripChange {
   EventUpdated(this.event);
 }
 
+class EventRemoved extends TripChange {
+  final Event event;
+  EventRemoved(this.event);
+}
+
 class Trip extends ChangeNotifier {
   final String id;
   DateTime startTime;
@@ -85,6 +90,11 @@ class Trip extends ChangeNotifier {
       _sortEvents();
       _emit(EventUpdated(event));
     }
+  }
+
+  void removeEvent(final Event event) {
+    events.removeWhere((e) => e.id == event.id);
+    _emit(EventRemoved(event));
   }
 
   void _sortEvents() {
