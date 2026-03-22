@@ -56,11 +56,6 @@ class Trip extends ChangeNotifier {
 
   bool get active => endTime == null;
 
-  void _emit(TripChange change) {
-    _change = change;
-    notifyListeners();
-  }
-
   void start() {
     endTime = null;
     _emit(TripStarted());
@@ -73,7 +68,17 @@ class Trip extends ChangeNotifier {
 
   void addEvent(final Event event) {
     events.add(event);
+    _sortEvents();
     _emit(EventAdded(event));
+  }
+
+  void _sortEvents() {
+    events.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  }
+
+  void _emit(TripChange change) {
+    _change = change;
+    notifyListeners();
   }
 }
 

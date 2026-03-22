@@ -26,6 +26,22 @@ class Event {
     );
   }
 
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event._(
+      id: json['id'],
+      source: EventSource.values.byName(json['source']),
+      type: EventType.values.byName(json['type']),
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'source': source.name,
+    'type': type.name,
+    'timestamp': timestamp.toIso8601String(),
+  };
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is Event && other.id == id;
@@ -45,20 +61,4 @@ class Event {
   @override
   String toString() =>
       'Event(id: $id, source: $source, type: $type, timestamp: $timestamp)';
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'source': source.name,
-    'type': type.name,
-    'timestamp': timestamp.toIso8601String(),
-  };
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event._(
-      id: json['id'],
-      source: EventSource.values.byName(json['source']),
-      type: EventType.values.byName(json['type']),
-      timestamp: DateTime.parse(json['timestamp']),
-    );
-  }
 }
