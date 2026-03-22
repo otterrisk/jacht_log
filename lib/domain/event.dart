@@ -10,12 +10,21 @@ class Event {
   final EventType type;
   final DateTime timestamp;
 
-  Event({
-    String? id,
+  Event._({
+    required this.id,
     required this.source,
     required this.type,
     required this.timestamp,
-  }) : id = id ?? const Uuid().v4();
+  });
+
+  factory Event({required EventSource source, required EventType type}) {
+    return Event._(
+      id: const Uuid().v4(),
+      source: source,
+      type: type,
+      timestamp: DateTime.now(),
+    );
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -25,7 +34,7 @@ class Event {
   int get hashCode => id.hashCode;
 
   Event copyWith({EventSource? source, EventType? type, DateTime? timestamp}) {
-    return Event(
+    return Event._(
       id: id,
       source: source ?? this.source,
       type: type ?? this.type,
@@ -45,7 +54,7 @@ class Event {
   };
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
+    return Event._(
       id: json['id'],
       source: EventSource.values.byName(json['source']),
       type: EventType.values.byName(json['type']),

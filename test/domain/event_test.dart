@@ -5,19 +5,14 @@ void main() {
   group('Event', () {
     group('toJson', () {
       test('returns a valid map', () {
-        final event = Event(
-          id: '123',
-          source: EventSource.port,
-          type: EventType.start,
-          timestamp: DateTime.parse('2024-01-01T12:00:00Z'),
-        );
+        final event = Event(source: EventSource.port, type: EventType.start);
 
         final json = event.toJson();
 
-        expect(json['id'], '123');
+        expect(json['id'], event.id);
         expect(json['source'], 'port');
         expect(json['type'], 'start');
-        expect(json['timestamp'], '2024-01-01T12:00:00.000Z');
+        expect(json['timestamp'], event.timestamp.toIso8601String());
       });
     });
 
@@ -41,12 +36,7 @@ void main() {
 
     group('serialization round-trip', () {
       test('toJson -> fromJson preserves data', () {
-        final original = Event(
-          id: 'abc',
-          source: EventSource.port,
-          type: EventType.start,
-          timestamp: DateTime.now(),
-        );
+        final original = Event(source: EventSource.port, type: EventType.start);
 
         final json = original.toJson();
         final restored = Event.fromJson(json);
@@ -57,18 +47,18 @@ void main() {
 
     group('equality', () {
       test('events with different fields are equal', () {
-        final e1 = Event(
-          id: '1',
-          source: EventSource.port,
-          type: EventType.start,
-          timestamp: DateTime.parse('2024-01-01T12:00:00Z'),
-        );
-        final e2 = Event(
-          id: '1',
-          source: EventSource.anchor,
-          type: EventType.stop,
-          timestamp: DateTime.parse('2025-12-31T11:11:11Z'),
-        );
+        final e1 = Event.fromJson({
+          'id': '1',
+          'source': EventSource.port.name,
+          'type': EventType.start.name,
+          'timestamp': '2024-01-01T12:00:00Z',
+        });
+        final e2 = Event.fromJson({
+          'id': '1',
+          'source': EventSource.anchor.name,
+          'type': EventType.stop.name,
+          'timestamp': '2025-12-31T11:11:11Z',
+        });
 
         final result = e1 == e2;
 
@@ -76,18 +66,18 @@ void main() {
       });
 
       test('events with different id are not equal', () {
-        final e1 = Event(
-          id: '1',
-          source: EventSource.port,
-          type: EventType.start,
-          timestamp: DateTime.now(),
-        );
-        final e2 = Event(
-          id: '2',
-          source: e1.source,
-          type: e1.type,
-          timestamp: e1.timestamp,
-        );
+        final e1 = Event.fromJson({
+          'id': '1',
+          'source': EventSource.port.name,
+          'type': EventType.start.name,
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+        final e2 = Event.fromJson({
+          'id': '2',
+          'source': e1.source.name,
+          'type': e1.type.name,
+          'timestamp': e1.timestamp.toIso8601String(),
+        });
 
         final result = e1 == e2;
 

@@ -71,8 +71,7 @@ class Trip extends ChangeNotifier {
     _emit(TripStopped());
   }
 
-  void addEvent(EventSource source, EventType type) {
-    final event = Event(source: source, type: type, timestamp: DateTime.now());
+  void addEvent(final Event event) {
     events.add(event);
     _emit(EventAdded(event));
   }

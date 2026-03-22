@@ -4,15 +4,22 @@ import 'package:jacht_log/domain/trip.dart';
 
 void main() {
   group('Trip', () {
+    group('creation', () {
+      test('adding event to trip', () {
+        final trip = Trip();
+        final event = Event(source: EventSource.port, type: EventType.start);
+
+        trip.addEvent(event);
+
+        expect(trip.events.length, 1);
+        expect(trip.events.first, equals(event));
+      });
+    });
     group('serialization', () {
       test('Trip serialization/deserialization conserves all fields', () {
         final original = Trip();
-        final event = Event(
-          source: EventSource.port,
-          type: EventType.start,
-          timestamp: DateTime(2024, 1, 1),
-        );
-        original.addEvent(event.source, event.type);
+        final event = Event(source: EventSource.port, type: EventType.start);
+        original.addEvent(event);
 
         final restored = Trip.fromJson(original.toJson());
 
