@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/event.dart';
+import 'package:jacht_log/widgets/event_editor_dialog.dart';
 
 class EventList extends StatelessWidget {
   const EventList({
@@ -34,26 +35,26 @@ class EventList extends StatelessWidget {
   }
 
   Widget eventRow(BuildContext context, Event event, Color background) {
-    return Container(
-      color: background,
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      child: Row(
-        children: [
-          Icon(event.source.icon, size: 20),
-          const SizedBox(width: 8),
-
-          Text(event.description(context)),
-
-          const Spacer(),
-
-          Text(
-            _formatTimestamp(context, event.timestamp),
-            style: const TextStyle(
-              color: Colors.grey,
-              fontFeatures: [FontFeature.tabularFigures()],
+    return InkWell(
+      onTap: () => _editEventDetails(context, event),
+      child: Container(
+        color: background,
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        child: Row(
+          children: [
+            Icon(event.source.icon, size: 20),
+            const SizedBox(width: 8),
+            Text(event.description(context)),
+            const Spacer(),
+            Text(
+              _formatTimestamp(context, event.timestamp),
+              style: const TextStyle(
+                color: Colors.grey,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -61,5 +62,16 @@ class EventList extends StatelessWidget {
   String _formatTimestamp(BuildContext context, DateTime t) {
     final locale = Localizations.localeOf(context).toString();
     return DateFormat('EEE, HH:mm', locale).format(t);
+  }
+
+  Future<void> _editEventDetails(BuildContext context, Event event) async {
+    final updatedEvent = await showDialog<Event>(
+      context: context,
+      builder: (_) => EventEditorDialog(event: event),
+    );
+
+    if (updatedEvent == null) return;
+
+    trip.updateEvent(updatedEvent);
   }
 }
