@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/domain/exception.dart';
 import 'package:uuid/uuid.dart';
 
 sealed class TripChange {}
@@ -28,6 +29,7 @@ class Trip extends ChangeNotifier {
   DateTime startTime;
   DateTime? endTime;
   final List<Event> events;
+  final DateTime Function() _now;
   TripChange? _change;
 
   Trip._({
@@ -35,14 +37,16 @@ class Trip extends ChangeNotifier {
     required this.startTime,
     this.endTime,
     required this.events,
-  });
+    now,
+  }) : _now = now ?? DateTime.now;
 
-  factory Trip() {
+  factory Trip({DateTime Function()? now}) {
     return Trip._(
       id: const Uuid().v4(),
       startTime: DateTime.now(),
       endTime: null,
       events: [],
+      now: now,
     );
   }
 
@@ -82,19 +86,49 @@ class Trip extends ChangeNotifier {
     _emit(EventAdded(event));
   }
 
-  void updateEvent(final Event event) {
-    final index = events.indexWhere((e) => e.id == event.id);
-
-    if (index != -1) {
-      events[index] = event;
-      _sortEvents();
-      _emit(EventUpdated(event));
-    }
-  }
-
   void removeEvent(final Event event) {
     events.removeWhere((e) => e.id == event.id);
     _emit(EventRemoved(event));
+  }
+
+  bool updateEventTimestamp(String eventId, DateTime newTimestamp) {
+    final index = events.indexWhere((e) => e.id == eventId);
+    if (index == -1) return false;
+
+    final oldEvent = events[index];
+
+    _validateTimestamp(newTimestamp);
+
+    final newEvent = oldEvent.copyWith(timestamp: newTimestamp);
+
+    return _replaceEvent(newEvent);
+  }
+
+  void _validateTimestamp(DateTime timestamp) {
+    if (timestamp.isBefore(startTime)) {
+      throw DomainException(DomainError.eventBeforeTripStart);
+    }
+
+    final upperBound = endTime ?? _now();
+
+    if (timestamp.isAfter(upperBound)) {
+      throw DomainException(
+        endTime == null
+            ? DomainError.eventInFuture
+            : DomainError.eventAfterTripEnd,
+      );
+    }
+  }
+
+  bool _replaceEvent(Event event) {
+    final index = events.indexWhere((e) => e.id == event.id);
+    if (index == -1) return false;
+
+    events[index] = event;
+    _sortEvents();
+    _emit(EventUpdated(event));
+
+    return true;
   }
 
   void _sortEvents() {

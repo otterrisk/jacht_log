@@ -72,6 +72,6 @@ class EventList extends StatelessWidget {
 
     if (updatedEvent == null) return;
 
-    trip.updateEvent(updatedEvent);
+    trip.updateEventTimestamp(updatedEvent.id, updatedEvent.timestamp);
   }
 }

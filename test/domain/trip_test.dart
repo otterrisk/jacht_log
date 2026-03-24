@@ -31,6 +31,19 @@ void main() {
         expect(trip.events.first, equals(event));
       });
 
+      test('removing event', () {
+        final trip = Trip();
+        final e1 = newEvent(id: '1');
+        final e2 = newEvent(id: '2');
+        trip.addEvent(e1);
+        trip.addEvent(e2);
+
+        trip.removeEvent(e1);
+
+        expect(trip.events.length, 1);
+        expect(trip.events.first, equals(e2));
+      });
+
       test('sorting events by timestamp after adding', () {
         final trip = Trip();
         final older = newEvent(id: '2', timestamp: DateTime(2024, 1, 1));
@@ -45,60 +58,48 @@ void main() {
 
       test('updating event timestamp', () {
         final trip = Trip();
-        final original = newEvent(timestamp: DateTime(2024, 1, 1));
-        trip.addEvent(original);
+        trip.startTime = DateTime(2023, 1, 1);
+        final event = newEvent(timestamp: DateTime(2024, 1, 1));
+        trip.addEvent(event);
         final newTime = DateTime(2025, 1, 1);
-        final updated = original.copyWith(timestamp: newTime);
 
-        trip.updateEvent(updated);
+        trip.updateEventTimestamp(event.id, newTime);
 
         expect(trip.events.first.timestamp, equals(newTime));
       });
 
       test('updating does not duplicate event', () {
         final trip = Trip();
+        trip.startTime = DateTime(2023, 1, 1);
         final event = newEvent();
         trip.addEvent(event);
 
-        final updated = event.copyWith(timestamp: DateTime(2025));
-        trip.updateEvent(updated);
+        trip.updateEventTimestamp(event.id, DateTime(2025));
 
         expect(trip.events.length, 1);
       });
 
       test('updating event conserves event id', () {
         final trip = Trip();
-        final event = newEvent();
+        trip.startTime = DateTime(2023, 1, 1);
+        final eventId = '123';
+        final event = newEvent(id: eventId);
         trip.addEvent(event);
 
-        final updated = event.copyWith(timestamp: DateTime(2025));
-        trip.updateEvent(updated);
+        trip.updateEventTimestamp(event.id, DateTime(2025));
 
-        expect(trip.events.first.id, equals(event.id));
-      });
-
-      test('removeEvent removes correct event', () {
-        final trip = Trip();
-        final e1 = newEvent(id: '1');
-        final e2 = newEvent(id: '2');
-        trip.addEvent(e1);
-        trip.addEvent(e2);
-
-        trip.removeEvent(e1);
-
-        expect(trip.events.length, 1);
-        expect(trip.events.first, equals(e2));
+        expect(trip.events.first.id, equals(eventId));
       });
 
       test('sorting events after timestamp update', () {
         final trip = Trip();
-        final older = newEvent(timestamp: DateTime(2024, 1, 1));
-        final newer = newEvent(timestamp: DateTime(2025, 1, 1));
+        trip.startTime = DateTime(2023, 1, 1);
+        final older = newEvent(timestamp: DateTime(2025, 1, 1));
+        final newer = newEvent(timestamp: DateTime(2026, 1, 1));
         trip.addEvent(older);
         trip.addEvent(newer);
 
-        final updated = newer.copyWith(timestamp: DateTime(2023, 1, 1));
-        trip.updateEvent(updated);
+        trip.updateEventTimestamp(newer.id, DateTime(2024, 1, 1));
 
         expect(trip.events.first.id, equals(newer.id));
       });
@@ -106,8 +107,7 @@ void main() {
       test('updating does nothing if event not found', () {
         final trip = Trip();
 
-        final event = newEvent();
-        trip.updateEvent(event);
+        trip.updateEventTimestamp('123', DateTime(2025));
 
         expect(trip.events, isEmpty);
       });
