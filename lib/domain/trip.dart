@@ -32,12 +32,15 @@ class Trip extends ChangeNotifier {
   }
 
   factory Trip.fromJson(Map<String, dynamic> json) {
-    return Trip._(
+    final trip = Trip._(
       id: json['id'],
       startTime: DateTime.parse(json['startTime']),
       endTime: json['endTime'] == null ? null : DateTime.parse(json['endTime']),
       events: (json['events'] as List).map((e) => Event.fromJson(e)).toList(),
     );
+    trip._validateEvents();
+    trip._sortEvents();
+    return trip;
   }
 
   Map<String, dynamic> toJson() => {
@@ -88,6 +91,12 @@ class Trip extends ChangeNotifier {
     _emit(EventUpdated(event));
 
     return true;
+  }
+
+  void _validateEvents() {
+    for (final event in _events) {
+      _validateTimestamp(event.timestamp);
+    }
   }
 
   void _validateTimestamp(DateTime timestamp) {

@@ -169,7 +169,7 @@ void main() {
     });
 
     group('serialization', () {
-      test('Trip serialization/deserialization conserves all fields', () {
+      test('serialization/deserialization conserves all fields', () {
         final original = newTrip();
         final event = newEvent();
         original.addEvent(event);
@@ -181,6 +181,61 @@ void main() {
         expect(restored.endTime, original.endTime);
         expect(restored.events.length, 1);
         expect(restored.events.first, equals(event));
+      });
+
+      test('event validation on deserialization', () {
+        final json = {
+          'id': '123',
+          'startTime': '2024-07-01',
+          'endTime': '2024-07-14',
+          'events': [
+            {
+              'id': '456',
+              'source': 'engine',
+              'type': 'start',
+              'timestamp': '2024-08-01',
+            },
+          ],
+        };
+
+        expect(
+          () => Trip.fromJson(json),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventAfterTripEnd,
+            ),
+          ),
+        );
+      });
+
+      test('event sorting on deserialization', () {
+        final json = {
+          'id': '123',
+          'startTime': '2024-07-01',
+          'endTime': '2024-07-14',
+          'events': [
+            {
+              'id': 'engine_stop',
+              'source': 'engine',
+              'type': 'stop',
+              'timestamp': '2024-07-03',
+            },
+            {
+              'id': 'engine_start',
+              'source': 'engine',
+              'type': 'start',
+              'timestamp': '2024-07-02',
+            },
+          ],
+        };
+
+        final trip = Trip.fromJson(json);
+
+        expect(trip.events.length, 2);
+        expect(trip.events.first.id, 'engine_start');
+        expect(trip.events.last.id, 'engine_stop');
       });
     });
   });
