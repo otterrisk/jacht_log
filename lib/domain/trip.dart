@@ -22,9 +22,10 @@ class Trip extends ChangeNotifier {
        _now = now ?? DateTime.now;
 
   factory Trip({DateTime Function()? now}) {
+    now ??= DateTime.now;
     return Trip._(
       id: const Uuid().v4(),
-      startTime: DateTime.now(),
+      startTime: now(),
       endTime: null,
       events: <Event>[],
       now: now,
@@ -62,7 +63,7 @@ class Trip extends ChangeNotifier {
   }
 
   void stop() {
-    endTime = DateTime.now();
+    endTime = _now();
     _emit(TripStopped());
   }
 
