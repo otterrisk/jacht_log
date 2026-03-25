@@ -64,6 +64,7 @@ class Trip extends ChangeNotifier {
   }
 
   void addEvent(final Event event) {
+    _validateTimestamp(event.timestamp);
     _events.add(event);
     _sortEvents();
     _emit(EventAdded(event));

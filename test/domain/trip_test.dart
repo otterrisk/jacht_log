@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/domain/exception.dart';
 import 'package:jacht_log/domain/trip.dart';
 
 Event newEvent({
@@ -48,6 +49,44 @@ void main() {
         expect(trip.events.first, equals(event));
       });
 
+      test('adding event with timestamp before trip start', () {
+        final trip = newTrip(
+          startTime: DateTime(2024, 7, 1),
+          endTime: DateTime(2024, 7, 14),
+        );
+        final event = newEvent(timestamp: DateTime(2023, 1, 1));
+
+        expect(
+          () => trip.addEvent(event),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventBeforeTripStart,
+            ),
+          ),
+        );
+      });
+
+      test('adding event with timestamp after trip end', () {
+        final trip = newTrip(
+          startTime: DateTime(2024, 7, 1),
+          endTime: DateTime(2024, 7, 14),
+        );
+        final event = newEvent(timestamp: DateTime(2025, 1, 1));
+
+        expect(
+          () => trip.addEvent(event),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventAfterTripEnd,
+            ),
+          ),
+        );
+      });
+
       test('removing event', () {
         final trip = newTrip();
         final e1 = newEvent(id: '1');
@@ -63,8 +102,8 @@ void main() {
 
       test('sorting events by timestamp after adding', () {
         final trip = newTrip();
-        final older = newEvent(id: '1', timestamp: DateTime(2024, 1, 1));
-        final newer = newEvent(id: '2', timestamp: DateTime(2025, 1, 1));
+        final older = newEvent(id: '1', timestamp: DateTime(2024, 7, 3));
+        final newer = newEvent(id: '2', timestamp: DateTime(2024, 7, 4));
 
         trip.addEvent(newer);
         trip.addEvent(older);
@@ -131,7 +170,7 @@ void main() {
 
     group('serialization', () {
       test('Trip serialization/deserialization conserves all fields', () {
-        final original = Trip();
+        final original = newTrip();
         final event = newEvent();
         original.addEvent(event);
 
