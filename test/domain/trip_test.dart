@@ -126,6 +126,48 @@ void main() {
         expect(trip.events.first.timestamp, equals(newTime));
       });
 
+      test('updating event timestamp before trip start', () {
+        final trip = newTrip(
+          startTime: DateTime(2025, 7, 1),
+          endTime: DateTime(2025, 7, 14),
+        );
+        final event = newEvent(timestamp: DateTime(2025, 7, 2));
+        trip.addEvent(event);
+        final newTime = DateTime(2025, 6, 15);
+
+        expect(
+          () => trip.updateEventTimestamp(event.id, newTime),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventBeforeTripStart,
+            ),
+          ),
+        );
+      });
+
+      test('updating event timestamp after trip end', () {
+        final trip = newTrip(
+          startTime: DateTime(2025, 7, 1),
+          endTime: DateTime(2025, 7, 14),
+        );
+        final event = newEvent(timestamp: DateTime(2025, 7, 2));
+        trip.addEvent(event);
+        final newTime = DateTime(2025, 7, 20);
+
+        expect(
+          () => trip.updateEventTimestamp(event.id, newTime),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventAfterTripEnd,
+            ),
+          ),
+        );
+      });
+
       test('updating does not duplicate event', () {
         final trip = newTrip();
         final event = newEvent();
