@@ -1,28 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/exception.dart';
+import 'package:jacht_log/domain/trip_change.dart';
 import 'package:uuid/uuid.dart';
-
-sealed class TripChange {}
-
-class TripStarted extends TripChange {}
-
-class TripStopped extends TripChange {}
-
-class EventAdded extends TripChange {
-  final Event event;
-  EventAdded(this.event);
-}
-
-class EventUpdated extends TripChange {
-  final Event event;
-  EventUpdated(this.event);
-}
-
-class EventRemoved extends TripChange {
-  final Event event;
-  EventRemoved(this.event);
-}
 
 class Trip extends ChangeNotifier {
   final String id;
@@ -140,31 +120,3 @@ class Trip extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-  // factory Trip.create({required DateTime startTime}) {
-  //   return Trip._(
-  //     id: const Uuid().v4(),
-  //     startTime: startTime,
-  //     endTime: null,
-  //     events: [],
-  //   );
-  // }
-
-  // factory Trip.restore({
-  //   required String id,
-  //   required DateTime startTime,
-  //   DateTime? endTime,
-  //   required List<Event> events,
-  // }) {
-  //   final trip = Trip._(
-  //     id: id,
-  //     startTime: startTime,
-  //     endTime: endTime,
-  //     events: List.of(events),
-  //   );
-
-  //   trip._validateInvariants();
-  //   trip._sortEvents();
-
-  //   return trip;
-  // }

@@ -3,6 +3,7 @@ import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/state.dart';
 import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/domain/trip_change.dart';
 
 class Boat extends ChangeNotifier {
   final Trip trip;
