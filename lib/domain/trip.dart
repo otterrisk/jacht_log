@@ -70,7 +70,7 @@ class Trip extends ChangeNotifier {
     _emit(EventAdded(event));
   }
 
-  void removeEvent(final Event event) {
+  void removeEvent(Event event) {
     _events.removeWhere((e) => e.id == event.id);
     _emit(EventRemoved(event));
   }
@@ -79,13 +79,15 @@ class Trip extends ChangeNotifier {
     final index = _events.indexWhere((e) => e.id == eventId);
     if (index == -1) return false;
 
-    final oldEvent = _events[index];
-
     _validateTimestamp(newTimestamp);
 
-    final newEvent = oldEvent.copyWith(timestamp: newTimestamp);
+    final event = _events[index].copyWith(timestamp: newTimestamp);
+    _events[index] = event;
 
-    return _replaceEvent(newEvent);
+    _sortEvents();
+    _emit(EventUpdated(event));
+
+    return true;
   }
 
   void _validateTimestamp(DateTime timestamp) {
@@ -102,17 +104,6 @@ class Trip extends ChangeNotifier {
             : DomainError.eventAfterTripEnd,
       );
     }
-  }
-
-  bool _replaceEvent(Event event) {
-    final index = _events.indexWhere((e) => e.id == event.id);
-    if (index == -1) return false;
-
-    _events[index] = event;
-    _sortEvents();
-    _emit(EventUpdated(event));
-
-    return true;
   }
 
   void _sortEvents() {
