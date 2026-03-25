@@ -1,4 +1,10 @@
-enum DomainError { eventBeforeTripStart, eventAfterTripEnd, eventInFuture }
+enum DomainError {
+  tipStartInFuture,
+  tripEndBeforeTripStart,
+  eventBeforeTripStart,
+  eventAfterTripEnd,
+  eventInFuture,
+}
 
 class DomainException implements Exception {
   final DomainError error;

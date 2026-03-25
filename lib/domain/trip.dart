@@ -39,6 +39,7 @@ class Trip extends ChangeNotifier {
       endTime: json['endTime'] == null ? null : DateTime.parse(json['endTime']),
       events: (json['events'] as List).map((e) => Event.fromJson(e)).toList(),
     );
+    trip._validateTripStartEnd();
     trip._validateEvents();
     trip._sortEvents();
     return trip;
@@ -94,6 +95,17 @@ class Trip extends ChangeNotifier {
     return true;
   }
 
+  void _validateTripStartEnd() {
+    final lowerBound = endTime ?? _now();
+    if (lowerBound.isBefore(startTime)) {
+      throw DomainException(
+        endTime == null
+            ? DomainError.tipStartInFuture
+            : DomainError.tripEndBeforeTripStart,
+      );
+    }
+  }
+
   void _validateEvents() {
     for (final event in _events) {
       _validateTimestamp(event.timestamp);
@@ -106,7 +118,6 @@ class Trip extends ChangeNotifier {
     }
 
     final upperBound = endTime ?? _now();
-
     if (timestamp.isAfter(upperBound)) {
       throw DomainException(
         endTime == null

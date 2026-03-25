@@ -183,6 +183,26 @@ void main() {
         expect(restored.events.first, equals(event));
       });
 
+      test('end time validation on deserialization', () {
+        final json = {
+          'id': '123',
+          'startTime': '2024-07-01',
+          'endTime': '2024-06-01',
+          'events': [],
+        };
+
+        expect(
+          () => Trip.fromJson(json),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.tripEndBeforeTripStart,
+            ),
+          ),
+        );
+      });
+
       test('event validation on deserialization', () {
         final json = {
           'id': '123',
