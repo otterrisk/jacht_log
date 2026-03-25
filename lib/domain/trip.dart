@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class Trip extends ChangeNotifier {
   final String id;
-  DateTime startTime;
+  final DateTime startTime;
   DateTime? endTime;
   final List<Event> events;
   final DateTime Function() _now;

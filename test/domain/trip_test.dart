@@ -8,7 +8,7 @@ Event newEvent({
   EventType type = EventType.start,
   DateTime? timestamp,
 }) {
-  final ts = timestamp ?? DateTime(2024, 1, 1);
+  final ts = timestamp ?? DateTime(2024, 7, 5);
   final json = {
     'id': id,
     'source': source.name,
@@ -18,11 +18,28 @@ Event newEvent({
   return Event.fromJson(json);
 }
 
+Trip newTrip({
+  String id = '123',
+  DateTime? startTime,
+  DateTime? endTime,
+  List<Event> events = const [],
+}) {
+  final st = startTime ?? DateTime(2024, 7, 1);
+  final et = endTime ?? DateTime(2024, 7, 14);
+  final json = {
+    'id': id,
+    'startTime': st.toIso8601String(),
+    'endTime': et.toIso8601String(),
+    'events': events.map((e) => e.toJson()).toList(),
+  };
+  return Trip.fromJson(json);
+}
+
 void main() {
   group('Trip', () {
     group('Event management', () {
       test('adding event', () {
-        final trip = Trip();
+        final trip = newTrip();
         final event = newEvent();
 
         trip.addEvent(event);
@@ -32,7 +49,7 @@ void main() {
       });
 
       test('removing event', () {
-        final trip = Trip();
+        final trip = newTrip();
         final e1 = newEvent(id: '1');
         final e2 = newEvent(id: '2');
         trip.addEvent(e1);
@@ -45,9 +62,9 @@ void main() {
       });
 
       test('sorting events by timestamp after adding', () {
-        final trip = Trip();
-        final older = newEvent(id: '2', timestamp: DateTime(2024, 1, 1));
-        final newer = newEvent(id: '1', timestamp: DateTime(2025, 1, 1));
+        final trip = newTrip();
+        final older = newEvent(id: '1', timestamp: DateTime(2024, 1, 1));
+        final newer = newEvent(id: '2', timestamp: DateTime(2025, 1, 1));
 
         trip.addEvent(newer);
         trip.addEvent(older);
@@ -57,11 +74,13 @@ void main() {
       });
 
       test('updating event timestamp', () {
-        final trip = Trip();
-        trip.startTime = DateTime(2023, 1, 1);
-        final event = newEvent(timestamp: DateTime(2024, 1, 1));
+        final trip = newTrip(
+          startTime: DateTime(2025, 7, 1),
+          endTime: DateTime(2025, 7, 14),
+        );
+        final event = newEvent(timestamp: DateTime(2025, 7, 2));
         trip.addEvent(event);
-        final newTime = DateTime(2025, 1, 1);
+        final newTime = DateTime(2025, 7, 3);
 
         trip.updateEventTimestamp(event.id, newTime);
 
@@ -69,45 +88,42 @@ void main() {
       });
 
       test('updating does not duplicate event', () {
-        final trip = Trip();
-        trip.startTime = DateTime(2023, 1, 1);
+        final trip = newTrip();
         final event = newEvent();
         trip.addEvent(event);
 
-        trip.updateEventTimestamp(event.id, DateTime(2025));
+        trip.updateEventTimestamp(event.id, DateTime(2024, 7, 3));
 
         expect(trip.events.length, 1);
       });
 
       test('updating event conserves event id', () {
-        final trip = Trip();
-        trip.startTime = DateTime(2023, 1, 1);
+        final trip = newTrip();
         final eventId = '123';
         final event = newEvent(id: eventId);
         trip.addEvent(event);
 
-        trip.updateEventTimestamp(event.id, DateTime(2025));
+        trip.updateEventTimestamp(event.id, DateTime(2024, 7, 3));
 
         expect(trip.events.first.id, equals(eventId));
       });
 
       test('sorting events after timestamp update', () {
-        final trip = Trip();
-        trip.startTime = DateTime(2023, 1, 1);
-        final older = newEvent(timestamp: DateTime(2025, 1, 1));
-        final newer = newEvent(timestamp: DateTime(2026, 1, 1));
+        final trip = newTrip();
+        final older = newEvent(timestamp: DateTime(2024, 7, 4));
+        final newer = newEvent(timestamp: DateTime(2024, 7, 5));
         trip.addEvent(older);
         trip.addEvent(newer);
 
-        trip.updateEventTimestamp(newer.id, DateTime(2024, 1, 1));
+        trip.updateEventTimestamp(newer.id, DateTime(2024, 7, 3));
 
         expect(trip.events.first.id, equals(newer.id));
       });
 
       test('updating does nothing if event not found', () {
-        final trip = Trip();
+        final trip = newTrip();
 
-        trip.updateEventTimestamp('123', DateTime(2025));
+        trip.updateEventTimestamp('666', DateTime(2025));
 
         expect(trip.events, isEmpty);
       });
