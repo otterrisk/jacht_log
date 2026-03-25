@@ -8,7 +8,7 @@ class Trip extends ChangeNotifier {
   final String id;
   final DateTime startTime;
   DateTime? endTime;
-  final List<Event> events;
+  final List<Event> _events;
   final DateTime Function() _now;
   TripChange? _change;
 
@@ -16,16 +16,17 @@ class Trip extends ChangeNotifier {
     required this.id,
     required this.startTime,
     this.endTime,
-    required this.events,
+    required List<Event> events,
     now,
-  }) : _now = now ?? DateTime.now;
+  }) : _events = List.of(events),
+       _now = now ?? DateTime.now;
 
   factory Trip({DateTime Function()? now}) {
     return Trip._(
       id: const Uuid().v4(),
       startTime: DateTime.now(),
       endTime: null,
-      events: [],
+      events: <Event>[],
       now: now,
     );
   }
@@ -46,6 +47,8 @@ class Trip extends ChangeNotifier {
     'events': events.map((e) => e.toJson()).toList(),
   };
 
+  List<Event> get events => List.unmodifiable(_events);
+
   TripChange? get change => _change;
 
   bool get active => endTime == null;
@@ -61,21 +64,21 @@ class Trip extends ChangeNotifier {
   }
 
   void addEvent(final Event event) {
-    events.add(event);
+    _events.add(event);
     _sortEvents();
     _emit(EventAdded(event));
   }
 
   void removeEvent(final Event event) {
-    events.removeWhere((e) => e.id == event.id);
+    _events.removeWhere((e) => e.id == event.id);
     _emit(EventRemoved(event));
   }
 
   bool updateEventTimestamp(String eventId, DateTime newTimestamp) {
-    final index = events.indexWhere((e) => e.id == eventId);
+    final index = _events.indexWhere((e) => e.id == eventId);
     if (index == -1) return false;
 
-    final oldEvent = events[index];
+    final oldEvent = _events[index];
 
     _validateTimestamp(newTimestamp);
 
@@ -101,10 +104,10 @@ class Trip extends ChangeNotifier {
   }
 
   bool _replaceEvent(Event event) {
-    final index = events.indexWhere((e) => e.id == event.id);
+    final index = _events.indexWhere((e) => e.id == event.id);
     if (index == -1) return false;
 
-    events[index] = event;
+    _events[index] = event;
     _sortEvents();
     _emit(EventUpdated(event));
 
@@ -112,7 +115,7 @@ class Trip extends ChangeNotifier {
   }
 
   void _sortEvents() {
-    events.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    _events.sort((a, b) => a.timestamp.compareTo(b.timestamp));
   }
 
   void _emit(TripChange change) {
