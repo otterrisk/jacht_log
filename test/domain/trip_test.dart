@@ -108,7 +108,7 @@ void main() {
         trip.addEvent(e1);
         trip.addEvent(e2);
 
-        trip.removeEvent(e1);
+        trip.removeEvent(e1.id);
 
         expect(trip.events.length, 1);
         expect(trip.events.first, equals(e2));
@@ -118,7 +118,7 @@ void main() {
         final trip = newTrip();
 
         expect(
-          () => trip.removeEvent(newEvent()),
+          () => trip.removeEvent(newEvent().id),
           throwsA(
             predicate(
               (e) =>

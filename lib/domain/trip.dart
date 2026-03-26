@@ -75,8 +75,8 @@ class Trip extends ChangeNotifier {
     _emit(EventAdded(event));
   }
 
-  void removeEvent(Event event) {
-    final index = _events.indexWhere((e) => e.id == event.id);
+  void removeEvent(String eventId) {
+    final index = _events.indexWhere((e) => e.id == eventId);
     if (index == -1) throw DomainException(DomainError.eventNotFound);
 
     final removed = _events.removeAt(index);
@@ -89,11 +89,11 @@ class Trip extends ChangeNotifier {
 
     _validateTimestamp(newTimestamp);
 
-    final event = _events[index].copyWith(timestamp: newTimestamp);
-    _events[index] = event;
+    final updated = _events[index].copyWith(timestamp: newTimestamp);
+    _events[index] = updated;
 
     _sortEvents();
-    _emit(EventUpdated(event));
+    _emit(EventUpdated(updated));
   }
 
   void _validateTripStartEnd() {
