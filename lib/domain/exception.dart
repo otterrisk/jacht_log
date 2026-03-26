@@ -4,6 +4,7 @@ enum DomainError {
   eventBeforeTripStart,
   eventAfterTripEnd,
   eventInFuture,
+  eventNotFound,
 }
 
 class DomainException implements Exception {
@@ -12,5 +13,5 @@ class DomainException implements Exception {
   DomainException(this.error);
 
   @override
-  String toString() => 'DomainException($error.message)';
+  String toString() => 'DomainException($error)';
 }

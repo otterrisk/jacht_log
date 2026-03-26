@@ -68,7 +68,7 @@ class Trip extends ChangeNotifier {
     _emit(TripStopped());
   }
 
-  void addEvent(final Event event) {
+  void addEvent(Event event) {
     _validateTimestamp(event.timestamp);
     _events.add(event);
     _sortEvents();
@@ -76,13 +76,16 @@ class Trip extends ChangeNotifier {
   }
 
   void removeEvent(Event event) {
-    _events.removeWhere((e) => e.id == event.id);
-    _emit(EventRemoved(event));
+    final index = _events.indexWhere((e) => e.id == event.id);
+    if (index == -1) throw DomainException(DomainError.eventNotFound);
+
+    final removed = _events.removeAt(index);
+    _emit(EventRemoved(removed));
   }
 
-  bool updateEventTimestamp(String eventId, DateTime newTimestamp) {
+  void updateEventTimestamp(String eventId, DateTime newTimestamp) {
     final index = _events.indexWhere((e) => e.id == eventId);
-    if (index == -1) return false;
+    if (index == -1) throw DomainException(DomainError.eventNotFound);
 
     _validateTimestamp(newTimestamp);
 
@@ -91,8 +94,6 @@ class Trip extends ChangeNotifier {
 
     _sortEvents();
     _emit(EventUpdated(event));
-
-    return true;
   }
 
   void _validateTripStartEnd() {

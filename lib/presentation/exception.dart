@@ -13,6 +13,8 @@ extension DomainErrorExtension on DomainError {
         return 'Event is after trip end';
       case DomainError.eventInFuture:
         return 'Event is in the future';
+      case DomainError.eventNotFound:
+        return 'Event not found';
     }
   }
 }

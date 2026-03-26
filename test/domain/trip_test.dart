@@ -38,7 +38,7 @@ Trip newTrip({
 
 void main() {
   group('Trip', () {
-    group('Event management', () {
+    group('addEvent', () {
       test('adding event', () {
         final trip = newTrip();
         final event = newEvent();
@@ -47,6 +47,18 @@ void main() {
 
         expect(trip.events.length, 1);
         expect(trip.events.first, equals(event));
+      });
+
+      test('sorting events by timestamp after adding', () {
+        final trip = newTrip();
+        final older = newEvent(id: '1', timestamp: DateTime(2024, 7, 3));
+        final newer = newEvent(id: '2', timestamp: DateTime(2024, 7, 4));
+
+        trip.addEvent(newer);
+        trip.addEvent(older);
+
+        expect(trip.events.first, equals(older));
+        expect(trip.events.last, equals(newer));
       });
 
       test('adding event with timestamp before trip start', () {
@@ -86,7 +98,9 @@ void main() {
           ),
         );
       });
+    });
 
+    group('removeEvent', () {
       test('removing event', () {
         final trip = newTrip();
         final e1 = newEvent(id: '1');
@@ -100,18 +114,22 @@ void main() {
         expect(trip.events.first, equals(e2));
       });
 
-      test('sorting events by timestamp after adding', () {
+      test('removing event that could not be found', () {
         final trip = newTrip();
-        final older = newEvent(id: '1', timestamp: DateTime(2024, 7, 3));
-        final newer = newEvent(id: '2', timestamp: DateTime(2024, 7, 4));
 
-        trip.addEvent(newer);
-        trip.addEvent(older);
-
-        expect(trip.events.first, equals(older));
-        expect(trip.events.last, equals(newer));
+        expect(
+          () => trip.removeEvent(newEvent()),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException && e.error == DomainError.eventNotFound,
+            ),
+          ),
+        );
       });
+    });
 
+    group('updateEventTimestamp', () {
       test('updating event timestamp', () {
         final trip = newTrip(
           startTime: DateTime(2025, 7, 1),
@@ -201,12 +219,18 @@ void main() {
         expect(trip.events.first.id, equals(newer.id));
       });
 
-      test('updating does nothing if event not found', () {
+      test('updating event that could not be found', () {
         final trip = newTrip();
 
-        trip.updateEventTimestamp('666', DateTime(2025));
-
-        expect(trip.events, isEmpty);
+        expect(
+          () => trip.updateEventTimestamp('666', DateTime(2025)),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException && e.error == DomainError.eventNotFound,
+            ),
+          ),
+        );
       });
     });
 
