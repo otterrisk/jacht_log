@@ -38,6 +38,7 @@ class EventList extends StatelessWidget {
     return InkWell(
       onTap: () => _editEventDetails(context, event),
       child: Container(
+        key: ValueKey(event.id),
         color: background,
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         child: Row(
