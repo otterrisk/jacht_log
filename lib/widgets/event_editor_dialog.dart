@@ -4,8 +4,15 @@ import 'package:jacht_log/presentation/event.dart';
 
 class EventEditorDialog extends StatefulWidget {
   final Event event;
+  final DateTime minTime;
+  final DateTime maxTime;
 
-  const EventEditorDialog({super.key, required this.event});
+  const EventEditorDialog({
+    super.key,
+    required this.event,
+    required this.minTime,
+    required this.maxTime,
+  });
 
   @override
   State<EventEditorDialog> createState() => _EventEditorDialogState();
@@ -24,20 +31,27 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
     final date = await showDatePicker(
       context: context,
       initialDate: _timestamp,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: widget.minTime,
+      lastDate: widget.maxTime,
     );
 
     if (date == null) return;
 
+    final newTimestamp = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      _timestamp.hour,
+      _timestamp.minute,
+    );
+
+    if (!_isValid(newTimestamp)) {
+      _showError();
+      return;
+    }
+
     setState(() {
-      _timestamp = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        _timestamp.hour,
-        _timestamp.minute,
-      );
+      _timestamp = newTimestamp;
     });
   }
 
@@ -49,20 +63,43 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
 
     if (time == null) return;
 
+    final newTimestamp = DateTime(
+      _timestamp.year,
+      _timestamp.month,
+      _timestamp.day,
+      time.hour,
+      time.minute,
+    );
+
+    if (!_isValid(newTimestamp)) {
+      _showError();
+      return;
+    }
+
     setState(() {
-      _timestamp = DateTime(
-        _timestamp.year,
-        _timestamp.month,
-        _timestamp.day,
-        time.hour,
-        time.minute,
-      );
+      _timestamp = newTimestamp;
     });
   }
 
+  bool _isValid(DateTime ts) {
+    return !ts.isBefore(widget.minTime) && !ts.isAfter(widget.maxTime);
+  }
+
   void _save() {
+    if (!_isValid(_timestamp)) {
+      _showError();
+      return;
+    }
+
     final updated = widget.event.copyWith(timestamp: _timestamp);
+
     Navigator.pop(context, updated);
+  }
+
+  void _showError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Date and time must be within trip range.')),
+    );
   }
 
   @override

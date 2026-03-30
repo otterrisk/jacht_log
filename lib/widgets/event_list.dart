@@ -68,7 +68,11 @@ class EventList extends StatelessWidget {
   Future<void> _editEventDetails(BuildContext context, Event event) async {
     final updatedEvent = await showDialog<Event>(
       context: context,
-      builder: (_) => EventEditorDialog(event: event),
+      builder: (_) => EventEditorDialog(
+        event: event,
+        minTime: trip.startTime,
+        maxTime: trip.endTime ?? DateTime.now(),
+      ),
     );
 
     if (updatedEvent == null) return;
