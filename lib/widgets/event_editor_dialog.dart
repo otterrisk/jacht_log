@@ -20,11 +20,13 @@ class EventEditorDialog extends StatefulWidget {
 
 class _EventEditorDialogState extends State<EventEditorDialog> {
   late DateTime _timestamp;
+  String? _errorText;
 
   @override
   void initState() {
     super.initState();
     _timestamp = widget.event.timestamp;
+    _validate(_timestamp);
   }
 
   Future<void> _pickDate() async {
@@ -45,13 +47,9 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
       _timestamp.minute,
     );
 
-    if (!_isValid(newTimestamp)) {
-      _showError();
-      return;
-    }
-
     setState(() {
       _timestamp = newTimestamp;
+      _validate(newTimestamp);
     });
   }
 
@@ -71,35 +69,25 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
       time.minute,
     );
 
-    if (!_isValid(newTimestamp)) {
-      _showError();
-      return;
-    }
-
     setState(() {
       _timestamp = newTimestamp;
+      _validate(newTimestamp);
     });
   }
 
-  bool _isValid(DateTime ts) {
-    return !ts.isBefore(widget.minTime) && !ts.isAfter(widget.maxTime);
+  void _validate(DateTime ts) {
+    if (ts.isBefore(widget.minTime)) {
+      _errorText = 'Date/time is before trip start';
+    } else if (ts.isAfter(widget.maxTime)) {
+      _errorText = 'Date/time is after trip end';
+    } else {
+      _errorText = null;
+    }
   }
 
   void _save() {
-    if (!_isValid(_timestamp)) {
-      _showError();
-      return;
-    }
-
     final updated = widget.event.copyWith(timestamp: _timestamp);
-
     Navigator.pop(context, updated);
-  }
-
-  void _showError() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Date and time must be within trip range.')),
-    );
   }
 
   @override
@@ -108,9 +96,21 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
       title: Text(widget.event.description(context)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _DateField(timestamp: _timestamp, onTap: _pickDate),
           _TimeField(timestamp: _timestamp, onTap: _pickTime),
+
+          if (_errorText != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              _errorText!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ],
       ),
       actions: [
@@ -118,7 +118,10 @@ class _EventEditorDialogState extends State<EventEditorDialog> {
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        TextButton(onPressed: _save, child: const Text('Save')),
+        TextButton(
+          onPressed: _errorText == null ? _save : null,
+          child: const Text('Save'),
+        ),
       ],
     );
   }
