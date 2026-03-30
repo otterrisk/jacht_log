@@ -37,7 +37,7 @@ class EventList extends StatelessWidget {
     return Dismissible(
       key: ValueKey(event.id),
       direction: DismissDirection.endToStart,
-      onDismissed: (_) => _onDelete(event.id),
+      onDismissed: (_) => _onDelete(context, event),
 
       background: Container(
         alignment: Alignment.centerRight,
@@ -54,8 +54,31 @@ class EventList extends StatelessWidget {
     );
   }
 
-  void _onDelete(String eventId) {
-    trip.removeEvent(eventId);
+  void _onDelete(BuildContext context, Event event) {
+    final removedEvent = event;
+
+    trip.removeEvent(event.id);
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    messenger.hideCurrentSnackBar();
+
+    messenger.showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 4),
+        content: Text('Event deleted'),
+        action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            _undoDelete(removedEvent);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _undoDelete(Event event) {
+    trip.addEvent(event);
   }
 
   Future<void> _editEventDetails(BuildContext context, Event event) async {
