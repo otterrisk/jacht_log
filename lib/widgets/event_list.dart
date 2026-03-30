@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/presentation/event.dart';
 import 'package:jacht_log/widgets/event_editor_dialog.dart';
+import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
   const EventList({
@@ -35,34 +34,28 @@ class EventList extends StatelessWidget {
   }
 
   Widget eventRow(BuildContext context, Event event, Color background) {
-    return InkWell(
-      onTap: () => _editEventDetails(context, event),
-      child: Container(
-        key: ValueKey(event.id),
-        color: background,
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        child: Row(
-          children: [
-            Icon(event.source.icon, size: 20),
-            const SizedBox(width: 8),
-            Text(event.description(context)),
-            const Spacer(),
-            Text(
-              _formatTimestamp(context, event.timestamp),
-              style: const TextStyle(
-                color: Colors.grey,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
-          ],
-        ),
+    return Dismissible(
+      key: ValueKey(event.id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) => _onDelete(event.id),
+
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        color: Colors.red,
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+
+      child: EventTile(
+        event: event,
+        background: background,
+        onTap: () => _editEventDetails(context, event),
       ),
     );
   }
 
-  String _formatTimestamp(BuildContext context, DateTime t) {
-    final locale = Localizations.localeOf(context).toString();
-    return DateFormat('EEE, HH:mm', locale).format(t);
+  void _onDelete(String eventId) {
+    trip.removeEvent(eventId);
   }
 
   Future<void> _editEventDetails(BuildContext context, Event event) async {
