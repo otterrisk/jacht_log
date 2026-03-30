@@ -34,6 +34,10 @@ class Boat extends ChangeNotifier {
         timer.update(state.mode, event.timestamp);
         state.update(event);
         break;
+      case EventUpdated():
+        timer.rebuild(trip);
+        state.rebuild(trip);
+        break;
       default:
         break;
     }

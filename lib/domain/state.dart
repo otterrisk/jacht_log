@@ -15,10 +15,27 @@ class State {
     }
   }
 
-  void replay(final Trip trip) {
+  void rebuild(Trip trip) {
+    reset();
+    replay(trip);
+  }
+
+  void reset() {
+    _state.clear();
+    for (final source in EventSource.values) {
+      _state[source] = false;
+    }
+    _state[EventSource.port] = true;
+  }
+
+  void replay(Trip trip) {
     for (final e in trip.events) {
       update(e);
     }
+  }
+
+  void update(Event event) {
+    _state[event.source] = event.type == EventType.start;
   }
 
   bool isOn(EventSource source) => _state[source] == true;
@@ -37,9 +54,5 @@ class State {
     }
 
     return BoatMode.drifting;
-  }
-
-  void update(final Event event) {
-    _state[event.source] = event.type == EventType.start;
   }
 }

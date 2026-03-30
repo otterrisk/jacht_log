@@ -14,7 +14,19 @@ class Timer {
     replay(trip);
   }
 
-  void replay(final Trip trip) {
+  void rebuild(Trip trip) {
+    reset(trip.startTime);
+    replay(trip);
+  }
+
+  void reset(DateTime startTime) {
+    for (var i = 0; i < time.length; i++) {
+      time[i] = Duration.zero;
+    }
+    last = startTime;
+  }
+
+  void replay(Trip trip) {
     final state = State();
     for (final e in trip.events) {
       update(state.mode, e.timestamp);
