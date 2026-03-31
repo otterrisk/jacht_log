@@ -21,7 +21,7 @@ class BoatControls extends StatelessWidget {
             crossAxisCount: 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 3,
+            childAspectRatio: 4,
             children: [
               SwitchListTile(
                 title: Text(EventSource.port.label(context)),

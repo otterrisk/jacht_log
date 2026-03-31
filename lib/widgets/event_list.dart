@@ -5,14 +5,14 @@ import 'package:jacht_log/widgets/event_editor_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
+  final Trip trip;
+  final ScrollController scrollController;
+
   const EventList({
     super.key,
     required this.trip,
     required this.scrollController,
   });
-
-  final Trip trip;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
