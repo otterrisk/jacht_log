@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/widgets/add_event_dialog.dart';
+import 'package:jacht_log/widgets/add_event_result.dart';
 import 'package:jacht_log/widgets/event_editor_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
@@ -17,18 +19,47 @@ class EventList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
-        controller: scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        itemCount: trip.events.length,
-        itemBuilder: (context, index) {
-          final event = trip.events[index];
-          final background = index.isEven
-              ? Theme.of(context).colorScheme.surfaceContainerHighest
-              : Colors.transparent;
+      child: Card(
+        margin: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Text(
+                    "Events",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () => _addEvent(context),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
 
-          return eventRow(context, event, background);
-        },
+            const Divider(height: 1),
+
+            // 🔹 lista
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                itemCount: trip.events.length,
+                itemBuilder: (context, index) {
+                  final event = trip.events[index];
+                  final background = index.isEven
+                      ? Theme.of(context).colorScheme.surfaceContainerHighest
+                      : Colors.transparent;
+
+                  return eventRow(context, event, background);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -52,6 +83,17 @@ class EventList extends StatelessWidget {
         onTap: () => _editEventDetails(context, event),
       ),
     );
+  }
+
+  Future<void> _addEvent(BuildContext context) async {
+    final result = await showDialog<AddEventResult>(
+      context: context,
+      builder: (_) => const AddEventDialog(),
+    );
+
+    if (result == null) return;
+
+    trip.addEvent(Event(source: result.source, type: result.type));
   }
 
   void _onDelete(BuildContext context, Event event) {
