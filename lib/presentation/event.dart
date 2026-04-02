@@ -26,29 +26,37 @@ extension EventSourceIcon on EventSource {
   }
 }
 
+String eventDescription(
+  BuildContext context,
+  EventSource source,
+  EventType type,
+) {
+  final l10n = AppLocalizations.of(context)!;
+
+  final map = {
+    EventSource.port: {
+      EventType.start: l10n.eventSourcePortEventTypeStart,
+      EventType.stop: l10n.eventSourcePortEventTypeStop,
+    },
+    EventSource.anchor: {
+      EventType.start: l10n.eventSourceAnchorEventTypeStart,
+      EventType.stop: l10n.eventSourceAnchorEventTypeStop,
+    },
+    EventSource.engine: {
+      EventType.start: l10n.eventSourceEngineEventTypeStart,
+      EventType.stop: l10n.eventSourceEngineEventTypeStop,
+    },
+    EventSource.sail: {
+      EventType.start: l10n.eventSourceSailEventTypeStart,
+      EventType.stop: l10n.eventSourceSailEventTypeStop,
+    },
+  };
+
+  return map[source]![type]!;
+}
+
 extension EventDescription on Event {
   String description(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final map = {
-      EventSource.port: {
-        EventType.start: l10n.eventSourcePortEventTypeStart,
-        EventType.stop: l10n.eventSourcePortEventTypeStop,
-      },
-      EventSource.anchor: {
-        EventType.start: l10n.eventSourceAnchorEventTypeStart,
-        EventType.stop: l10n.eventSourceAnchorEventTypeStop,
-      },
-      EventSource.engine: {
-        EventType.start: l10n.eventSourceEngineEventTypeStart,
-        EventType.stop: l10n.eventSourceEngineEventTypeStop,
-      },
-      EventSource.sail: {
-        EventType.start: l10n.eventSourceSailEventTypeStart,
-        EventType.stop: l10n.eventSourceSailEventTypeStop,
-      },
-    };
-
-    return map[source]![type]!;
+    return eventDescription(context, source, type);
   }
 }

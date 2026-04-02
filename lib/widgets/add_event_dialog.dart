@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/presentation/event_preset.dart';
 import 'package:jacht_log/widgets/add_event_result.dart';
 
 class AddEventDialog extends StatefulWidget {
@@ -11,15 +11,7 @@ class AddEventDialog extends StatefulWidget {
 
 class _AddEventDialogState extends State<AddEventDialog> {
   DateTime _timestamp = DateTime.now();
-  EventSource? _source;
-  EventType? _type;
-  final _descriptionController = TextEditingController();
-
-  @override
-  void dispose() {
-    _descriptionController.dispose();
-    super.dispose();
-  }
+  EventPreset? _selectedPreset;
 
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
@@ -56,7 +48,6 @@ class _AddEventDialogState extends State<AddEventDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 📅 timestamp
           Row(
             children: [
               Expanded(
@@ -73,34 +64,20 @@ class _AddEventDialogState extends State<AddEventDialog> {
 
           const SizedBox(height: 12),
 
-          DropdownButtonFormField<EventSource>(
-            initialValue: _source,
-            items: EventSource.values.map((type) {
-              return DropdownMenuItem(value: type, child: Text(type.name));
+          DropdownButtonFormField<EventPreset>(
+            initialValue: _selectedPreset,
+            decoration: const InputDecoration(labelText: "Event"),
+            items: eventPresets.map((preset) {
+              return DropdownMenuItem<EventPreset>(
+                value: preset,
+                child: Text(preset.description(context)),
+              );
             }).toList(),
-            onChanged: (value) {
+            onChanged: (preset) {
               setState(() {
-                _source = value!;
+                _selectedPreset = preset;
               });
             },
-          ),
-
-          DropdownButtonFormField<EventType>(
-            initialValue: _type,
-            items: EventType.values.map((type) {
-              return DropdownMenuItem(value: type, child: Text(type.name));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _type = value!;
-              });
-            },
-          ),
-
-          // 📝 description
-          TextField(
-            controller: _descriptionController,
-            decoration: const InputDecoration(labelText: "Description"),
           ),
         ],
       ),
@@ -115,14 +92,13 @@ class _AddEventDialogState extends State<AddEventDialog> {
   }
 
   void _submit() {
-    final description = _descriptionController.text.trim();
-
+    if (_selectedPreset == null) return;
     Navigator.pop(
       context,
       AddEventResult(
         timestamp: _timestamp,
-        source: EventSource.port,
-        type: EventType.start,
+        source: _selectedPreset!.source,
+        type: _selectedPreset!.type,
       ),
     );
   }
