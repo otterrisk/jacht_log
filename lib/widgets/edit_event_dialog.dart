@@ -31,52 +31,6 @@ class _EditEventDialogState extends State<EditEventDialog> {
     _validate(_timestamp);
   }
 
-  Future<void> _pickDate() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: _timestamp,
-      firstDate: widget.minTime,
-      lastDate: widget.maxTime,
-    );
-
-    if (date == null) return;
-
-    final newTimestamp = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      _timestamp.hour,
-      _timestamp.minute,
-    );
-
-    setState(() {
-      _timestamp = newTimestamp;
-      _validate(newTimestamp);
-    });
-  }
-
-  Future<void> _pickTime() async {
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_timestamp),
-    );
-
-    if (time == null) return;
-
-    final newTimestamp = DateTime(
-      _timestamp.year,
-      _timestamp.month,
-      _timestamp.day,
-      time.hour,
-      time.minute,
-    );
-
-    setState(() {
-      _timestamp = newTimestamp;
-      _validate(newTimestamp);
-    });
-  }
-
   void _validate(DateTime ts) {
     if (ts.isBefore(widget.minTime)) {
       _errorText = 'Date/time is before trip start';
@@ -100,8 +54,26 @@ class _EditEventDialogState extends State<EditEventDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DateField(timestamp: _timestamp, onTap: _pickDate),
-          TimeField(timestamp: _timestamp, onTap: _pickTime),
+          DateField(
+            timestamp: _timestamp,
+            firstDate: widget.minTime,
+            lastDate: widget.maxTime,
+            onChanged: (newTs) {
+              setState(() {
+                _timestamp = newTs;
+                _validate(newTs);
+              });
+            },
+          ),
+          TimeField(
+            timestamp: _timestamp,
+            onChanged: (newTs) {
+              setState(() {
+                _timestamp = newTs;
+                _validate(newTs);
+              });
+            },
+          ),
 
           if (_errorText != null) ...[
             const SizedBox(height: 8),
