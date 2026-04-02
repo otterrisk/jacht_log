@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/presentation/event_preset.dart';
 import 'package:jacht_log/presentation/event_result.dart';
+import 'package:jacht_log/widgets/date_time_picker.dart';
 
 class AddEventDialog extends StatefulWidget {
   final DateTime minTime;
@@ -18,35 +19,8 @@ class AddEventDialog extends StatefulWidget {
 
 class _AddEventDialogState extends State<AddEventDialog> {
   DateTime _timestamp = DateTime.now();
+  String? _errorText;
   EventPreset? _selectedPreset;
-
-  Future<void> _pickDateTime() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: _timestamp,
-      firstDate: widget.minTime,
-      lastDate: widget.maxTime,
-    );
-
-    if (date == null) return;
-
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_timestamp),
-    );
-
-    if (time == null) return;
-
-    setState(() {
-      _timestamp = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        time.hour,
-        time.minute,
-      );
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,22 +29,6 @@ class _AddEventDialogState extends State<AddEventDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _timestamp.toString(), // możesz sformatować
-                ),
-              ),
-              IconButton(
-                onPressed: _pickDateTime,
-                icon: const Icon(Icons.calendar_today),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
           DropdownButtonFormField<EventPreset>(
             initialValue: _selectedPreset,
             decoration: const InputDecoration(labelText: "Event"),
@@ -86,6 +44,24 @@ class _AddEventDialogState extends State<AddEventDialog> {
               });
             },
           ),
+
+          const SizedBox(height: 12),
+
+          DateTimePicker(
+            value: _timestamp,
+            firstDate: widget.minTime,
+            lastDate: widget.maxTime,
+            errorText: _errorText,
+            onChanged: (newTs) {
+              setState(() {
+                _timestamp = newTs;
+                _errorText = _timestamp.validate(
+                  min: widget.minTime,
+                  max: widget.maxTime,
+                );
+              });
+            },
+          ),
         ],
       ),
       actions: [
@@ -93,7 +69,10 @@ class _AddEventDialogState extends State<AddEventDialog> {
           onPressed: () => Navigator.pop(context),
           child: const Text("Cancel"),
         ),
-        ElevatedButton(onPressed: _submit, child: const Text("Add")),
+        ElevatedButton(
+          onPressed: _errorText == null ? _submit : null,
+          child: const Text('Add'),
+        ),
       ],
     );
   }

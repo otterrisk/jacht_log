@@ -34,20 +34,26 @@ class _EditEventDialogState extends State<EditEventDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.event.description(context)),
-      content: DateTimePicker(
-        value: _timestamp,
-        firstDate: widget.minTime,
-        lastDate: widget.maxTime,
-        errorText: _errorText,
-        onChanged: (newTs) {
-          setState(() {
-            _timestamp = newTs;
-            _errorText = _timestamp.validate(
-              min: widget.minTime,
-              max: widget.maxTime,
-            );
-          });
-        },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DateTimePicker(
+            value: _timestamp,
+            firstDate: widget.minTime,
+            lastDate: widget.maxTime,
+            errorText: _errorText,
+            onChanged: (newTs) {
+              setState(() {
+                _timestamp = newTs;
+                _errorText = _timestamp.validate(
+                  min: widget.minTime,
+                  max: widget.maxTime,
+                );
+              });
+            },
+          ),
+        ],
       ),
       actions: [
         TextButton(

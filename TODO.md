@@ -1,6 +1,6 @@
 
 - [x] przy wczytywaniu z pliku, odświeżanie stanu i czasów
-- [ ] możliwość wstawiania Eventów
+- [x] możliwość wstawiania Eventów
 - [x] możliwość usuwania Event'ów
 - [x] edycja czasu istniejących Event'ów
 - [ ] edycja początku i końca rejsu
