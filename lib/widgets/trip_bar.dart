@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/presentation/formatting.dart';
 
 class TripBar extends StatefulWidget {
   final Trip trip;
@@ -64,32 +64,12 @@ class _TripBarState extends State<TripBar> {
   }
 
   String _timeRange(Trip trip) {
-    final start = _fmt(trip.startTime);
+    final start = trip.startTime.toTripBarDateTime();
 
     final end = trip.active
-        ? _fmt(DateTime.now(), blink: true)
-        : (trip.endTime != null ? _fmt(trip.endTime!) : "--:--");
+        ? DateTime.now().toTripBarDateTime(blink: true)
+        : (trip.endTime != null ? trip.endTime!.toTripBarDateTime() : "--:--");
 
     return "$start → $end";
-  }
-
-  String _fmt(DateTime t, {bool blink = false}) {
-    final now = DateTime.now();
-
-    final ms = now.millisecond;
-    final sep = (blink && ms > 500) ? " " : ":";
-
-    String time =
-        "${t.hour.toString().padLeft(2, '0')}$sep${t.minute.toString().padLeft(2, '0')}";
-
-    if (t.year != now.year) {
-      return "${DateFormat("dd.MM.yyyy").format(t)} $time";
-    }
-
-    if (t.day != now.day || t.month != now.month) {
-      return "${DateFormat("dd.MM").format(t)} $time";
-    }
-
-    return time;
   }
 }

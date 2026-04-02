@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/presentation/event.dart';
+import 'package:jacht_log/presentation/formatting.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;
@@ -29,7 +29,7 @@ class EventTile extends StatelessWidget {
             Text(event.description(context)),
             const Spacer(),
             Text(
-              _formatTimestamp(context, event.timestamp),
+              event.timestamp.toEventListTimestamp(context),
               style: const TextStyle(
                 color: Colors.grey,
                 fontFeatures: [FontFeature.tabularFigures()],
@@ -39,10 +39,5 @@ class EventTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatTimestamp(BuildContext context, DateTime t) {
-    final locale = Localizations.localeOf(context).toString();
-    return DateFormat('EEE, HH:mm', locale).format(t);
   }
 }

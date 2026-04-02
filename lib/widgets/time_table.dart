@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/l10n/l10n.dart';
+import 'package:jacht_log/presentation/formatting.dart';
 import 'package:jacht_log/presentation/timer.dart';
 
 class TimeTable extends StatelessWidget {
@@ -32,7 +33,7 @@ class TimeTable extends StatelessWidget {
     );
   }
 
-  TableRow _timeRow(String label, Duration time, {bool bold = false}) {
+  TableRow _timeRow(String label, Duration duration, {bool bold = false}) {
     final style = bold ? const TextStyle(fontWeight: FontWeight.bold) : null;
 
     return TableRow(
@@ -44,19 +45,12 @@ class TimeTable extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
-            _formatDuration(time),
+            duration.toTimeTableDuration(),
             textAlign: TextAlign.right,
             style: style,
           ),
         ),
       ],
     );
-  }
-
-  String _formatDuration(Duration d) {
-    final hours = d.inHours;
-    final minutes = d.inMinutes % 60;
-    final seconds = d.inSeconds % 60;
-    return "${hours}h ${minutes.toString().padLeft(2, '0')}m ${seconds.toString().padLeft(2, '0')}s";
   }
 }
