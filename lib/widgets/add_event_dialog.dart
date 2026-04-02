@@ -3,7 +3,14 @@ import 'package:jacht_log/presentation/event_preset.dart';
 import 'package:jacht_log/presentation/event_result.dart';
 
 class AddEventDialog extends StatefulWidget {
-  const AddEventDialog({super.key});
+  final DateTime minTime;
+  final DateTime maxTime;
+
+  const AddEventDialog({
+    super.key,
+    required this.minTime,
+    required this.maxTime,
+  });
 
   @override
   State<AddEventDialog> createState() => _AddEventDialogState();
@@ -17,8 +24,8 @@ class _AddEventDialogState extends State<AddEventDialog> {
     final date = await showDatePicker(
       context: context,
       initialDate: _timestamp,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: widget.minTime,
+      lastDate: widget.maxTime,
     );
 
     if (date == null) return;
