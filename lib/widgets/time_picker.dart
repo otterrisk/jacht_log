@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class TimeField extends StatelessWidget {
+class TimePicker extends StatelessWidget {
   final DateTime timestamp;
   final ValueChanged<DateTime> onChanged;
 
-  const TimeField({
+  const TimePicker({
     super.key,
     required this.timestamp,
     required this.onChanged,
@@ -12,13 +12,13 @@ class TimeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: const Text('Time'),
       subtitle: Text(
-        MaterialLocalizations.of(
-          context,
-        ).formatTimeOfDay(TimeOfDay.fromDateTime(timestamp)),
+        localizations.formatTimeOfDay(TimeOfDay.fromDateTime(timestamp)),
       ),
       trailing: const Icon(Icons.access_time),
       onTap: () => _pickTime(context),

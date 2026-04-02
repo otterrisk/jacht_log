@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class DateField extends StatelessWidget {
+class DatePicker extends StatelessWidget {
   final DateTime timestamp;
   final DateTime firstDate;
   final DateTime lastDate;
   final ValueChanged<DateTime> onChanged;
 
-  const DateField({
+  const DatePicker({
     super.key,
     required this.timestamp,
     required this.firstDate,
@@ -16,12 +16,12 @@ class DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: const Text('Date'),
-      subtitle: Text(
-        MaterialLocalizations.of(context).formatMediumDate(timestamp),
-      ),
+      subtitle: Text(localizations.formatMediumDate(timestamp)),
       trailing: const Icon(Icons.calendar_today),
       onTap: () => _pickDate(context),
     );

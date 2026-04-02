@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/presentation/event.dart';
-import 'package:jacht_log/widgets/date_field.dart';
-import 'package:jacht_log/widgets/time_field.dart';
+import 'package:jacht_log/widgets/date_time_picker.dart';
 
 class EditEventDialog extends StatefulWidget {
   final Event event;
@@ -50,42 +49,17 @@ class _EditEventDialogState extends State<EditEventDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.event.description(context)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DateField(
-            timestamp: _timestamp,
-            firstDate: widget.minTime,
-            lastDate: widget.maxTime,
-            onChanged: (newTs) {
-              setState(() {
-                _timestamp = newTs;
-                _validate(newTs);
-              });
-            },
-          ),
-          TimeField(
-            timestamp: _timestamp,
-            onChanged: (newTs) {
-              setState(() {
-                _timestamp = newTs;
-                _validate(newTs);
-              });
-            },
-          ),
-
-          if (_errorText != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              _errorText!,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.error,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ],
+      content: DateTimePicker(
+        value: _timestamp,
+        firstDate: widget.minTime,
+        lastDate: widget.maxTime,
+        errorText: _errorText,
+        onChanged: (newTs) {
+          setState(() {
+            _timestamp = newTs;
+            _validate(newTs);
+          });
+        },
       ),
       actions: [
         TextButton(
