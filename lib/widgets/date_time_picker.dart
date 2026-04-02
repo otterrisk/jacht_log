@@ -45,3 +45,11 @@ class DateTimePicker extends StatelessWidget {
     );
   }
 }
+
+extension DateTimeValidation on DateTime {
+  String? validate({required DateTime min, required DateTime max}) {
+    if (isBefore(min)) return 'Date/time is before trip start';
+    if (isAfter(max)) return 'Date/time is after trip end';
+    return null;
+  }
+}

@@ -27,22 +27,7 @@ class _EditEventDialogState extends State<EditEventDialog> {
   void initState() {
     super.initState();
     _timestamp = widget.event.timestamp;
-    _validate(_timestamp);
-  }
-
-  void _validate(DateTime ts) {
-    if (ts.isBefore(widget.minTime)) {
-      _errorText = 'Date/time is before trip start';
-    } else if (ts.isAfter(widget.maxTime)) {
-      _errorText = 'Date/time is after trip end';
-    } else {
-      _errorText = null;
-    }
-  }
-
-  void _save() {
-    final updated = widget.event.copyWith(timestamp: _timestamp);
-    Navigator.pop(context, updated);
+    _errorText = _timestamp.validate(min: widget.minTime, max: widget.maxTime);
   }
 
   @override
@@ -57,7 +42,10 @@ class _EditEventDialogState extends State<EditEventDialog> {
         onChanged: (newTs) {
           setState(() {
             _timestamp = newTs;
-            _validate(newTs);
+            _errorText = _timestamp.validate(
+              min: widget.minTime,
+              max: widget.maxTime,
+            );
           });
         },
       ),
@@ -72,5 +60,10 @@ class _EditEventDialogState extends State<EditEventDialog> {
         ),
       ],
     );
+  }
+
+  void _save() {
+    final updated = widget.event.copyWith(timestamp: _timestamp);
+    Navigator.pop(context, updated);
   }
 }
