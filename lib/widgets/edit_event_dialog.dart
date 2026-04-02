@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/presentation/event.dart';
+import 'package:jacht_log/widgets/date_field.dart';
+import 'package:jacht_log/widgets/time_field.dart';
 
 class EditEventDialog extends StatefulWidget {
   final Event event;
@@ -98,8 +100,8 @@ class _EditEventDialogState extends State<EditEventDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _DateField(timestamp: _timestamp, onTap: _pickDate),
-          _TimeField(timestamp: _timestamp, onTap: _pickTime),
+          DateField(timestamp: _timestamp, onTap: _pickDate),
+          TimeField(timestamp: _timestamp, onTap: _pickTime),
 
           if (_errorText != null) ...[
             const SizedBox(height: 8),
@@ -123,48 +125,6 @@ class _EditEventDialogState extends State<EditEventDialog> {
           child: const Text('Save'),
         ),
       ],
-    );
-  }
-}
-
-class _DateField extends StatelessWidget {
-  final DateTime timestamp;
-  final VoidCallback onTap;
-
-  const _DateField({required this.timestamp, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: const Text('Date'),
-      subtitle: Text(
-        MaterialLocalizations.of(context).formatMediumDate(timestamp),
-      ),
-      trailing: const Icon(Icons.calendar_today),
-      onTap: onTap,
-    );
-  }
-}
-
-class _TimeField extends StatelessWidget {
-  final DateTime timestamp;
-  final VoidCallback onTap;
-
-  const _TimeField({required this.timestamp, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: const Text('Time'),
-      subtitle: Text(
-        MaterialLocalizations.of(
-          context,
-        ).formatTimeOfDay(TimeOfDay.fromDateTime(timestamp)),
-      ),
-      trailing: const Icon(Icons.access_time),
-      onTap: onTap,
     );
   }
 }
