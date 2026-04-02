@@ -1,13 +1,13 @@
 import 'package:jacht_log/domain/event.dart';
 
-class AddEventResult {
+class EventResult {
   final DateTime timestamp;
-  final EventType type;
   final EventSource source;
+  final EventType type;
 
-  AddEventResult({
+  EventResult({
     required this.timestamp,
-    required this.type,
     required this.source,
+    required this.type,
   });
 }

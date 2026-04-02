@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/presentation/event_preset.dart';
-import 'package:jacht_log/widgets/add_event_result.dart';
+import 'package:jacht_log/presentation/event_result.dart';
 
 class AddEventDialog extends StatefulWidget {
   const AddEventDialog({super.key});
@@ -95,7 +95,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
     if (_selectedPreset == null) return;
     Navigator.pop(
       context,
-      AddEventResult(
+      EventResult(
         timestamp: _timestamp,
         source: _selectedPreset!.source,
         type: _selectedPreset!.type,

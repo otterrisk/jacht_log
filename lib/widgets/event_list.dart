@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
-import 'package:jacht_log/widgets/add_event_result.dart';
+import 'package:jacht_log/presentation/event_result.dart';
 import 'package:jacht_log/widgets/event_editor_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
@@ -86,7 +86,7 @@ class EventList extends StatelessWidget {
   }
 
   Future<void> _addEvent(BuildContext context) async {
-    final result = await showDialog<AddEventResult>(
+    final result = await showDialog<EventResult>(
       context: context,
       builder: (_) => const AddEventDialog(),
     );
