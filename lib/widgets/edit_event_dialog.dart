@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/presentation/event.dart';
 
-class EventEditorDialog extends StatefulWidget {
+class EditEventDialog extends StatefulWidget {
   final Event event;
   final DateTime minTime;
   final DateTime maxTime;
 
-  const EventEditorDialog({
+  const EditEventDialog({
     super.key,
     required this.event,
     required this.minTime,
@@ -15,10 +15,10 @@ class EventEditorDialog extends StatefulWidget {
   });
 
   @override
-  State<EventEditorDialog> createState() => _EventEditorDialogState();
+  State<EditEventDialog> createState() => _EditEventDialogState();
 }
 
-class _EventEditorDialogState extends State<EventEditorDialog> {
+class _EditEventDialogState extends State<EditEventDialog> {
   late DateTime _timestamp;
   String? _errorText;
 

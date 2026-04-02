@@ -3,7 +3,7 @@ import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
 import 'package:jacht_log/presentation/event_result.dart';
-import 'package:jacht_log/widgets/event_editor_dialog.dart';
+import 'package:jacht_log/widgets/edit_event_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
@@ -126,7 +126,7 @@ class EventList extends StatelessWidget {
   Future<void> _editEventDetails(BuildContext context, Event event) async {
     final updatedEvent = await showDialog<Event>(
       context: context,
-      builder: (_) => EventEditorDialog(
+      builder: (_) => EditEventDialog(
         event: event,
         minTime: trip.startTime,
         maxTime: trip.endTime ?? DateTime.now(),
