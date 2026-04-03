@@ -15,6 +15,7 @@ class TimePicker extends StatelessWidget {
     final localizations = MaterialLocalizations.of(context);
 
     return ListTile(
+      key: const Key('timePicker'),
       contentPadding: EdgeInsets.zero,
       title: const Text('Time'),
       subtitle: Text(

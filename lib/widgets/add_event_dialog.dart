@@ -30,10 +30,12 @@ class _AddEventDialogState extends State<AddEventDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           DropdownButtonFormField<EventPreset>(
+            key: const Key("eventDropdown"),
             initialValue: _selectedPreset,
             decoration: const InputDecoration(labelText: "Event"),
             items: eventPresets.map((preset) {
               return DropdownMenuItem<EventPreset>(
+                key: Key("${preset.source.name}-${preset.type.name}"),
                 value: preset,
                 child: Text(preset.description(context)),
               );
@@ -66,10 +68,12 @@ class _AddEventDialogState extends State<AddEventDialog> {
       ),
       actions: [
         TextButton(
+          key: const Key("cancelButton"),
           onPressed: () => Navigator.pop(context),
           child: const Text("Cancel"),
         ),
         ElevatedButton(
+          key: const Key("addButton"),
           onPressed: _errorText == null ? _submit : null,
           child: const Text('Add'),
         ),

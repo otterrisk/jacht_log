@@ -19,6 +19,7 @@ class DatePicker extends StatelessWidget {
     final localizations = MaterialLocalizations.of(context);
 
     return ListTile(
+      key: const Key('datePicker'),
       contentPadding: EdgeInsets.zero,
       title: const Text('Date'),
       subtitle: Text(localizations.formatMediumDate(timestamp)),
