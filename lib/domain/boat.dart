@@ -45,10 +45,12 @@ class Boat extends ChangeNotifier {
   }
 
   void toggle(EventSource source) {
+    EventType type;
     if (state.isOn(source)) {
-      trip.addEvent(Event(source: source, type: EventType.stop));
+      type = EventType.stop;
     } else {
-      trip.addEvent(Event(source: source, type: EventType.start));
+      type = EventType.start;
     }
+    trip.addEvent(Event(source: source, type: type, timestamp: DateTime.now()));
   }
 }

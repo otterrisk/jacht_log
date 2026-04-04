@@ -96,7 +96,13 @@ class EventList extends StatelessWidget {
 
     if (result == null) return;
 
-    trip.addEvent(Event(source: result.source, type: result.type));
+    trip.addEvent(
+      Event(
+        source: result.source,
+        type: result.type,
+        timestamp: result.timestamp,
+      ),
+    );
   }
 
   void _onDelete(BuildContext context, Event event) {

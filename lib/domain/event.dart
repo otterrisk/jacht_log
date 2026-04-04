@@ -17,12 +17,16 @@ class Event {
     required this.timestamp,
   });
 
-  factory Event({required EventSource source, required EventType type}) {
+  factory Event({
+    required EventSource source,
+    required EventType type,
+    required DateTime timestamp,
+  }) {
     return Event._(
       id: const Uuid().v4(),
       source: source,
       type: type,
-      timestamp: DateTime.now(),
+      timestamp: timestamp,
     );
   }
 

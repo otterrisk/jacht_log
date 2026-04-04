@@ -5,7 +5,11 @@ void main() {
   group('Event', () {
     group('toJson', () {
       test('returns a valid map', () {
-        final event = Event(source: EventSource.port, type: EventType.start);
+        final event = Event(
+          source: EventSource.port,
+          type: EventType.start,
+          timestamp: DateTime(2024, 8, 1),
+        );
 
         final json = event.toJson();
 
@@ -36,7 +40,11 @@ void main() {
 
     group('serialization round-trip', () {
       test('toJson -> fromJson preserves data', () {
-        final original = Event(source: EventSource.port, type: EventType.start);
+        final original = Event(
+          source: EventSource.port,
+          type: EventType.start,
+          timestamp: DateTime(2024, 8, 1),
+        );
 
         final json = original.toJson();
         final restored = Event.fromJson(json);
