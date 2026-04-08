@@ -101,7 +101,7 @@ class Trip extends ChangeNotifier {
     if (lowerBound.isBefore(startTime)) {
       throw DomainException(
         endTime == null
-            ? DomainError.tipStartInFuture
+            ? DomainError.tripStartInFuture
             : DomainError.tripEndBeforeTripStart,
       );
     }

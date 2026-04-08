@@ -1,5 +1,5 @@
 enum DomainError {
-  tipStartInFuture,
+  tripStartInFuture,
   tripEndBeforeTripStart,
   eventBeforeTripStart,
   eventAfterTripEnd,
