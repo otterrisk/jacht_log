@@ -1,4 +1,4 @@
-import 'package:jacht_log/domain/state.dart';
+import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/trip.dart';
 
 enum TimeCounter { sailing, motoring, stopped }

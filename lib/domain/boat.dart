@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/event.dart';
-import 'package:jacht_log/domain/state.dart';
 import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_change.dart';

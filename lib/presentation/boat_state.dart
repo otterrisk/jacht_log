@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/domain/state.dart';
+import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/l10n/app_localizations.dart';
 
 extension BoatModeLabel on BoatMode {
