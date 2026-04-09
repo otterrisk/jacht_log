@@ -7,11 +7,11 @@ import 'package:jacht_log/domain/trip_change.dart';
 
 class Boat extends ChangeNotifier {
   final Trip trip;
-  late State state;
+  late BoatState state;
   late Timer timer;
 
   Boat(this.trip) {
-    state = State(trip: trip);
+    state = BoatState.fromTrip(trip);
     timer = Timer(trip: trip);
     trip.addListener(_onTripChange);
   }

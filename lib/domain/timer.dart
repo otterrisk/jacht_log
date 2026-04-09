@@ -27,7 +27,7 @@ class Timer {
   }
 
   void replay(Trip trip) {
-    final state = State();
+    final state = BoatState.initial();
     for (final e in trip.events) {
       update(state.mode, e.timestamp);
       state.update(e);

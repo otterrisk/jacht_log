@@ -3,39 +3,57 @@ import 'package:jacht_log/domain/trip.dart';
 
 enum BoatMode { stopped, sailing, motoring, drifting }
 
-class State {
-  final Map<EventSource, bool> _state = {
-    for (final source in EventSource.values) source: false,
-    EventSource.port: true,
-  };
+class BoatState {
+  Map<EventSource, bool> _state;
 
-  State({final Trip? trip}) {
-    if (trip != null) {
-      replay(trip);
-    }
+  BoatState._(this._state);
+
+  factory BoatState.initial() {
+    return BoatState._({
+      EventSource.port: true,
+      EventSource.anchor: false,
+      EventSource.sail: false,
+      EventSource.engine: false,
+    });
+  }
+
+  factory BoatState.fromTrip(Trip trip) {
+    final state = BoatState.initial();
+    state.replay(trip);
+    return state;
   }
 
   void rebuild(Trip trip) {
-    reset();
+    _reset();
     replay(trip);
   }
 
-  void reset() {
-    _state.clear();
-    for (final source in EventSource.values) {
-      _state[source] = false;
-    }
-    _state[EventSource.port] = true;
+  void _reset() {
+    _state
+      ..clear()
+      ..addAll({
+        EventSource.port: true,
+        EventSource.anchor: false,
+        EventSource.sail: false,
+        EventSource.engine: false,
+      });
   }
 
   void replay(Trip trip) {
-    for (final e in trip.events) {
-      update(e);
+    for (final event in trip.events) {
+      update(event);
     }
   }
 
   void update(Event event) {
-    _state[event.source] = event.type == EventType.start;
+    switch (event.type) {
+      case EventType.start:
+        _state[event.source] = true;
+        break;
+      case EventType.stop:
+        _state[event.source] = false;
+        break;
+    }
   }
 
   bool isOn(EventSource source) => _state[source] == true;
