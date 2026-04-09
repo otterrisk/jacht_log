@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/domain/trip_validator.dart';
 import 'package:jacht_log/presentation/models/event_result.dart';
+import 'package:jacht_log/presentation/validation/validation_view_model.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
 import 'package:jacht_log/widgets/edit_event_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
   final Trip trip;
+  final ValidationViewModel validation;
   final ScrollController scrollController;
 
   const EventList({
     super.key,
     required this.trip,
+    required this.validation,
     required this.scrollController,
   });
 
@@ -42,7 +46,6 @@ class EventList extends StatelessWidget {
 
             const Divider(height: 1),
 
-            // 🔹 lista
             Expanded(
               child: ListView.builder(
                 controller: scrollController,
@@ -50,11 +53,12 @@ class EventList extends StatelessWidget {
                 itemCount: trip.events.length,
                 itemBuilder: (context, index) {
                   final event = trip.events[index];
+                  final issues = validation.index[event.id] ?? [];
                   final background = index.isEven
                       ? Theme.of(context).colorScheme.surfaceContainerHighest
                       : Colors.transparent;
 
-                  return eventRow(context, event, background);
+                  return eventRow(context, event, issues, background);
                 },
               ),
             ),
@@ -64,7 +68,12 @@ class EventList extends StatelessWidget {
     );
   }
 
-  Widget eventRow(BuildContext context, Event event, Color background) {
+  Widget eventRow(
+    BuildContext context,
+    Event event,
+    List<ValidationIssue> issues,
+    Color background,
+  ) {
     return Dismissible(
       key: ValueKey(event.id),
       direction: DismissDirection.endToStart,
@@ -79,6 +88,7 @@ class EventList extends StatelessWidget {
 
       child: EventTile(
         event: event,
+        issues: issues,
         background: background,
         onTap: () => _editEventDetails(context, event),
       ),

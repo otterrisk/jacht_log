@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/controllers/boat_controller.dart';
+import 'package:jacht_log/domain/trip_validator.dart';
 import 'package:jacht_log/l10n/l10n.dart';
+import 'package:jacht_log/presentation/validation/validation_view_model.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
 import 'package:jacht_log/widgets/event_list.dart';
@@ -70,6 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListenableBuilder(
       listenable: boat,
       builder: (context, child) {
+        final trip = boat.trip;
+        final validation = ValidationViewModel(TripValidator().validate(trip));
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -83,9 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: Column(
             children: [
-              TripBar(trip: boat.trip),
-              BoatControls(boat: boat, active: boat.trip.active),
-              EventList(trip: boat.trip, scrollController: _scrollController),
+              TripBar(trip: trip),
+              BoatControls(boat: boat, active: trip.active),
+              EventList(
+                trip: trip,
+                validation: validation,
+                scrollController: _scrollController,
+              ),
               TimeTable(timer: boat.timer),
             ],
           ),
