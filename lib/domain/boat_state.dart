@@ -8,13 +8,15 @@ class BoatState {
 
   BoatState._(this._state);
 
+  static Map<EventSource, bool> _initialState() => {
+    EventSource.port: true,
+    EventSource.anchor: false,
+    EventSource.sail: false,
+    EventSource.engine: false,
+  };
+
   factory BoatState.initial() {
-    return BoatState._({
-      EventSource.port: true,
-      EventSource.anchor: false,
-      EventSource.sail: false,
-      EventSource.engine: false,
-    });
+    return BoatState._(_initialState());
   }
 
   factory BoatState.fromTrip(Trip trip) {
@@ -31,12 +33,7 @@ class BoatState {
   void _reset() {
     _state
       ..clear()
-      ..addAll({
-        EventSource.port: true,
-        EventSource.anchor: false,
-        EventSource.sail: false,
-        EventSource.engine: false,
-      });
+      ..addAll(_initialState());
   }
 
   void replay(Trip trip) {
