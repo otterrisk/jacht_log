@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/presentation/formatting.dart';
+import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 
 class TripBar extends StatefulWidget {
   final Trip trip;

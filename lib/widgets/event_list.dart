@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/presentation/models/event_result.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
-import 'package:jacht_log/presentation/event_result.dart';
 import 'package:jacht_log/widgets/edit_event_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 

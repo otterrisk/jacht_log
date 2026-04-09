@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
-import 'package:jacht_log/presentation/event.dart';
+import 'package:jacht_log/presentation/extensions/event_ext.dart';
 
 class EventPreset {
   final EventSource source;

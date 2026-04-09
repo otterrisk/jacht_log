@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/presentation/event_preset.dart';
-import 'package:jacht_log/presentation/event_result.dart';
+import 'package:jacht_log/presentation/models/event_preset.dart';
+import 'package:jacht_log/presentation/models/event_result.dart';
 import 'package:jacht_log/widgets/date_time_picker.dart';
 
 class AddEventDialog extends StatefulWidget {

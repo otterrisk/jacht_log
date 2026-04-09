@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
-import 'package:jacht_log/presentation/event.dart';
-import 'package:jacht_log/presentation/formatting.dart';
+import 'package:jacht_log/presentation/extensions/event_ext.dart';
+import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 
 class EventTile extends StatelessWidget {
   final Event event;

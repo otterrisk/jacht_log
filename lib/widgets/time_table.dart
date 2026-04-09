@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/timer.dart';
 import 'package:jacht_log/l10n/l10n.dart';
-import 'package:jacht_log/presentation/formatting.dart';
-import 'package:jacht_log/presentation/timer.dart';
+import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
+import 'package:jacht_log/presentation/extensions/timer_ext.dart';
 
 class TimeTable extends StatelessWidget {
   const TimeTable({super.key, required this.timer});
