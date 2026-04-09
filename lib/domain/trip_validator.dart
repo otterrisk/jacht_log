@@ -2,7 +2,7 @@ import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/trip.dart';
 
-enum ValidationCode { duplicateStart, duplicateStop, unclosedStart }
+enum ValidationCode { duplicateStart, duplicateStop, invalidFinalState }
 
 enum Severity { warning, error }
 
@@ -83,11 +83,12 @@ class TripValidator {
     }
 
     final endsOn = expectedType == EventType.stop;
+    final shouldEndOn = BoatState.initial().isOn(source);
 
-    if (endsOn && previous != null) {
+    if (endsOn != shouldEndOn && previous != null) {
       issues.add(
         ValidationIssue(
-          code: ValidationCode.unclosedStart,
+          code: ValidationCode.invalidFinalState,
           severity: Severity.warning,
           event: previous,
         ),

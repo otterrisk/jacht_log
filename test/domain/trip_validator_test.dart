@@ -102,7 +102,7 @@ void main() {
         expect(issues.first.relatedEvent?.id, '2');
       });
 
-      test('port initializes ON so first event must be stop', () {
+      test('port starts ON so first event must be stop', () {
         final trip = newTrip(
           events: [
             newEvent(
@@ -117,6 +117,12 @@ void main() {
               type: EventType.stop,
               timestamp: DateTime(2024, 7, 4),
             ),
+            newEvent(
+              id: '3',
+              source: EventSource.port,
+              type: EventType.start,
+              timestamp: DateTime(2024, 7, 5),
+            ),
           ],
         );
 
@@ -126,7 +132,30 @@ void main() {
         expect(issues.first.code, ValidationCode.duplicateStart);
       });
 
-      test('sail initializes OFF so first event must be start', () {
+      test('port ends ON -> no warning', () {
+        final trip = newTrip(
+          events: [
+            newEvent(
+              id: '1',
+              source: EventSource.port,
+              type: EventType.stop,
+              timestamp: DateTime(2024, 7, 3),
+            ),
+            newEvent(
+              id: '2',
+              source: EventSource.port,
+              type: EventType.start,
+              timestamp: DateTime(2024, 7, 4),
+            ),
+          ],
+        );
+
+        final issues = TripValidator().validate(trip);
+
+        expect(issues, isEmpty);
+      });
+
+      test('sail starts OFF so first event must be start', () {
         final trip = newTrip(
           events: [
             newEvent(
@@ -142,6 +171,24 @@ void main() {
 
         expect(issues, hasLength(1));
         expect(issues.first.code, ValidationCode.duplicateStop);
+      });
+
+      test('sail ends ON -> warning', () {
+        final trip = newTrip(
+          events: [
+            newEvent(
+              id: '1',
+              source: EventSource.sail,
+              type: EventType.start,
+              timestamp: DateTime(2024, 7, 3),
+            ),
+          ],
+        );
+
+        final issues = TripValidator().validate(trip);
+
+        expect(issues, hasLength(1));
+        expect(issues.first.code, ValidationCode.invalidFinalState);
       });
 
       test('different sources are independent', () {
