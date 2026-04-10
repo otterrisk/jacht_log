@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/domain/timer.dart';
+import 'package:jacht_log/domain/trip_timer.dart';
 import 'package:jacht_log/l10n/app_localizations.dart';
 
 extension TimeCounterText on TimeCounter {
