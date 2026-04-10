@@ -39,7 +39,9 @@ class TripTimer {
   }
 
   void update(BoatMode mode, DateTime timestamp) {
-    time[mode.counter.index] += timestamp.difference(last);
+    final delta = timestamp.difference(last);
+    assert(delta >= Duration.zero);
+    time[mode.counter.index] += delta;
     last = timestamp;
   }
 }
