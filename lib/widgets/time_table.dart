@@ -7,7 +7,7 @@ import 'package:jacht_log/presentation/extensions/timer_ext.dart';
 class TimeTable extends StatelessWidget {
   const TimeTable({super.key, required this.timer});
 
-  final Timer timer;
+  final TripTimer timer;
 
   @override
   Widget build(BuildContext context) {

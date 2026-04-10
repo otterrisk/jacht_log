@@ -3,14 +3,14 @@ import 'package:jacht_log/domain/trip.dart';
 
 enum TimeCounter { sailing, motoring, stopped }
 
-class Timer {
+class TripTimer {
   final List<Duration> time = List.filled(
     TimeCounter.values.length,
     Duration.zero,
   );
   DateTime last;
 
-  Timer({required final Trip trip}) : last = trip.startTime {
+  TripTimer({required final Trip trip}) : last = trip.startTime {
     replay(trip);
   }
 
