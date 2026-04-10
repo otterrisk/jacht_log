@@ -1,7 +1,6 @@
+import 'package:jacht_log/domain/boat_mode.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
-
-enum BoatMode { stopped, sailing, motoring, drifting }
 
 class BoatState {
   Map<EventSource, bool> _state;

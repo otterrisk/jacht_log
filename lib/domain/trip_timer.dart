@@ -1,3 +1,4 @@
+import 'package:jacht_log/domain/boat_mode.dart';
 import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/trip.dart';
 
@@ -38,21 +39,7 @@ class TripTimer {
   }
 
   void update(BoatMode mode, DateTime timestamp) {
-    time[counter(mode).index] += timestamp.difference(last);
+    time[mode.counter.index] += timestamp.difference(last);
     last = timestamp;
-  }
-
-  TimeCounter counter(BoatMode mode) {
-    switch (mode) {
-      case BoatMode.stopped:
-        return TimeCounter.stopped;
-
-      case BoatMode.sailing:
-      case BoatMode.drifting:
-        return TimeCounter.sailing;
-
-      case BoatMode.motoring:
-        return TimeCounter.motoring;
-    }
   }
 }
