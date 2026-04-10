@@ -23,8 +23,13 @@ class _AddEventDialogState extends State<AddEventDialog> {
   EventPreset? _selectedPreset;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _timestamp = widget.maxTime;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Add event"),
       content: Column(
