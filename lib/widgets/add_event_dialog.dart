@@ -18,12 +18,13 @@ class AddEventDialog extends StatefulWidget {
 }
 
 class _AddEventDialogState extends State<AddEventDialog> {
-  DateTime _timestamp = DateTime.now();
+  DateTime? _timestamp;
   String? _errorText;
   EventPreset? _selectedPreset;
 
   @override
   Widget build(BuildContext context) {
+    _timestamp = widget.maxTime;
     return AlertDialog(
       title: const Text("Add event"),
       content: Column(
@@ -50,14 +51,14 @@ class _AddEventDialogState extends State<AddEventDialog> {
           const SizedBox(height: 12),
 
           DateTimePicker(
-            value: _timestamp,
+            value: _timestamp!,
             firstDate: widget.minTime,
             lastDate: widget.maxTime,
             errorText: _errorText,
             onChanged: (newTs) {
               setState(() {
                 _timestamp = newTs;
-                _errorText = _timestamp.validate(
+                _errorText = _timestamp?.validate(
                   min: widget.minTime,
                   max: widget.maxTime,
                 );
@@ -86,7 +87,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
     Navigator.pop(
       context,
       EventResult(
-        timestamp: _timestamp,
+        timestamp: _timestamp!,
         source: _selectedPreset!.source,
         type: _selectedPreset!.type,
       ),
