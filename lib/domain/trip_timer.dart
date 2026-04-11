@@ -5,7 +5,7 @@ import 'package:jacht_log/domain/trip.dart';
 enum TimeCounter { sailing, motoring, stopped }
 
 class TripTimer {
-  final List<Duration> time = List.filled(
+  final List<Duration> _time = List.filled(
     TimeCounter.values.length,
     Duration.zero,
   );
@@ -15,10 +15,12 @@ class TripTimer {
     _replay(trip);
   }
 
+  List<Duration> get time => List.unmodifiable(_time);
+
   void update(BoatMode mode, DateTime timestamp) {
     final delta = timestamp.difference(_last);
     assert(delta >= Duration.zero);
-    time[mode.counter.index] += delta;
+    _time[mode.counter.index] += delta;
     _last = timestamp;
   }
 
@@ -28,9 +30,7 @@ class TripTimer {
   }
 
   void _reset(DateTime startTime) {
-    for (var i = 0; i < time.length; i++) {
-      time[i] = Duration.zero;
-    }
+    _time.fillRange(0, TimeCounter.values.length, Duration.zero);
     _last = startTime;
   }
 
