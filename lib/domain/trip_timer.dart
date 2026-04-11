@@ -9,25 +9,32 @@ class TripTimer {
     TimeCounter.values.length,
     Duration.zero,
   );
-  DateTime last;
+  DateTime _last;
 
-  TripTimer({required final Trip trip}) : last = trip.startTime {
-    replay(trip);
+  TripTimer({required final Trip trip}) : _last = trip.startTime {
+    _replay(trip);
+  }
+
+  void update(BoatMode mode, DateTime timestamp) {
+    final delta = timestamp.difference(_last);
+    assert(delta >= Duration.zero);
+    time[mode.counter.index] += delta;
+    _last = timestamp;
   }
 
   void rebuild(Trip trip) {
-    reset(trip.startTime);
-    replay(trip);
+    _reset(trip.startTime);
+    _replay(trip);
   }
 
-  void reset(DateTime startTime) {
+  void _reset(DateTime startTime) {
     for (var i = 0; i < time.length; i++) {
       time[i] = Duration.zero;
     }
-    last = startTime;
+    _last = startTime;
   }
 
-  void replay(Trip trip) {
+  void _replay(Trip trip) {
     final state = BoatState.initial();
     for (final e in trip.events) {
       update(state.mode, e.timestamp);
@@ -36,12 +43,5 @@ class TripTimer {
     if (!trip.active) {
       update(state.mode, trip.endTime!);
     }
-  }
-
-  void update(BoatMode mode, DateTime timestamp) {
-    final delta = timestamp.difference(last);
-    assert(delta >= Duration.zero);
-    time[mode.counter.index] += delta;
-    last = timestamp;
   }
 }
