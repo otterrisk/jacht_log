@@ -16,6 +16,7 @@ class TripTimer {
   }
 
   List<Duration> get time => List.unmodifiable(_time);
+  DateTime get last => _last;
 
   void update(BoatMode mode, DateTime timestamp) {
     final delta = timestamp.difference(_last);
