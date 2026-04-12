@@ -1,41 +1,38 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/boat_mode.dart';
 import 'package:jacht_log/domain/boat_state.dart';
+import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_timer.dart';
 import 'package:jacht_log/l10n/l10n.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 import 'package:jacht_log/presentation/extensions/time_counter_ext.dart';
+import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
 class TimeTable extends StatefulWidget {
-  const TimeTable({super.key, required this.timer, required this.state});
-
   final TripTimer timer;
   final BoatState state;
+  final Trip trip;
+
+  const TimeTable({
+    super.key,
+    required this.timer,
+    required this.state,
+    required this.trip,
+  });
 
   @override
   State<TimeTable> createState() => _TimeTableState();
 }
 
-class _TimeTableState extends State<TimeTable> {
-  late final Timer _ticker;
+class _TimeTableState extends State<TimeTable> with TripTickerMixin {
+  @override
+  Listenable get trip => widget.trip;
 
   @override
-  void initState() {
-    super.initState();
-
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      setState(() {});
-    });
-  }
+  bool get isActive => widget.trip.active;
 
   @override
-  void dispose() {
-    _ticker.cancel();
-    super.dispose();
-  }
+  Duration get tickInterval => const Duration(seconds: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +47,7 @@ class _TimeTableState extends State<TimeTable> {
     Duration value(TimeCounter counter) {
       final base = widget.timer.time[counter.index];
 
-      if (counter == currentCounter) {
+      if (counter == currentCounter && isActive) {
         return base + liveDelta;
       }
       return base;

@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
+import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
 class TripBar extends StatefulWidget {
   final Trip trip;
@@ -13,37 +12,15 @@ class TripBar extends StatefulWidget {
   State<TripBar> createState() => _TripBarState();
 }
 
-class _TripBarState extends State<TripBar> {
-  Timer? _timer;
+class _TripBarState extends State<TripBar> with TripTickerMixin {
+  @override
+  Listenable get trip => widget.trip;
 
   @override
-  void initState() {
-    super.initState();
-    widget.trip.addListener(_tripChanged);
-    _updateTimer();
-  }
+  bool get isActive => widget.trip.active;
 
   @override
-  void dispose() {
-    widget.trip.removeListener(_tripChanged);
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void _tripChanged() {
-    _updateTimer();
-    setState(() {});
-  }
-
-  void _updateTimer() {
-    _timer?.cancel();
-
-    if (widget.trip.active) {
-      _timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-        setState(() {});
-      });
-    }
-  }
+  Duration get tickInterval => const Duration(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
