@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/controllers/boat_controller.dart';
 import 'package:jacht_log/domain/trip_validator.dart';
 import 'package:jacht_log/l10n/l10n.dart';
-import 'package:jacht_log/presentation/validation/validation_view_model.dart';
+import 'package:jacht_log/presentation/view_models/validation_vm.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
 import 'package:jacht_log/widgets/event_list.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/l10n/app_localizations.dart';
-import 'package:jacht_log/presentation/models/event_result.dart';
+import 'package:jacht_log/presentation/dto/event_result.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
 import 'package:jacht_log/widgets/date_time_picker.dart';
 

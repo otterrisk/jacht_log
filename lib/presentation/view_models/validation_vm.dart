@@ -1,5 +1,5 @@
 import 'package:jacht_log/domain/trip_validator.dart';
-import 'package:jacht_log/presentation/validation/issue_index_builder.dart';
+import 'package:jacht_log/presentation/mappers/issue_index.dart';
 
 class ValidationViewModel {
   final List<ValidationIssue> issues;
