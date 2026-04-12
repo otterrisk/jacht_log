@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jacht_log/domain/boat_mode.dart';
 import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_timer.dart';
@@ -42,6 +43,7 @@ class _TimeTableState extends State<TimeTable> with TripTickerMixin {
       isActive: isActive,
       now: DateTime.now(),
     );
+    final currentCounter = widget.state.mode.counter;
 
     return Card(
       elevation: 1,
@@ -51,7 +53,11 @@ class _TimeTableState extends State<TimeTable> with TripTickerMixin {
           columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
           children: [
             for (final counter in TimeCounter.values) ...[
-              _timeRow(counter.text(context), vm.values[counter]!),
+              _timeRow(
+                counter.text(context),
+                vm.values[counter]!,
+                highlighted: counter == currentCounter && isActive,
+              ),
             ],
             const TableRow(children: [Divider(), Divider()]),
             _timeRow(context.l10n.timeTableTotal, vm.total, bold: true),
@@ -61,17 +67,27 @@ class _TimeTableState extends State<TimeTable> with TripTickerMixin {
     );
   }
 
-  TableRow _timeRow(String label, Duration duration, {bool bold = false}) {
+  TableRow _timeRow(
+    String label,
+    Duration duration, {
+    bool bold = false,
+    bool highlighted = false,
+  }) {
     final style = bold ? const TextStyle(fontWeight: FontWeight.bold) : null;
 
+    final backgroundColor = highlighted
+        ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+        : null;
+
     return TableRow(
+      decoration: BoxDecoration(color: backgroundColor),
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
           child: Text(label, style: style),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
           child: Text(
             duration.toTimeTableDuration(),
             textAlign: TextAlign.right,
