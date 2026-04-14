@@ -9,7 +9,7 @@
 - [x] invariant: Event musi być w zakresie trwania Trip
 - [x] odświeżanie tabeli czasów po edycji czasu manewru
 - [x] dodać dzień tygodnia w liście Eventów
-- [ ] bierząca aktualizacja timera
+- [x] bierząca aktualizacja timera
 
 - [ ] możliwość dodawania opisów Event'ów, np zakotwiczono - gdzie?
 - [ ] lista Eventów z podziałem na dni + przewijanie dni w poziomie
