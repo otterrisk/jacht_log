@@ -10,7 +10,7 @@ import 'package:jacht_log/presentation/view_models/time_table_vm.dart';
 import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
 class TimeTable extends StatefulWidget {
-  final TripTimer timer;
+  final TripTimerBase timer;
   final BoatState state;
   final Trip trip;
 
@@ -39,8 +39,6 @@ class _TimeTableState extends State<TimeTable> with TripTickerMixin {
   Widget build(BuildContext context) {
     final vm = TimeTableViewModel.create(
       timer: widget.timer,
-      state: widget.state,
-      isActive: isActive,
       now: DateTime.now(),
     );
     final currentCounter = widget.state.mode.counter;

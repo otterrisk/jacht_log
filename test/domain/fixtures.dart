@@ -33,3 +33,10 @@ Trip newTrip({
   };
   return Trip.fromJson(json);
 }
+
+class FakeClock {
+  DateTime now;
+  FakeClock(this.now);
+
+  DateTime call() => now;
+}

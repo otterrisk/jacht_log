@@ -41,11 +41,11 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
   }
 
   String _timeRange(Trip trip) {
-    final start = trip.startTime.toTripBarDateTime();
+    final start = trip.started ? trip.startTime?.toTripBarDateTime() : "--:--";
 
     final end = trip.active
         ? DateTime.now().toTripBarDateTime(blink: true)
-        : (trip.endTime != null ? trip.endTime!.toTripBarDateTime() : "--:--");
+        : (trip.finished ? trip.endTime?.toTripBarDateTime() : "--:--");
 
     return "$start → $end";
   }

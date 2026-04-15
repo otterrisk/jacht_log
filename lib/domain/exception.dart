@@ -1,9 +1,11 @@
 enum DomainError {
+  tripNotStarted,
+  tripAlreadyStarted,
+  tripNotActive,
   tripStartInFuture,
   tripEndBeforeTripStart,
   eventBeforeTripStart,
   eventAfterTripEnd,
-  eventInFuture,
   eventNotFound,
 }
 

@@ -37,7 +37,9 @@ class EventList extends StatelessWidget {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () => _addEvent(context),
+                    onPressed: trip.canAddEvent
+                        ? () => _addEvent(context)
+                        : null,
                     icon: const Icon(Icons.add),
                   ),
                 ],
@@ -99,8 +101,8 @@ class EventList extends StatelessWidget {
     final result = await showDialog<EventResult>(
       context: context,
       builder: (_) => AddEventDialog(
-        minTime: trip.startTime,
-        maxTime: trip.endTime ?? DateTime.now(),
+        minTime: trip.requireStartTime(),
+        maxTime: trip.effectiveEndTime,
       ),
     );
 
@@ -147,8 +149,8 @@ class EventList extends StatelessWidget {
       context: context,
       builder: (_) => EditEventDialog(
         event: event,
-        minTime: trip.startTime,
-        maxTime: trip.endTime ?? DateTime.now(),
+        minTime: trip.requireStartTime(),
+        maxTime: trip.effectiveEndTime,
       ),
     );
 

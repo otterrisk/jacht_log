@@ -2,17 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/domain/trip_change.dart';
 import 'package:jacht_log/domain/trip_timer.dart';
 
 class Boat extends ChangeNotifier {
   final Trip trip;
+
   late BoatState state;
-  late TripTimer timer;
+  late TripTimerBase timer;
 
   Boat(this.trip) {
     state = BoatState.fromTrip(trip);
-    timer = TripTimer(trip: trip);
+    timer = _createTimer(trip);
+
     trip.addListener(_onTripChange);
   }
 
@@ -22,33 +23,23 @@ class Boat extends ChangeNotifier {
     super.dispose();
   }
 
-  void _onTripChange() {
-    switch (trip.change) {
-      case TripStarted():
-        timer.update(state.mode, DateTime.now());
-        break;
-      case TripStopped():
-        timer.update(state.mode, trip.endTime!);
-        break;
-      case EventAdded():
-      case EventRemoved():
-      case EventUpdated():
-        timer.rebuild(trip);
-        state.rebuild(trip);
-        break;
-      default:
-        break;
+  TripTimerBase _createTimer(Trip trip) {
+    if (trip.started) {
+      return TripTimer(trip: trip);
+    } else {
+      return InactiveTripTimer();
     }
+  }
+
+  void _onTripChange() {
+    state = BoatState.fromTrip(trip);
+    timer = _createTimer(trip);
     notifyListeners();
   }
 
   void toggle(EventSource source) {
-    EventType type;
-    if (state.isOn(source)) {
-      type = EventType.stop;
-    } else {
-      type = EventType.start;
-    }
+    final type = state.isOn(source) ? EventType.stop : EventType.start;
+
     trip.addEvent(Event(source: source, type: type, timestamp: DateTime.now()));
   }
 }

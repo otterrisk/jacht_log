@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class Trip extends ChangeNotifier {
   final String id;
-  final DateTime startTime;
+  DateTime? startTime;
   DateTime? endTime;
   final List<Event> _events;
   final DateTime Function() _now;
@@ -25,7 +25,7 @@ class Trip extends ChangeNotifier {
     now ??= DateTime.now;
     return Trip._(
       id: const Uuid().v4(),
-      startTime: now(),
+      startTime: null,
       endTime: null,
       events: <Event>[],
       now: now,
@@ -35,7 +35,9 @@ class Trip extends ChangeNotifier {
   factory Trip.fromJson(Map<String, dynamic> json) {
     final trip = Trip._(
       id: json['id'],
-      startTime: DateTime.parse(json['startTime']),
+      startTime: json['startTime'] == null
+          ? null
+          : DateTime.parse(json['startTime']),
       endTime: json['endTime'] == null ? null : DateTime.parse(json['endTime']),
       events: (json['events'] as List).map((e) => Event.fromJson(e)).toList(),
     );
@@ -47,7 +49,7 @@ class Trip extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'startTime': startTime.toIso8601String(),
+    'startTime': startTime?.toIso8601String(),
     'endTime': endTime?.toIso8601String(),
     'events': events.map((e) => e.toJson()).toList(),
   };
@@ -56,19 +58,39 @@ class Trip extends ChangeNotifier {
 
   TripChange? get change => _change;
 
-  bool get active => endTime == null;
+  bool get started => startTime != null;
+
+  bool get finished => endTime != null;
+
+  bool get active => started && !finished;
+
+  bool get canAddEvent => started;
+
+  DateTime requireStartTime() {
+    final value = startTime;
+    if (value == null) {
+      throw DomainException(DomainError.tripNotStarted);
+    }
+    return value;
+  }
+
+  DateTime get effectiveEndTime => endTime ?? _now();
 
   void start() {
+    if (started) throw DomainException(DomainError.tripAlreadyStarted);
+    startTime = _now();
     endTime = null;
     _emit(TripStarted());
   }
 
   void stop() {
+    if (!active) throw DomainException(DomainError.tripNotActive);
     endTime = _now();
     _emit(TripStopped());
   }
 
   void addEvent(Event event) {
+    if (!canAddEvent) throw DomainException(DomainError.tripNotStarted);
     _validateTimestamp(event.timestamp);
     _events.add(event);
     _sortEvents();
@@ -97,12 +119,15 @@ class Trip extends ChangeNotifier {
   }
 
   void _validateStartEnd() {
-    final lowerBound = endTime ?? _now();
-    if (lowerBound.isBefore(startTime)) {
+    if (!started) return;
+
+    final start = startTime!;
+    final end = effectiveEndTime;
+    if (end.isBefore(start)) {
       throw DomainException(
-        endTime == null
-            ? DomainError.tripStartInFuture
-            : DomainError.tripEndBeforeTripStart,
+        finished
+            ? DomainError.tripEndBeforeTripStart
+            : DomainError.tripStartInFuture,
       );
     }
   }
@@ -114,17 +139,20 @@ class Trip extends ChangeNotifier {
   }
 
   void _validateTimestamp(DateTime timestamp) {
-    if (timestamp.isBefore(startTime)) {
+    if (!started) {
+      throw DomainException(DomainError.tripNotStarted);
+    }
+
+    final start = startTime!;
+    if (timestamp.isBefore(start)) {
       throw DomainException(DomainError.eventBeforeTripStart);
     }
 
-    final upperBound = endTime ?? _now();
-    if (timestamp.isAfter(upperBound)) {
-      throw DomainException(
-        endTime == null
-            ? DomainError.eventInFuture
-            : DomainError.eventAfterTripEnd,
-      );
+    if (finished) {
+      final end = endTime!;
+      if (timestamp.isAfter(end)) {
+        throw DomainException(DomainError.eventAfterTripEnd);
+      }
     }
   }
 

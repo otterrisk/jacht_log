@@ -17,6 +17,70 @@ void main() {
         expect(trip.events.first, equals(event));
       });
 
+      test('cannot add event if trip not started', () {
+        final trip = Trip();
+
+        expect(
+          () => trip.addEvent(newEvent()),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException && e.error == DomainError.tripNotStarted,
+            ),
+          ),
+        );
+      });
+
+      test('can add event if trip finished', () {
+        final start = DateTime(2024, 1, 1, 12);
+        final end = DateTime(2024, 1, 1, 13);
+        final trip = newTrip(startTime: start, endTime: end);
+
+        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 30));
+
+        trip.addEvent(event);
+
+        expect(trip.events, contains(event));
+      });
+
+      test('can add event after trip finished (workflow)', () {
+        final clock = FakeClock(DateTime(2024, 1, 1, 12));
+
+        final trip = Trip(now: clock.call);
+
+        trip.start(); // 12:00
+
+        clock.now = DateTime(2024, 1, 1, 13);
+        trip.stop(); // 13:00
+
+        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 30));
+
+        trip.addEvent(event);
+
+        expect(trip.events, contains(event));
+      });
+
+      test('cannot add event after trip end time', () {
+        final now = DateTime(2024, 1, 1, 12);
+        final trip = Trip(now: () => now);
+
+        trip.start();
+        trip.stop();
+
+        final event = newEvent(timestamp: now.add(Duration(minutes: 1)));
+
+        expect(
+          () => trip.addEvent(event),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException &&
+                  e.error == DomainError.eventAfterTripEnd,
+            ),
+          ),
+        );
+      });
+
       test('sorting events by timestamp after adding', () {
         final trip = newTrip();
         final older = newEvent(id: '1', timestamp: DateTime(2024, 7, 3));
@@ -154,6 +218,46 @@ void main() {
         );
       });
 
+      test('can update event after trip finished within bounds', () {
+        final clock = FakeClock(DateTime(2024, 1, 1, 12));
+
+        final trip = Trip(now: clock.call);
+
+        trip.start(); // 12:00
+
+        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 10));
+        trip.addEvent(event);
+
+        clock.now = DateTime(2024, 1, 1, 13);
+        trip.stop(); // 13:00
+
+        expect(
+          () =>
+              trip.updateEventTimestamp(event.id, DateTime(2024, 1, 1, 12, 20)),
+          returnsNormally,
+        );
+      });
+
+      test('cannot move event after trip end', () {
+        final clock = FakeClock(DateTime(2024, 1, 1, 12));
+
+        final trip = Trip(now: clock.call);
+
+        trip.start();
+
+        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 10));
+        trip.addEvent(event);
+
+        clock.now = DateTime(2024, 1, 1, 13);
+        trip.stop(); // endTime = 13:00
+
+        expect(
+          () =>
+              trip.updateEventTimestamp(event.id, DateTime(2024, 1, 1, 13, 30)),
+          throwsA(isA<DomainException>()),
+        );
+      });
+
       test('updating does not duplicate event', () {
         final trip = newTrip();
         final event = newEvent();
@@ -215,6 +319,45 @@ void main() {
         expect(restored.endTime, original.endTime);
         expect(restored.events.length, 1);
         expect(restored.events.first, equals(event));
+      });
+
+      test('fromJson supports trip without startTime', () {
+        final json = {
+          'id': '1',
+          'startTime': null,
+          'endTime': null,
+          'events': [],
+        };
+
+        final trip = Trip.fromJson(json);
+
+        expect(trip.started, false);
+      });
+
+      test('fromJson fails when events exist but trip not started', () {
+        final json = {
+          'id': '1',
+          'startTime': null,
+          'endTime': null,
+          'events': [
+            {
+              'id': '123',
+              'source': 'engine',
+              'type': 'start',
+              'timestamp': '2024-08-01',
+            },
+          ],
+        };
+
+        expect(
+          () => Trip.fromJson(json),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is DomainException && e.error == DomainError.tripNotStarted,
+            ),
+          ),
+        );
       });
 
       test('end time validation on deserialization', () {
