@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
-import 'package:jacht_log/presentation/extensions/trip_status_ext.dart';
 import 'package:jacht_log/widgets/date_time_picker_dialog.dart';
+import 'package:jacht_log/widgets/trip_control_button.dart';
 import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
 class TripBar extends StatefulWidget {
@@ -27,41 +27,16 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
   @override
   Widget build(BuildContext context) {
     final trip = widget.trip;
-    final status = trip.status;
 
     return SizedBox(
       height: 44,
       child: Row(
         children: [
           Expanded(child: Center(child: _timeRangeWidget(trip))),
-          IconButton(
-            icon: Icon(_iconFor(status)),
-            onPressed: _actionFor(status, trip),
-          ),
+          TripControlButton(trip: trip),
         ],
       ),
     );
-  }
-
-  IconData _iconFor(TripStatus status) {
-    switch (status) {
-      case TripStatus.notStarted:
-        return Icons.play_arrow;
-      case TripStatus.active:
-      case TripStatus.finished:
-        return Icons.stop;
-    }
-  }
-
-  VoidCallback? _actionFor(TripStatus status, Trip trip) {
-    switch (status) {
-      case TripStatus.notStarted:
-        return trip.start;
-      case TripStatus.active:
-        return trip.stop;
-      case TripStatus.finished:
-        return null;
-    }
   }
 
   Widget _timeRangeWidget(Trip trip) {
