@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_validator.dart';
+import 'package:jacht_log/presentation/actions/events/add_event.dart';
 import 'package:jacht_log/presentation/actions/events/edit_event_timestamp.dart';
-import 'package:jacht_log/presentation/dto/event_result.dart';
 import 'package:jacht_log/presentation/view_models/validation_vm.dart';
-import 'package:jacht_log/widgets/add_event_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
@@ -38,7 +37,7 @@ class EventList extends StatelessWidget {
                   const Spacer(),
                   IconButton(
                     onPressed: trip.canAddEvent
-                        ? () => _addEvent(context)
+                        ? () => addEvent(context: context, trip: trip)
                         : null,
                     icon: const Icon(Icons.add),
                   ),
@@ -94,26 +93,6 @@ class EventList extends StatelessWidget {
         background: background,
         onTap: () =>
             editEventTimestamp(context: context, event: event, trip: trip),
-      ),
-    );
-  }
-
-  Future<void> _addEvent(BuildContext context) async {
-    final result = await showDialog<EventResult>(
-      context: context,
-      builder: (_) => AddEventDialog(
-        minTime: trip.requireStartTime(),
-        maxTime: trip.effectiveEndTime,
-      ),
-    );
-
-    if (result == null) return;
-
-    trip.addEvent(
-      Event(
-        source: result.source,
-        type: result.type,
-        timestamp: result.timestamp,
       ),
     );
   }

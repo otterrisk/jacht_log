@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/presentation/dialogs/events/show_edit_event_time_dialog.dart';
+import 'package:jacht_log/presentation/dialogs/events/show_add_event_dialog.dart';
 
-Future<void> editEventTimestamp({
+Future<void> addEvent({
   required BuildContext context,
-  required Event event,
   required Trip trip,
 }) async {
-  final result = await showEditEventTimeDialog(
+  final result = await showAddEventDialog(
     context: context,
-    event: event,
     minTime: trip.requireStartTime(),
     maxTime: trip.effectiveEndTime,
   );
 
   if (result == null) return;
 
-  trip.updateEventTimestamp(result.id, result.timestamp);
+  trip.addEvent(
+    Event(
+      source: result.source,
+      type: result.type,
+      timestamp: result.timestamp,
+    ),
+  );
 }
