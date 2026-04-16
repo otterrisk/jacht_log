@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
+import 'package:jacht_log/presentation/extensions/date_time_ext.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 import 'package:jacht_log/widgets/date_time_picker_dialog.dart';
 import 'package:jacht_log/widgets/trip_control_button.dart';
 import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
+
+const kDatePickerMarginYears = 10;
 
 class TripBar extends StatefulWidget {
   final Trip trip;
@@ -48,6 +51,14 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
         ? DateTime.now().toTripBarDateTime(blink: true)
         : (trip.isFinished ? trip.endTime!.toTripBarDateTime() : "--:--");
 
+    final firstEventTime = trip.events.isEmpty
+        ? null
+        : trip.events.first.timestamp;
+
+    final lastEventTime = trip.events.isEmpty
+        ? null
+        : trip.events.last.timestamp;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -59,9 +70,8 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
             final result = await showDateTimePickerDialog(
               context: context,
               value: trip.startTime!,
-              firstDate: DateTime(2000),
-              lastDate:
-                  trip.endTime ?? DateTime.now().add(const Duration(days: 365)),
+              firstDate: DateTime.now().subYears(kDatePickerMarginYears),
+              lastDate: firstEventTime ?? DateTime.now(),
             );
 
             if (result != null) {
@@ -83,8 +93,8 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
               context: context,
               value: trip.isFinished ? trip.endTime! : DateTime.now(),
 
-              firstDate: trip.startTime!,
-              lastDate: DateTime.now().add(const Duration(days: 365)),
+              firstDate: lastEventTime ?? trip.startTime!,
+              lastDate: DateTime.now().addYears(kDatePickerMarginYears),
             );
 
             if (result != null) {
