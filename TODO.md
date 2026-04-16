@@ -13,3 +13,4 @@
 
 - [ ] możliwość dodawania opisów Event'ów, np zakotwiczono - gdzie?
 - [ ] lista Eventów z podziałem na dni + przewijanie dni w poziomie
+- [ ] mark TimeTable as @immutable

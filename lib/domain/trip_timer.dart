@@ -22,59 +22,52 @@ class TripTimer implements TripTimerBase {
     TimeCounter.values.length,
     Duration.zero,
   );
+  final bool _active;
 
   DateTime _last;
   BoatMode _mode;
 
   TripTimer({required Trip trip})
     : assert(trip.startTime != null),
+      _active = trip.active,
       _last = trip.startTime!,
       _mode = BoatState.initial().mode {
     _replay(trip);
   }
 
-  void update(BoatMode mode, DateTime timestamp) {
-    final delta = timestamp.difference(_last);
-    assert(delta >= Duration.zero);
-
-    _time[_mode.counter.index] += delta;
-    _last = timestamp;
-    _mode = mode;
-  }
-
-  void rebuild(Trip trip) {
-    _reset(trip);
-    _replay(trip);
-  }
-
-  void _reset(Trip trip) {
-    _time.fillRange(0, _time.length, Duration.zero);
-    _last = trip.startTime!;
-    _mode = BoatState.initial().mode;
-  }
-
   void _replay(Trip trip) {
     final state = BoatState.initial();
 
-    for (final e in trip.events) {
-      update(state.mode, e.timestamp);
-      state.update(e);
+    for (final event in trip.events) {
+      _update(state.mode, event.timestamp);
+      state.update(event);
     }
 
     if (trip.finished) {
-      update(state.mode, trip.endTime!);
+      _update(state.mode, trip.endTime!);
     } else {
-      _mode = state.mode; // important for live delta
+      _mode = state.mode; // important for last segment
     }
+  }
+
+  void _update(BoatMode mode, DateTime timestamp) {
+    final delta = timestamp.difference(_last);
+    assert(delta >= Duration.zero);
+
+    _mode = mode;
+    _time[_mode.counter.index] += delta;
+    _last = timestamp;
   }
 
   @override
   Duration value(TimeCounter counter, DateTime now) {
-    final base = _time[counter.index];
+    var base = _time[counter.index];
 
-    if (counter == _mode.counter) {
+    if (_active && counter == _mode.counter) {
+      // life delta
       final delta = now.difference(_last);
-      return delta.isNegative ? base : base + delta;
+      assert(delta >= Duration.zero);
+      base += delta;
     }
 
     return base;
