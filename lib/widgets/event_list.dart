@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_validator.dart';
+import 'package:jacht_log/presentation/actions/events/edit_event_timestamp.dart';
 import 'package:jacht_log/presentation/dto/event_result.dart';
 import 'package:jacht_log/presentation/view_models/validation_vm.dart';
 import 'package:jacht_log/widgets/add_event_dialog.dart';
-import 'package:jacht_log/widgets/edit_event_dialog.dart';
 import 'package:jacht_log/widgets/event_tile.dart';
 
 class EventList extends StatelessWidget {
@@ -92,7 +92,8 @@ class EventList extends StatelessWidget {
         event: event,
         issues: issues,
         background: background,
-        onTap: () => _editEventDetails(context, event),
+        onTap: () =>
+            editEventTimestamp(context: context, event: event, trip: trip),
       ),
     );
   }
@@ -142,20 +143,5 @@ class EventList extends StatelessWidget {
 
   void _undoDelete(Event event) {
     trip.addEvent(event);
-  }
-
-  Future<void> _editEventDetails(BuildContext context, Event event) async {
-    final updatedEvent = await showDialog<Event>(
-      context: context,
-      builder: (_) => EditEventDialog(
-        event: event,
-        minTime: trip.requireStartTime(),
-        maxTime: trip.effectiveEndTime,
-      ),
-    );
-
-    if (updatedEvent == null) return;
-
-    trip.updateEventTimestamp(updatedEvent.id, updatedEvent.timestamp);
   }
 }

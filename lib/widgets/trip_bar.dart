@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/extensions/date_time_ext.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
-import 'package:jacht_log/widgets/date_time_picker_dialog.dart';
+import 'package:jacht_log/presentation/dialogs/date_time/show_date_time_dialog.dart';
 import 'package:jacht_log/widgets/trip_control_button.dart';
 import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
@@ -67,11 +67,12 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
           onTap: () async {
             if (!trip.isStarted) return;
 
-            final result = await showDateTimePickerDialog(
+            final result = await showDateTimeDialog(
               context: context,
-              value: trip.startTime!,
+              initialValue: trip.startTime!,
               firstDate: DateTime.now().subYears(kDatePickerMarginYears),
               lastDate: firstEventTime ?? DateTime.now(),
+              title: 'Edit start time',
             );
 
             if (result != null) {
@@ -89,12 +90,12 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
           onTap: () async {
             if (!trip.isFinished) return;
 
-            final result = await showDateTimePickerDialog(
+            final result = await showDateTimeDialog(
               context: context,
-              value: trip.isFinished ? trip.endTime! : DateTime.now(),
-
+              initialValue: trip.isFinished ? trip.endTime! : DateTime.now(),
               firstDate: lastEventTime ?? trip.startTime!,
               lastDate: DateTime.now().addYears(kDatePickerMarginYears),
+              title: 'Edit end time',
             );
 
             if (result != null) {
