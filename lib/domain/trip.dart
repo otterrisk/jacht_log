@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/exception.dart';
-import 'package:jacht_log/domain/trip_change.dart';
 import 'package:uuid/uuid.dart';
 
 class Trip extends ChangeNotifier {
@@ -10,7 +9,6 @@ class Trip extends ChangeNotifier {
   DateTime? endTime;
   final List<Event> _events;
   final DateTime Function() _now;
-  TripChange? _change;
 
   Trip._({
     required this.id,
@@ -56,8 +54,6 @@ class Trip extends ChangeNotifier {
 
   List<Event> get events => List.unmodifiable(_events);
 
-  TripChange? get change => _change;
-
   bool get started => startTime != null;
 
   bool get finished => endTime != null;
@@ -80,13 +76,13 @@ class Trip extends ChangeNotifier {
     if (started) throw DomainException(DomainError.tripAlreadyStarted);
     startTime = _now();
     endTime = null;
-    _emit(TripStarted());
+    notifyListeners();
   }
 
   void stop() {
     if (!active) throw DomainException(DomainError.tripNotActive);
     endTime = _now();
-    _emit(TripStopped());
+    notifyListeners();
   }
 
   void addEvent(Event event) {
@@ -94,15 +90,15 @@ class Trip extends ChangeNotifier {
     _validateTimestamp(event.timestamp);
     _events.add(event);
     _sortEvents();
-    _emit(EventAdded(event));
+    notifyListeners();
   }
 
   void removeEvent(String eventId) {
     final index = _events.indexWhere((e) => e.id == eventId);
     if (index == -1) throw DomainException(DomainError.eventNotFound);
 
-    final removed = _events.removeAt(index);
-    _emit(EventRemoved(removed));
+    _events.removeAt(index);
+    notifyListeners();
   }
 
   void updateEventTimestamp(String eventId, DateTime newTimestamp) {
@@ -115,7 +111,7 @@ class Trip extends ChangeNotifier {
     _events[index] = updated;
 
     _sortEvents();
-    _emit(EventUpdated(updated));
+    notifyListeners();
   }
 
   void _validateStartEnd() {
@@ -158,10 +154,5 @@ class Trip extends ChangeNotifier {
 
   void _sortEvents() {
     _events.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-  }
-
-  void _emit(TripChange change) {
-    _change = change;
-    notifyListeners();
   }
 }
