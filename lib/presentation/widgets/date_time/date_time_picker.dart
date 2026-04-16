@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/widgets/date_picker.dart';
-import 'package:jacht_log/widgets/time_picker.dart';
+import 'package:jacht_log/presentation/widgets/date_time/date_picker.dart';
+import 'package:jacht_log/presentation/widgets/date_time/time_picker.dart';
 
 class DateTimePicker extends StatelessWidget {
   final DateTime value;

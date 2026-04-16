@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jacht_log/widgets/date_time_picker.dart';
+import 'package:jacht_log/presentation/widgets/date_time/date_time_picker.dart';
 
 class DateTimeDialog extends StatefulWidget {
   final DateTime initialValue;

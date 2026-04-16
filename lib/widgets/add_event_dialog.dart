@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/presentation/dto/event_preset.dart';
 import 'package:jacht_log/presentation/dto/event_result.dart';
-import 'package:jacht_log/widgets/date_time_picker.dart';
+import 'package:jacht_log/presentation/widgets/date_time/date_time_picker.dart';
 
 class AddEventDialog extends StatefulWidget {
   final DateTime minTime;
