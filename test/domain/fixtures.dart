@@ -23,12 +23,10 @@ Trip newTrip({
   DateTime? endTime,
   List<Event> events = const [],
 }) {
-  final st = startTime ?? DateTime(2024, 7, 1);
-  final et = endTime ?? DateTime(2024, 7, 14);
   final json = {
     'id': id,
-    'startTime': st.toIso8601String(),
-    'endTime': et.toIso8601String(),
+    'startTime': startTime?.toIso8601String(),
+    'endTime': endTime?.toIso8601String(),
     'events': events.map((e) => e.toJson()).toList(),
   };
   return Trip.fromJson(json);

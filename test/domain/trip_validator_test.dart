@@ -1,8 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jacht_log/domain/event.dart';
+import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/domain/trip_validator.dart';
 
 import 'fixtures.dart';
+
+Trip newTrip({
+  String id = '123',
+  DateTime? startTime,
+  DateTime? endTime,
+  List<Event> events = const [],
+}) {
+  final st = startTime ?? DateTime(2024, 7, 1);
+  final et = endTime ?? DateTime(2024, 7, 14);
+  final json = {
+    'id': id,
+    'startTime': st.toIso8601String(),
+    'endTime': et.toIso8601String(),
+    'events': events.map((e) => e.toJson()).toList(),
+  };
+  return Trip.fromJson(json);
+}
 
 void main() {
   group('TripValidator', () {

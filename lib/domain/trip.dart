@@ -72,6 +72,36 @@ class Trip extends ChangeNotifier {
 
   DateTime get effectiveEndTime => endTime ?? _now();
 
+  void setStartTime(DateTime? newStart) {
+    final oldStart = startTime;
+    startTime = newStart;
+
+    try {
+      _validateStartEnd();
+      _validateEvents();
+    } catch (e) {
+      startTime = oldStart;
+      rethrow;
+    }
+
+    notifyListeners();
+  }
+
+  void setEndTime(DateTime? newEnd) {
+    final oldEnd = endTime;
+    endTime = newEnd;
+
+    try {
+      _validateStartEnd();
+      _validateEvents();
+    } catch (e) {
+      endTime = oldEnd;
+      rethrow;
+    }
+
+    notifyListeners();
+  }
+
   void start() {
     if (isStarted) throw DomainException(DomainError.tripAlreadyStarted);
     startTime = _now();
@@ -118,13 +148,15 @@ class Trip extends ChangeNotifier {
     if (!isStarted) return;
 
     final start = startTime!;
-    final end = effectiveEndTime;
-    if (end.isBefore(start)) {
-      throw DomainException(
-        isFinished
-            ? DomainError.tripEndBeforeTripStart
-            : DomainError.tripStartInFuture,
-      );
+    if (!isFinished && start.isAfter(_now())) {
+      throw DomainException(DomainError.tripStartInFuture);
+    }
+
+    if (isFinished) {
+      final end = endTime!;
+      if (end.isBefore(start)) {
+        throw DomainException(DomainError.tripEndBeforeTripStart);
+      }
     }
   }
 

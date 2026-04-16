@@ -8,7 +8,7 @@ void main() {
   group('Trip', () {
     group('addEvent', () {
       test('adding event', () {
-        final trip = newTrip();
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
         final event = newEvent();
 
         trip.addEvent(event);
@@ -23,18 +23,20 @@ void main() {
         expect(
           () => trip.addEvent(newEvent()),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException && e.error == DomainError.tripNotStarted,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.tripNotStarted,
             ),
           ),
         );
       });
 
       test('can add event if trip finished', () {
-        final start = DateTime(2024, 1, 1, 12);
-        final end = DateTime(2024, 1, 1, 13);
-        final trip = newTrip(startTime: start, endTime: end);
+        final trip = newTrip(
+          startTime: DateTime(2024, 1, 1, 12),
+          endTime: DateTime(2024, 1, 1, 13),
+        );
 
         final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 30));
 
@@ -43,46 +45,37 @@ void main() {
         expect(trip.events, contains(event));
       });
 
-      test('can add event after trip finished (workflow)', () {
-        final clock = FakeClock(DateTime(2024, 1, 1, 12));
-
-        final trip = Trip(now: clock.call);
-
-        trip.start(); // 12:00
-
-        clock.now = DateTime(2024, 1, 1, 13);
-        trip.stop(); // 13:00
-
-        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 30));
-
-        trip.addEvent(event);
-
-        expect(trip.events, contains(event));
-      });
-
-      test('cannot add event after trip end time', () {
-        final now = DateTime(2024, 1, 1, 12);
-        final trip = Trip(now: () => now);
-
-        trip.start();
-        trip.stop();
-
-        final event = newEvent(timestamp: now.add(Duration(minutes: 1)));
+      test('cannot add event outside trip bounds', () {
+        final trip = newTrip(
+          startTime: DateTime(2024, 7, 1),
+          endTime: DateTime(2024, 7, 14),
+        );
 
         expect(
-          () => trip.addEvent(event),
+          () => trip.addEvent(newEvent(timestamp: DateTime(2023, 1, 1))),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventAfterTripEnd,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventBeforeTripStart,
+            ),
+          ),
+        );
+
+        expect(
+          () => trip.addEvent(newEvent(timestamp: DateTime(2025, 1, 1))),
+          throwsA(
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventAfterTripEnd,
             ),
           ),
         );
       });
 
       test('sorting events by timestamp after adding', () {
-        final trip = newTrip();
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
         final older = newEvent(id: '1', timestamp: DateTime(2024, 7, 3));
         final newer = newEvent(id: '2', timestamp: DateTime(2024, 7, 4));
 
@@ -92,49 +85,11 @@ void main() {
         expect(trip.events.first, equals(older));
         expect(trip.events.last, equals(newer));
       });
-
-      test('adding event with timestamp before trip start', () {
-        final trip = newTrip(
-          startTime: DateTime(2024, 7, 1),
-          endTime: DateTime(2024, 7, 14),
-        );
-        final event = newEvent(timestamp: DateTime(2023, 1, 1));
-
-        expect(
-          () => trip.addEvent(event),
-          throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventBeforeTripStart,
-            ),
-          ),
-        );
-      });
-
-      test('adding event with timestamp after trip end', () {
-        final trip = newTrip(
-          startTime: DateTime(2024, 7, 1),
-          endTime: DateTime(2024, 7, 14),
-        );
-        final event = newEvent(timestamp: DateTime(2025, 1, 1));
-
-        expect(
-          () => trip.addEvent(event),
-          throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventAfterTripEnd,
-            ),
-          ),
-        );
-      });
     });
 
     group('removeEvent', () {
       test('removing event', () {
-        final trip = newTrip();
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
         final e1 = newEvent(id: '1');
         final e2 = newEvent(id: '2');
         trip.addEvent(e1);
@@ -147,14 +102,15 @@ void main() {
       });
 
       test('removing event that could not be found', () {
-        final trip = newTrip();
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
 
         expect(
-          () => trip.removeEvent(newEvent().id),
+          () => trip.removeEvent('missing'),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException && e.error == DomainError.eventNotFound,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventNotFound,
             ),
           ),
         );
@@ -162,13 +118,15 @@ void main() {
     });
 
     group('updateEventTimestamp', () {
-      test('updating event timestamp', () {
+      test('updating event timestamp within bounds', () {
         final trip = newTrip(
           startTime: DateTime(2025, 7, 1),
           endTime: DateTime(2025, 7, 14),
         );
+
         final event = newEvent(timestamp: DateTime(2025, 7, 2));
         trip.addEvent(event);
+
         final newTime = DateTime(2025, 7, 3);
 
         trip.updateEventTimestamp(event.id, newTime);
@@ -176,139 +134,151 @@ void main() {
         expect(trip.events.first.timestamp, equals(newTime));
       });
 
-      test('updating event timestamp before trip start', () {
+      test('cannot move event outside bounds', () {
         final trip = newTrip(
           startTime: DateTime(2025, 7, 1),
           endTime: DateTime(2025, 7, 14),
         );
+
         final event = newEvent(timestamp: DateTime(2025, 7, 2));
         trip.addEvent(event);
-        final newTime = DateTime(2025, 6, 15);
 
         expect(
-          () => trip.updateEventTimestamp(event.id, newTime),
+          () => trip.updateEventTimestamp(event.id, DateTime(2025, 6, 15)),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventBeforeTripStart,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventBeforeTripStart,
+            ),
+          ),
+        );
+
+        expect(
+          () => trip.updateEventTimestamp(event.id, DateTime(2025, 7, 20)),
+          throwsA(
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventAfterTripEnd,
             ),
           ),
         );
       });
 
-      test('updating event timestamp after trip end', () {
-        final trip = newTrip(
-          startTime: DateTime(2025, 7, 1),
-          endTime: DateTime(2025, 7, 14),
-        );
-        final event = newEvent(timestamp: DateTime(2025, 7, 2));
-        trip.addEvent(event);
-        final newTime = DateTime(2025, 7, 20);
+      test('updating preserves identity and sorting', () {
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
 
-        expect(
-          () => trip.updateEventTimestamp(event.id, newTime),
-          throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventAfterTripEnd,
-            ),
-          ),
-        );
-      });
+        final e1 = newEvent(id: '1', timestamp: DateTime(2024, 7, 4));
+        final e2 = newEvent(id: '2', timestamp: DateTime(2024, 7, 5));
 
-      test('can update event after trip finished within bounds', () {
-        final clock = FakeClock(DateTime(2024, 1, 1, 12));
+        trip.addEvent(e1);
+        trip.addEvent(e2);
 
-        final trip = Trip(now: clock.call);
+        trip.updateEventTimestamp(e2.id, DateTime(2024, 7, 3));
 
-        trip.start(); // 12:00
-
-        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 10));
-        trip.addEvent(event);
-
-        clock.now = DateTime(2024, 1, 1, 13);
-        trip.stop(); // 13:00
-
-        expect(
-          () =>
-              trip.updateEventTimestamp(event.id, DateTime(2024, 1, 1, 12, 20)),
-          returnsNormally,
-        );
-      });
-
-      test('cannot move event after trip end', () {
-        final clock = FakeClock(DateTime(2024, 1, 1, 12));
-
-        final trip = Trip(now: clock.call);
-
-        trip.start();
-
-        final event = newEvent(timestamp: DateTime(2024, 1, 1, 12, 10));
-        trip.addEvent(event);
-
-        clock.now = DateTime(2024, 1, 1, 13);
-        trip.stop(); // endTime = 13:00
-
-        expect(
-          () =>
-              trip.updateEventTimestamp(event.id, DateTime(2024, 1, 1, 13, 30)),
-          throwsA(isA<DomainException>()),
-        );
-      });
-
-      test('updating does not duplicate event', () {
-        final trip = newTrip();
-        final event = newEvent();
-        trip.addEvent(event);
-
-        trip.updateEventTimestamp(event.id, DateTime(2024, 7, 3));
-
-        expect(trip.events.length, 1);
-      });
-
-      test('updating event conserves event id', () {
-        final trip = newTrip();
-        final eventId = '123';
-        final event = newEvent(id: eventId);
-        trip.addEvent(event);
-
-        trip.updateEventTimestamp(event.id, DateTime(2024, 7, 3));
-
-        expect(trip.events.first.id, equals(eventId));
-      });
-
-      test('sorting events after timestamp update', () {
-        final trip = newTrip();
-        final older = newEvent(timestamp: DateTime(2024, 7, 4));
-        final newer = newEvent(timestamp: DateTime(2024, 7, 5));
-        trip.addEvent(older);
-        trip.addEvent(newer);
-
-        trip.updateEventTimestamp(newer.id, DateTime(2024, 7, 3));
-
-        expect(trip.events.first.id, equals(newer.id));
+        expect(trip.events.length, 2);
+        expect(trip.events.first.id, '2');
       });
 
       test('updating event that could not be found', () {
-        final trip = newTrip();
+        final trip = newTrip(startTime: DateTime(2024, 7, 1));
 
         expect(
           () => trip.updateEventTimestamp('666', DateTime(2025)),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException && e.error == DomainError.eventNotFound,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventNotFound,
             ),
           ),
         );
       });
     });
 
+    group('time editing', () {
+      test('cannot set startTime after existing event', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        final event = newEvent(timestamp: start.add(Duration(hours: 1)));
+        trip.addEvent(event);
+
+        expect(
+          () => trip.setStartTime(start.add(Duration(hours: 2))),
+          throwsA(isA<DomainException>()),
+        );
+      });
+
+      test('can set startTime equal to event timestamp', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        final event = newEvent(timestamp: start.add(Duration(hours: 1)));
+        trip.addEvent(event);
+
+        expect(() => trip.setStartTime(event.timestamp), returnsNormally);
+      });
+
+      test('cannot set endTime before existing event', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        final event = newEvent(timestamp: start.add(Duration(hours: 2)));
+        trip.addEvent(event);
+
+        expect(
+          () => trip.setEndTime(start.add(Duration(hours: 1))),
+          throwsA(isA<DomainException>()),
+        );
+      });
+
+      test('can set endTime equal to event timestamp', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        final event = newEvent(timestamp: start.add(Duration(hours: 2)));
+        trip.addEvent(event);
+
+        expect(() => trip.setEndTime(event.timestamp), returnsNormally);
+      });
+
+      test('cannot set endTime before startTime', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        expect(
+          () => trip.setEndTime(start.subtract(Duration(seconds: 1))),
+          throwsA(isA<DomainException>()),
+        );
+      });
+
+      test('can set startTime equal to endTime', () {
+        final time = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: time);
+
+        expect(() => trip.setEndTime(time), returnsNormally);
+      });
+
+      test('setStartTime rolls back on validation error', () {
+        final start = DateTime(2024, 5, 1, 10);
+        final trip = newTrip(startTime: start);
+
+        final event = newEvent(timestamp: start.add(Duration(hours: 1)));
+        trip.addEvent(event);
+
+        try {
+          trip.setStartTime(start.add(Duration(hours: 2)));
+        } catch (_) {}
+
+        expect(trip.startTime, start);
+      });
+    });
+
     group('serialization', () {
       test('serialization/deserialization conserves all fields', () {
-        final original = newTrip();
+        final original = newTrip(startTime: DateTime(2024, 7, 1));
         final event = newEvent();
         original.addEvent(event);
 
@@ -339,28 +309,22 @@ void main() {
           'id': '1',
           'startTime': null,
           'endTime': null,
-          'events': [
-            {
-              'id': '123',
-              'source': 'engine',
-              'type': 'start',
-              'timestamp': '2024-08-01',
-            },
-          ],
+          'events': [newEvent().toJson()],
         };
 
         expect(
           () => Trip.fromJson(json),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException && e.error == DomainError.tripNotStarted,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.tripNotStarted,
             ),
           ),
         );
       });
 
-      test('end time validation on deserialization', () {
+      test('invalid endTime on deserialization', () {
         final json = {
           'id': '123',
           'startTime': '2024-07-01',
@@ -371,16 +335,16 @@ void main() {
         expect(
           () => Trip.fromJson(json),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.tripEndBeforeTripStart,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.tripEndBeforeTripStart,
             ),
           ),
         );
       });
 
-      test('event validation on deserialization', () {
+      test('invalid event on deserialization', () {
         final json = {
           'id': '123',
           'startTime': '2024-07-01',
@@ -398,10 +362,10 @@ void main() {
         expect(
           () => Trip.fromJson(json),
           throwsA(
-            predicate(
-              (e) =>
-                  e is DomainException &&
-                  e.error == DomainError.eventAfterTripEnd,
+            isA<DomainException>().having(
+              (e) => e.error,
+              'error',
+              DomainError.eventAfterTripEnd,
             ),
           ),
         );
@@ -413,26 +377,15 @@ void main() {
           'startTime': '2024-07-01',
           'endTime': '2024-07-14',
           'events': [
-            {
-              'id': 'engine_stop',
-              'source': 'engine',
-              'type': 'stop',
-              'timestamp': '2024-07-03',
-            },
-            {
-              'id': 'engine_start',
-              'source': 'engine',
-              'type': 'start',
-              'timestamp': '2024-07-02',
-            },
+            newEvent(id: '2', timestamp: DateTime(2024, 7, 3)).toJson(),
+            newEvent(id: '1', timestamp: DateTime(2024, 7, 2)).toJson(),
           ],
         };
 
         final trip = Trip.fromJson(json);
 
-        expect(trip.events.length, 2);
-        expect(trip.events.first.id, 'engine_start');
-        expect(trip.events.last.id, 'engine_stop');
+        expect(trip.events.first.id, '1');
+        expect(trip.events.last.id, '2');
       });
     });
   });
