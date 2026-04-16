@@ -1,4 +1,4 @@
-import 'package:jacht_log/domain/trip_timer.dart';
+import 'package:jacht_log/domain/trip_time_view.dart';
 
 enum BoatMode { stopped, sailing, motoring, drifting }
 

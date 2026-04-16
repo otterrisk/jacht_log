@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/boat_mode.dart';
 import 'package:jacht_log/domain/boat_state.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/domain/trip_timer.dart';
+import 'package:jacht_log/domain/trip_time_view.dart';
 import 'package:jacht_log/l10n/l10n.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 import 'package:jacht_log/presentation/extensions/time_counter_ext.dart';

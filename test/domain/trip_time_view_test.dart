@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jacht_log/domain/event.dart';
 import 'package:jacht_log/domain/trip.dart';
-import 'package:jacht_log/domain/trip_timer.dart';
+import 'package:jacht_log/domain/trip_time_view.dart';
 
 import 'fixtures.dart';
 

@@ -1,4 +1,4 @@
-import 'package:jacht_log/domain/trip_timer.dart';
+import 'package:jacht_log/domain/trip_time_view.dart';
 
 class TimeTableViewModel {
   final Map<TimeCounter, Duration> values;
