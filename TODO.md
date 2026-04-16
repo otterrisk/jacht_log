@@ -3,7 +3,7 @@
 - [x] możliwość wstawiania Eventów
 - [x] możliwość usuwania Event'ów
 - [x] edycja czasu istniejących Event'ów
-- [ ] edycja początku i końca rejsu
+- [x] edycja początku i końca rejsu
 - [ ] ustawianie czasu początku rejsu przy rozpoczęciu
 - [ ] ustawianie czasu końca rejsu przy zakończeniu 
 - [x] invariant: Event musi być w zakresie trwania Trip

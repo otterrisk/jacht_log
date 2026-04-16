@@ -64,6 +64,7 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
       children: [
         _timeChip(
           text: start,
+          highlighted: false,
           onTap: () async {
             if (!trip.isStarted) return;
 
@@ -87,6 +88,7 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
 
         _timeChip(
           text: end,
+          highlighted: isActive,
           onTap: () async {
             if (!trip.isFinished) return;
 
@@ -107,11 +109,17 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
     );
   }
 
-  Widget _timeChip({required String text, required VoidCallback onTap}) {
+  Widget _timeChip({
+    required String text,
+    required bool highlighted,
+    required VoidCallback onTap,
+  }) {
     final theme = Theme.of(context);
 
     return Material(
-      color: Colors.transparent,
+      color: highlighted
+          ? theme.colorScheme.primary.withValues(alpha: 0.1)
+          : Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(6),
         onTap: onTap,
