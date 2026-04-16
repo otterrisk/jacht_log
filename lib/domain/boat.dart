@@ -30,7 +30,7 @@ class Boat extends ChangeNotifier {
   }
 
   TripTimeBase _createTimeView(Trip trip) {
-    if (trip.started) {
+    if (trip.isStarted) {
       return TripTimeView(trip: trip);
     } else {
       return TripTimeZero();

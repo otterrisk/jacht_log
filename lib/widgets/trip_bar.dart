@@ -17,7 +17,7 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
   Listenable get trip => widget.trip;
 
   @override
-  bool get isActive => widget.trip.active;
+  bool get isActive => widget.trip.isActive;
 
   @override
   Duration get tickInterval => const Duration(milliseconds: 500);
@@ -32,8 +32,8 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
         children: [
           Expanded(child: Center(child: Text(_timeRange(trip)))),
           IconButton(
-            icon: Icon(trip.active ? Icons.stop : Icons.play_arrow),
-            onPressed: trip.active ? trip.stop : trip.start,
+            icon: Icon(trip.isActive ? Icons.stop : Icons.play_arrow),
+            onPressed: trip.isActive ? trip.stop : trip.start,
           ),
         ],
       ),
@@ -41,11 +41,13 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
   }
 
   String _timeRange(Trip trip) {
-    final start = trip.started ? trip.startTime?.toTripBarDateTime() : "--:--";
+    final start = trip.isStarted
+        ? trip.startTime?.toTripBarDateTime()
+        : "--:--";
 
-    final end = trip.active
+    final end = trip.isActive
         ? DateTime.now().toTripBarDateTime(blink: true)
-        : (trip.finished ? trip.endTime?.toTripBarDateTime() : "--:--");
+        : (trip.isFinished ? trip.endTime?.toTripBarDateTime() : "--:--");
 
     return "$start → $end";
   }

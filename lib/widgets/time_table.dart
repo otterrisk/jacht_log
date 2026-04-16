@@ -30,7 +30,7 @@ class _TimeTableState extends State<TimeTable> with TripTickerMixin {
   Listenable get trip => widget.trip;
 
   @override
-  bool get isActive => widget.trip.active;
+  bool get isActive => widget.trip.isActive;
 
   @override
   Duration get tickInterval => const Duration(seconds: 1);

@@ -54,13 +54,13 @@ class Trip extends ChangeNotifier {
 
   List<Event> get events => List.unmodifiable(_events);
 
-  bool get started => startTime != null;
+  bool get isStarted => startTime != null;
 
-  bool get finished => endTime != null;
+  bool get isFinished => endTime != null;
 
-  bool get active => started && !finished;
+  bool get isActive => isStarted && !isFinished;
 
-  bool get canAddEvent => started;
+  bool get canAddEvent => isStarted;
 
   DateTime requireStartTime() {
     final value = startTime;
@@ -73,14 +73,14 @@ class Trip extends ChangeNotifier {
   DateTime get effectiveEndTime => endTime ?? _now();
 
   void start() {
-    if (started) throw DomainException(DomainError.tripAlreadyStarted);
+    if (isStarted) throw DomainException(DomainError.tripAlreadyStarted);
     startTime = _now();
     endTime = null;
     notifyListeners();
   }
 
   void stop() {
-    if (!active) throw DomainException(DomainError.tripNotActive);
+    if (!isActive) throw DomainException(DomainError.tripNotActive);
     endTime = _now();
     notifyListeners();
   }
@@ -115,13 +115,13 @@ class Trip extends ChangeNotifier {
   }
 
   void _validateStartEnd() {
-    if (!started) return;
+    if (!isStarted) return;
 
     final start = startTime!;
     final end = effectiveEndTime;
     if (end.isBefore(start)) {
       throw DomainException(
-        finished
+        isFinished
             ? DomainError.tripEndBeforeTripStart
             : DomainError.tripStartInFuture,
       );
@@ -135,7 +135,7 @@ class Trip extends ChangeNotifier {
   }
 
   void _validateTimestamp(DateTime timestamp) {
-    if (!started) {
+    if (!isStarted) {
       throw DomainException(DomainError.tripNotStarted);
     }
 
@@ -144,7 +144,7 @@ class Trip extends ChangeNotifier {
       throw DomainException(DomainError.eventBeforeTripStart);
     }
 
-    if (finished) {
+    if (isFinished) {
       final end = endTime!;
       if (timestamp.isAfter(end)) {
         throw DomainException(DomainError.eventAfterTripEnd);

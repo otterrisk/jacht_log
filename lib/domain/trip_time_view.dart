@@ -29,7 +29,7 @@ class TripTimeView implements TripTimeBase {
 
   TripTimeView({required Trip trip})
     : assert(trip.startTime != null),
-      _active = trip.active,
+      _active = trip.isActive,
       _last = trip.startTime!,
       _mode = BoatState.initial().mode {
     _replay(trip);
@@ -43,7 +43,7 @@ class TripTimeView implements TripTimeBase {
       state.update(event);
     }
 
-    if (trip.finished) {
+    if (trip.isFinished) {
       _update(state.mode, trip.endTime!);
     } else {
       _mode = state.mode; // important for last segment

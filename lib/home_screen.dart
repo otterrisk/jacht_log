@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Column(
             children: [
               TripBar(trip: trip),
-              BoatControls(boat: boat, active: trip.active),
+              BoatControls(boat: boat, active: trip.isActive),
               EventList(
                 trip: trip,
                 validation: validation,

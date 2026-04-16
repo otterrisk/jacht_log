@@ -127,7 +127,7 @@ void main() {
 
         final times = TripTimeView(trip: trip);
 
-        expect(trip.active, true);
+        expect(trip.isActive, true);
         expect(times.value(TimeCounter.stopped, now), const Duration(hours: 1));
         expect(
           times.value(TimeCounter.motoring, now),
@@ -145,7 +145,7 @@ void main() {
 
           final times = TripTimeView(trip: trip);
 
-          expect(trip.active, true);
+          expect(trip.isActive, true);
           expect(times.value(TimeCounter.sailing, now), Duration.zero);
         },
       );
@@ -160,7 +160,7 @@ void main() {
 
         final now = end.add(const Duration(hours: 5));
 
-        expect(trip.finished, true);
+        expect(trip.isFinished, true);
         expect(times.value(TimeCounter.stopped, now), const Duration(hours: 2));
       });
     });
@@ -246,7 +246,7 @@ void main() {
         final times = TripTimeView(trip: trip);
 
         // 15:00 now
-        expect(trip.active, true);
+        expect(trip.isActive, true);
         expect(times.total(now), now.difference(start));
       });
 
@@ -286,7 +286,7 @@ void main() {
         final times = TripTimeView(trip: trip);
 
         // 15:00 now
-        expect(trip.finished, true);
+        expect(trip.isFinished, true);
         expect(times.total(now), end.difference(start));
       });
     });

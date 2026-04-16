@@ -331,7 +331,7 @@ void main() {
 
         final trip = Trip.fromJson(json);
 
-        expect(trip.started, false);
+        expect(trip.isStarted, false);
       });
 
       test('fromJson fails when events exist but trip not started', () {
