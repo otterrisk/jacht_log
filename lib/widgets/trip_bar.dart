@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jacht_log/domain/trip.dart';
 import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
+import 'package:jacht_log/widgets/date_time_picker_dialog.dart';
 import 'package:jacht_log/widgets/trip_ticker_mixin.dart';
 
 class TripBar extends StatefulWidget {
@@ -32,8 +33,8 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
         children: [
           Expanded(child: Center(child: _timeRangeWidget(trip))),
           IconButton(
-            icon: Icon(trip.isActive ? Icons.stop : Icons.play_arrow),
-            onPressed: trip.isActive ? trip.stop : trip.start,
+            icon: Icon(trip.isStarted ? Icons.stop : Icons.play_arrow),
+            onPressed: trip.isStarted ? trip.stop : trip.start,
           ),
         ],
       ),
@@ -41,24 +42,56 @@ class _TripBarState extends State<TripBar> with TripTickerMixin {
   }
 
   Widget _timeRangeWidget(Trip trip) {
+    final start = trip.isStarted
+        ? trip.startTime!.toTripBarDateTime()
+        : "--:--";
+
+    final end = trip.isActive
+        ? DateTime.now().toTripBarDateTime(blink: true)
+        : (trip.isFinished ? trip.endTime!.toTripBarDateTime() : "--:--");
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         _timeChip(
-          text: trip.isStarted ? trip.startTime!.toTripBarDateTime() : "--:--",
-          onTap: () {
-            // TODO: edit startTime
+          text: start,
+          onTap: () async {
+            if (!trip.isStarted) return;
+
+            final result = await showDateTimePickerDialog(
+              context: context,
+              value: trip.startTime!,
+              firstDate: DateTime(2000),
+              lastDate:
+                  trip.endTime ?? DateTime.now().add(const Duration(days: 365)),
+            );
+
+            if (result != null) {
+              trip.setStartTime(result);
+            }
           },
         ),
+
         const SizedBox(width: 6),
         const Text("→"),
         const SizedBox(width: 6),
+
         _timeChip(
-          text: trip.isActive
-              ? DateTime.now().toTripBarDateTime(blink: true)
-              : (trip.isFinished ? trip.endTime!.toTripBarDateTime() : "--:--"),
-          onTap: () {
-            // TODO: edit endTime
+          text: end,
+          onTap: () async {
+            if (!trip.isFinished) return;
+
+            final result = await showDateTimePickerDialog(
+              context: context,
+              value: trip.isFinished ? trip.endTime! : DateTime.now(),
+
+              firstDate: trip.startTime!,
+              lastDate: DateTime.now().add(const Duration(days: 365)),
+            );
+
+            if (result != null) {
+              trip.setEndTime(result);
+            }
           },
         ),
       ],
