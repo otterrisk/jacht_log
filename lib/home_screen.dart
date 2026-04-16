@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 validation: validation,
                 scrollController: _scrollController,
               ),
-              TimeTable(timer: boat.timer, state: boat.state, trip: trip),
+              TimeTable(times: boat.times, state: boat.state, trip: trip),
             ],
           ),
         );

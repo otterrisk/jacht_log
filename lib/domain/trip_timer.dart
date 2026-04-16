@@ -4,12 +4,12 @@ import 'package:jacht_log/domain/trip.dart';
 
 enum TimeCounter { sailing, motoring, stopped }
 
-abstract class TripTimerBase {
+abstract class TripTimeBase {
   Duration value(TimeCounter counter, DateTime now);
   Duration total(DateTime now);
 }
 
-class InactiveTripTimer implements TripTimerBase {
+class TripTimeZero implements TripTimeBase {
   @override
   Duration value(TimeCounter counter, DateTime now) => Duration.zero;
 
@@ -17,7 +17,7 @@ class InactiveTripTimer implements TripTimerBase {
   Duration total(DateTime now) => Duration.zero;
 }
 
-class TripTimer implements TripTimerBase {
+class TripTimeView implements TripTimeBase {
   final List<Duration> _time = List.filled(
     TimeCounter.values.length,
     Duration.zero,
@@ -27,7 +27,7 @@ class TripTimer implements TripTimerBase {
   DateTime _last;
   BoatMode _mode;
 
-  TripTimer({required Trip trip})
+  TripTimeView({required Trip trip})
     : assert(trip.startTime != null),
       _active = trip.active,
       _last = trip.startTime!,

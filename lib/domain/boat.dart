@@ -8,11 +8,11 @@ class Boat extends ChangeNotifier {
   final Trip trip;
 
   late BoatState state;
-  late TripTimerBase timer;
+  late TripTimeBase times;
 
   Boat(this.trip) {
     state = BoatState.fromTrip(trip);
-    timer = _createTimer(trip);
+    times = _createTimeView(trip);
 
     trip.addListener(_onTripChange);
   }
@@ -23,18 +23,18 @@ class Boat extends ChangeNotifier {
     super.dispose();
   }
 
-  TripTimerBase _createTimer(Trip trip) {
-    if (trip.started) {
-      return TripTimer(trip: trip);
-    } else {
-      return InactiveTripTimer();
-    }
-  }
-
   void _onTripChange() {
     state = BoatState.fromTrip(trip);
-    timer = _createTimer(trip);
+    times = _createTimeView(trip);
     notifyListeners();
+  }
+
+  TripTimeBase _createTimeView(Trip trip) {
+    if (trip.started) {
+      return TripTimeView(trip: trip);
+    } else {
+      return TripTimeZero();
+    }
   }
 
   void toggle(EventSource source) {

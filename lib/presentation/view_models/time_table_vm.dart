@@ -7,12 +7,12 @@ class TimeTableViewModel {
   TimeTableViewModel({required this.values, required this.total});
 
   factory TimeTableViewModel.create({
-    required TripTimerBase timer,
+    required TripTimeBase times,
     required DateTime now,
   }) {
-    final values = {for (final c in TimeCounter.values) c: timer.value(c, now)};
+    final values = {for (final c in TimeCounter.values) c: times.value(c, now)};
 
-    final total = timer.total(now);
+    final total = times.total(now);
 
     return TimeTableViewModel(values: values, total: total);
   }

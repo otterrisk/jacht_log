@@ -21,31 +21,31 @@ Trip newTrip({
 }
 
 void main() {
-  group('InactiveTripTimer', () {
-    test('inactive timer always returns zero', () {
-      final timer = InactiveTripTimer();
+  group('TripTimeZero', () {
+    test('always returns zeros', () {
+      final times = TripTimeZero();
       final now = DateTime.now();
 
       for (final c in TimeCounter.values) {
-        expect(timer.value(c, now), Duration.zero);
+        expect(times.value(c, now), Duration.zero);
       }
 
-      expect(timer.total(now), Duration.zero);
+      expect(times.total(now), Duration.zero);
     });
   });
-  group('TripTimer', () {
+  group('TripTimeView', () {
     group('basic scenarios', () {
       test('returns zero durations when no events after start', () {
         final start = DateTime(2024, 5, 1, 10);
         final trip = newTrip(startTime: start);
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
         final now = start.add(const Duration(hours: 2));
 
-        expect(timer.value(TimeCounter.sailing, now), Duration.zero);
-        expect(timer.value(TimeCounter.motoring, now), Duration.zero);
-        expect(timer.value(TimeCounter.stopped, now), const Duration(hours: 2));
+        expect(times.value(TimeCounter.sailing, now), Duration.zero);
+        expect(times.value(TimeCounter.motoring, now), Duration.zero);
+        expect(times.value(TimeCounter.stopped, now), const Duration(hours: 2));
       });
 
       test('counts time between start and first event in initial mode', () {
@@ -63,9 +63,9 @@ void main() {
           ],
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
-        expect(timer.value(TimeCounter.stopped, t1), const Duration(hours: 1));
+        expect(times.value(TimeCounter.stopped, t1), const Duration(hours: 1));
       });
 
       test('splits time across counters correctly', () {
@@ -94,10 +94,10 @@ void main() {
           ],
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
-        expect(timer.value(TimeCounter.stopped, t2), const Duration(hours: 1));
-        expect(timer.value(TimeCounter.motoring, t2), const Duration(hours: 1));
+        expect(times.value(TimeCounter.stopped, t2), const Duration(hours: 1));
+        expect(times.value(TimeCounter.motoring, t2), const Duration(hours: 1));
       });
     });
 
@@ -125,12 +125,12 @@ void main() {
           ],
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
         expect(trip.active, true);
-        expect(timer.value(TimeCounter.stopped, now), const Duration(hours: 1));
+        expect(times.value(TimeCounter.stopped, now), const Duration(hours: 1));
         expect(
-          timer.value(TimeCounter.motoring, now),
+          times.value(TimeCounter.motoring, now),
           const Duration(hours: 2),
         );
       });
@@ -143,10 +143,10 @@ void main() {
 
           final trip = newTrip(startTime: start);
 
-          final timer = TripTimer(trip: trip);
+          final times = TripTimeView(trip: trip);
 
           expect(trip.active, true);
-          expect(timer.value(TimeCounter.sailing, now), Duration.zero);
+          expect(times.value(TimeCounter.sailing, now), Duration.zero);
         },
       );
 
@@ -156,12 +156,12 @@ void main() {
 
         final trip = newTrip(startTime: start, endTime: end);
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
         final now = end.add(const Duration(hours: 5));
 
         expect(trip.finished, true);
-        expect(timer.value(TimeCounter.stopped, now), const Duration(hours: 2));
+        expect(times.value(TimeCounter.stopped, now), const Duration(hours: 2));
       });
     });
     group('total', () {
@@ -195,20 +195,20 @@ void main() {
           ],
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
-        final total = timer.total(now);
+        final total = times.total(now);
 
         final sum = TimeCounter.values
-            .map((c) => timer.value(c, now))
+            .map((c) => times.value(c, now))
             .reduce((a, b) => a + b);
 
-        expect(timer.value(TimeCounter.sailing, now), const Duration(hours: 1));
+        expect(times.value(TimeCounter.sailing, now), const Duration(hours: 1));
         expect(
-          timer.value(TimeCounter.motoring, now),
+          times.value(TimeCounter.motoring, now),
           const Duration(hours: 1),
         );
-        expect(timer.value(TimeCounter.stopped, now), const Duration(hours: 1));
+        expect(times.value(TimeCounter.stopped, now), const Duration(hours: 1));
 
         expect(total, sum);
       });
@@ -243,11 +243,11 @@ void main() {
           ],
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
         // 15:00 now
         expect(trip.active, true);
-        expect(timer.total(now), now.difference(start));
+        expect(times.total(now), now.difference(start));
       });
 
       test('total time equals endTime - startTime when trip is finished', () {
@@ -283,12 +283,12 @@ void main() {
           // 13:00 end
         );
 
-        final timer = TripTimer(trip: trip);
+        final times = TripTimeView(trip: trip);
 
         // 15:00 now
         expect(trip.finished, true);
-        expect(timer.total(now), end.difference(start));
+        expect(times.total(now), end.difference(start));
       });
     });
-  }); // TripTimer
+  });
 }
