@@ -30,6 +30,17 @@ class Trip extends ChangeNotifier {
     );
   }
 
+  factory Trip.started({DateTime Function()? now, DateTime? startTime}) {
+    now ??= DateTime.now;
+    return Trip._(
+      id: const Uuid().v4(),
+      startTime: startTime ?? now(),
+      endTime: null,
+      events: [],
+      now: now,
+    );
+  }
+
   factory Trip.fromJson(Map<String, dynamic> json) {
     final trip = Trip._(
       id: json['id'],

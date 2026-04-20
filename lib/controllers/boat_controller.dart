@@ -13,7 +13,7 @@ class BoatController extends ChangeNotifier {
 
   void createTrip() {
     _detachTrip();
-    final trip = Trip();
+    final trip = Trip.started();
     _attachTrip(trip);
     boat = Boat(trip);
     notifyListeners();
