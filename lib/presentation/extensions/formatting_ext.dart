@@ -15,15 +15,7 @@ extension DateTimeFormatting on DateTime {
     String time =
         "${hour.toString().padLeft(2, '0')}$sep${minute.toString().padLeft(2, '0')}";
 
-    if (year != now.year) {
-      return "${DateFormat("dd.MM.yyyy").format(this)} $time";
-    }
-
-    if (day != now.day || month != now.month) {
-      return "${DateFormat("dd.MM").format(this)} $time";
-    }
-
-    return time;
+    return "${DateFormat("dd.MM.yyyy").format(this)} $time";
   }
 }
 
