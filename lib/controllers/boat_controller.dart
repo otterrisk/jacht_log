@@ -20,6 +20,25 @@ class BoatController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<Trip>> loadTrips() async {
+    final trips = await storage.loadAll();
+    final withStart = trips.where((t) => t.startTime != null).toList();
+    final withoutStart = trips.where((t) => t.startTime == null).toList();
+    withStart.sort((a, b) => b.startTime!.compareTo(a.startTime!));
+    return [...withStart, ...withoutStart];
+  }
+
+  Future<void> selectTrip(String id) async {
+    final trip = await storage.loadById(id);
+    if (trip == null) {
+      return;
+    }
+    _detachTrip();
+    _attachTrip(trip);
+    boat = Boat(trip);
+    notifyListeners();
+  }
+
   Future<void> _loadTrip() async {
     final trip = await storage.load();
     _attachTrip(trip);
