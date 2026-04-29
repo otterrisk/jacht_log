@@ -29,5 +29,10 @@
   "eventSourceSailEventTypeStart": "Postawienie żagli",
   "eventSourceSailEventTypeStop": "Zrzucenie żagli",
 
-  "newTripButton": "Nowy rejs"
+  "newTripMenuItem": "Nowy rejs",
+  "loadTripMenuItem": "Wczytaj rejs",
+  "selectTripTitle": "Wczytaj rejs",
+  "noTripsMessage": "Brak zapisanych rejsów.",
+  "tripListNotStarted": "Nierozpoczęty",
+  "tripListTripActive": "Aktywny"
 }

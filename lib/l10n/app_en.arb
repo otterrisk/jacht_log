@@ -32,8 +32,33 @@
   "eventSourceSailEventTypeStart": "Sail hoisted",
   "eventSourceSailEventTypeStop": "Sail lowered",
 
-  "newTripButton": "New trip",
-  "@newTripButton": {
-    "description": "Button label to create a new trip"
+  "newTripMenuItem": "New trip",
+  "@newTripMenuItem": {
+    "description": "Menu item to create a new trip"
+  },
+
+  "loadTripMenuItem": "Load trip",
+  "@loadTripMenuItem": {
+    "description": "Menu item to open saved trips list"
+  },
+
+  "selectTripTitle": "Load trip",
+  "@selectTripTitle": {
+    "description": "Title for dialog listing saved trips"
+  },
+
+  "noTripsMessage": "No saved trips yet.",
+  "@noTripsMessage": {
+    "description": "Shown when there are no trips to load"
+  },
+
+  "tripListNotStarted": "Not started",
+  "@tripListNotStarted": {
+    "description": "Trip row title when trip has no start time"
+  },
+
+  "tripListTripActive": "Active",
+  "@tripListTripActive": {
+    "description": "Trip row subtitle while trip is in progress"
   }
 }

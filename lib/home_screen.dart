@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:jacht_log/controllers/boat_controller.dart';
 import 'package:jacht_log/domain/trip_validator.dart';
 import 'package:jacht_log/l10n/l10n.dart';
+import 'package:jacht_log/presentation/extensions/formatting_ext.dart';
 import 'package:jacht_log/presentation/view_models/validation_vm.dart';
 import 'package:jacht_log/services/trip_storage.dart';
 import 'package:jacht_log/widgets/boat_controls.dart';
 import 'package:jacht_log/widgets/event_list.dart';
 import 'package:jacht_log/widgets/time_table.dart';
 import 'package:jacht_log/widgets/trip_bar.dart';
+
+enum _HomeMenuAction { newTrip, loadTrip }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -53,6 +56,65 @@ class _HomeScreenState extends State<HomeScreen> {
     controller.addListener(_listener);
   }
 
+  Future<void> _showLoadTripDialog(BuildContext context) async {
+    final trips = await controller.loadTrips();
+    if (!context.mounted) {
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final l10n = dialogContext.l10n;
+        return AlertDialog(
+          title: Text(l10n.selectTripTitle),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 360,
+            child: trips.isEmpty
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.noTripsMessage),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: trips.length,
+                    itemBuilder: (context, index) {
+                      final trip = trips[index];
+                      final title = trip.startTime != null
+                          ? trip.startTime!.toTripBarDateTime()
+                          : l10n.tripListNotStarted;
+                      final String? subtitle;
+                      if (trip.isActive) {
+                        subtitle = l10n.tripListTripActive;
+                      } else if (trip.isFinished && trip.endTime != null) {
+                        subtitle = trip.endTime!.toTripBarDateTime();
+                      } else {
+                        subtitle = null;
+                      }
+                      return ListTile(
+                        title: Text(title),
+                        subtitle: subtitle != null ? Text(subtitle) : null,
+                        onTap: () async {
+                          Navigator.of(dialogContext).pop();
+                          await controller.selectTrip(trip.id);
+                        },
+                      );
+                    },
+                  ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     controller.removeListener(_listener);
@@ -79,9 +141,26 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
             actions: [
-              ElevatedButton(
-                onPressed: controller.createTrip,
-                child: Text(context.l10n.newTripButton),
+              PopupMenuButton<_HomeMenuAction>(
+                icon: const Icon(Icons.menu),
+                onSelected: (action) async {
+                  switch (action) {
+                    case _HomeMenuAction.newTrip:
+                      await controller.createTrip();
+                    case _HomeMenuAction.loadTrip:
+                      await _showLoadTripDialog(context);
+                  }
+                },
+                itemBuilder: (menuContext) => [
+                  PopupMenuItem(
+                    value: _HomeMenuAction.newTrip,
+                    child: Text(menuContext.l10n.newTripMenuItem),
+                  ),
+                  PopupMenuItem(
+                    value: _HomeMenuAction.loadTrip,
+                    child: Text(menuContext.l10n.loadTripMenuItem),
+                  ),
+                ],
               ),
             ],
           ),

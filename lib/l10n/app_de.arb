@@ -29,5 +29,10 @@
   "eventSourceSailEventTypeStart": "Sail hoisted",
   "eventSourceSailEventTypeStop": "Sail lowered",
 
-  "newTripButton": "Neue Fahrt"
+  "newTripMenuItem": "Neue Fahrt",
+  "loadTripMenuItem": "Fahrt laden",
+  "selectTripTitle": "Fahrt laden",
+  "noTripsMessage": "Noch keine gespeicherten Fahrten.",
+  "tripListNotStarted": "Nicht gestartet",
+  "tripListTripActive": "Aktiv"
 }
