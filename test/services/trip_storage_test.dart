@@ -100,5 +100,18 @@ void main() {
 
       expect(activeTrip.id, 'ended-latest');
     });
+
+    test('loadById returns matching trip or null', () async {
+      final a = newTrip(id: 'trip-a', startTime: DateTime(2026, 1, 10, 10));
+      final b = newTrip(id: 'trip-b', startTime: DateTime(2026, 1, 11, 10));
+      await storage.saveAll([a, b]);
+
+      final found = await storage.loadById('trip-b');
+      final missing = await storage.loadById('unknown');
+
+      expect(found?.id, 'trip-b');
+      expect(found?.startTime, DateTime(2026, 1, 11, 10));
+      expect(missing, isNull);
+    });
   });
 }

@@ -51,6 +51,16 @@ class TripStorage {
     }
   }
 
+  Future<Trip?> loadById(String id) async {
+    final trips = await loadAll();
+    for (final trip in trips) {
+      if (trip.id == id) {
+        return trip;
+      }
+    }
+    return null;
+  }
+
   Future<Trip> load() async {
     final trips = await loadAll();
     final latestOpen = trips
