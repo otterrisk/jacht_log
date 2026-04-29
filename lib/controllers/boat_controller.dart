@@ -11,11 +11,12 @@ class BoatController extends ChangeNotifier {
     _loadTrip();
   }
 
-  void createTrip() {
+  Future<void> createTrip() async {
     _detachTrip();
     final trip = Trip.started();
     _attachTrip(trip);
     boat = Boat(trip);
+    await storage.upsert(trip);
     notifyListeners();
   }
 
@@ -47,7 +48,7 @@ class BoatController extends ChangeNotifier {
   }
 
   Future<void> _saveTrip() async {
-    await storage.save(boat!.trip);
+    await storage.upsert(boat!.trip);
   }
 
   void _onTripChanged() {
