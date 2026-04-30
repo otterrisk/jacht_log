@@ -1,17 +1,52 @@
-# Jacht Log
+# ⛵ Jacht Log
 
-Your pocket yachtman's log book.
+Prosta aplikacja do prowadzenia dziennika jachtowego.
 
-## Getting Started
+## 🧭 Do czego to służy?
 
-This project is a starting point for a Flutter application.
+Jacht Log pozwala zapisywać przebieg Twoich rejsów, zliczając automatycznie czas pływania na żaglach i na silniku oraz czas postoju:
+- tworzysz rejs (np. weekendowy lub wakacyjny),
+- każdy manewr (np. wyjście z portu, postawienie żagli) rejestrujesz jednym kliknięciem,
+- na bieżąco odczytujesz czasy pływania i postoju,
 
-A few resources to get you started if this is your first Flutter project:
+To cyfrowy odpowiednik papierowego dziennika jachtowego.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ⬇️ Instalacja
+
+1. odwiedź [stronę projektu na GitHub'ie](https://github.com/otterrisk/jacht_log/releases),
+2. pobierz najnowszą wersję aplikacji Jacht Log (plik `app-release.apk`),
+3. uruchom aplikację Pliki, przejdź do Pobranych i uruchom pobrany plik,
+
+> Jeśli nie instalowałeś wcześniej aplikacji bezpośrednio z plików `.apk` - zezwól na instalację z tego źródła.
+
+---
+
+## 🚀 Jak używać?
+
+### 1. Utwórz nowy rejs
+- kliknij ikonę menu (trzy poziome linie) i wybierz **"Nowy rejs"**
+
+### 2. Dodawaj wpisy
+- w trakcie rejsu dodawaj manewry klikając przełączniki "Silnik", "Żagle", itd.,
+- czas manewru rejestruje się automatycznie, można go również później zmienić,
+
+### 3. Zakończ rejs
+- kliknij ikonę "Stop" - czas zakończenia rejsu można później edytować,
+
+### 5. Wracaj do poprzednich rejsów
+- wybierz rejs z listy zapisanych klikając w menu i wybierając "Wczytaj rejs",
+- przeglądaj jego przebieg i wpisy,
+
+---
+
+## 📌 Wskazówki
+
+- Staraj się dodawać wpisy na bieżąco – łatwiej odtworzyć przebieg rejsu
+- Możesz prowadzić wiele rejsów – nic się nie nadpisuje
+- Datę i godzinę każdego wpisu możesz edytować
+
+---
+
+Miłego żeglowania! ⛵
