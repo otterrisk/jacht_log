@@ -31,16 +31,10 @@ class EventTile extends StatelessWidget {
             const SizedBox(width: 8),
             Text(event.description(context)),
             const Spacer(),
-            if (issues.isNotEmpty)
-              Icon(
-                issues.any((i) => i.severity == Severity.error)
-                    ? Icons.error
-                    : Icons.warning,
-                color: issues.any((i) => i.severity == Severity.error)
-                    ? Colors.red
-                    : Colors.orange,
-              ),
-            if (issues.isNotEmpty) const SizedBox(width: 8),
+            if (issues.any((i) => i.severity == Severity.error))
+              Icon(Icons.error, color: Colors.red),
+            if (issues.any((i) => i.severity == Severity.error))
+              const SizedBox(width: 8),
             Text(
               event.timestamp.toEventListTimestamp(context),
               style: const TextStyle(
